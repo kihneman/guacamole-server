@@ -141,8 +141,9 @@ guac_common_ssh_key* guac_common_ssh_key_alloc(char* data, int length,
 
     /* Copy private key to structure */
     key->private_key_length = length;
-    key->private_key = malloc(length);
+    key->private_key = malloc(length + 1);
     memcpy(key->private_key, data, length);
+    key->private_key[length] = '\0';
     key->passphrase = strdup(passphrase);
 
     return key;
