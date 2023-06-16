@@ -229,6 +229,7 @@ BUILT_SOURCES =                         \
 
 rdp_keymaps =                                \
     $(srcdir)/keymaps/base.keymap            \
+    $(srcdir)/keymaps/base_altgr.keymap      \
     $(srcdir)/keymaps/failsafe.keymap        \
     $(srcdir)/keymaps/de_de_qwertz.keymap    \
     $(srcdir)/keymaps/de_ch_qwertz.keymap    \
