@@ -61,6 +61,7 @@ libguacinc_HEADERS =                  \
     guacamole/protocol-constants.h    \
     guacamole/protocol-types.h        \
     guacamole/recording.h             \
+    guacamole/rwlock.h                \
     guacamole/socket-constants.h      \
     guacamole/socket.h                \
     guacamole/socket-fntypes.h        \
@@ -78,13 +79,13 @@ libguacinc_HEADERS =                  \
     guacamole/wol.h                   \
     guacamole/wol-constants.h
 
-noinst_HEADERS =      \
-    id.h              \
-    encode-jpeg.h     \
-    encode-png.h      \
-    palette.h         \
-    user-handlers.h   \
-    raw_encoder.h     \
+noinst_HEADERS =       \
+    id.h               \
+    encode-jpeg.h      \
+    encode-png.h       \
+    palette.h          \
+    user-handlers.h    \
+    raw_encoder.h      \
     wait-fd.h
 
 libguac_la_SOURCES =   \
@@ -97,6 +98,7 @@ libguac_la_SOURCES =   \
     fips.c             \
     hash.c             \
     id.c               \
+    rwlock.c           \
     palette.c          \
     parser.c           \
     pool.c             \
