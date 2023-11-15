@@ -25,6 +25,8 @@
 
 AUTOMAKE_OPTIONS = foreign 
 
+lib_LTLIBRARIES = libguacd.la
+
 sbin_PROGRAMS = guacd
 
 man_MANS =           \
@@ -41,6 +43,33 @@ noinst_HEADERS =  \
     move-fd.h     \
     proc.h        \
     proc-map.h
+
+libguacdinc_HEADERS = daemon.h
+
+libguacd_la_SOURCES =  \
+    conf-args.c  \
+    conf-file.c  \
+    conf-parse.c \
+    connection.c \
+    daemon.c     \
+    log.c        \
+    move-fd.c    \
+    proc.c       \
+    proc-map.c
+
+libguacd_la_CFLAGS =        \
+    -Werror -Wall -pedantic \
+    @COMMON_INCLUDE@        \
+    @LIBGUAC_INCLUDE@
+
+libguacd_la_LIBADD = \
+    @COMMON_LTLIB@   \
+    @LIBGUAC_LTLIB@
+
+libguacd_la_LDFLAGS =    \
+    -version-info 22:0:1 \
+    @PTHREAD_LIBS@       \
+    @SSL_LIBS@
 
 guacd_SOURCES =  \
     conf-args.c  \
