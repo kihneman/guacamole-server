@@ -384,23 +384,20 @@ AC_SUBST(SSL_LIBS)
 have_winsock=disabled
 WINSOCK_LIBS=
 
-if test "x$with_cygwin" = "xno"
-then
-    AC_ARG_WITH([winsock],
-                [AS_HELP_STRING([--with-winsock],
-                                [support Windows Sockets API @<:@default=check@:>@])],
-                [],
-                [with_winsock=check])
+AC_ARG_WITH([winsock],
+            [AS_HELP_STRING([--with-winsock],
+                            [support Windows Sockets API @<:@default=check@:>@])],
+            [],
+            [with_winsock=check])
 
-    if test "x$with_winsock" != "xno"
-    then
-        have_winsock=yes
-        AC_CHECK_LIB([wsock32], [main],
-                    [WINSOCK_LIBS="-lwsock32"]
-                    [AC_DEFINE([ENABLE_WINSOCK],,
-                                [Whether Windows Socket API support is enabled])],
-                    [have_winsock=no])
-    fi
+if test "x$with_winsock" != "xno"
+then
+    have_winsock=yes
+    AC_CHECK_LIB([wsock32], [main],
+                [WINSOCK_LIBS="-lwsock32"]
+                [AC_DEFINE([ENABLE_WINSOCK],,
+                            [Whether Windows Socket API support is enabled])],
+                [have_winsock=no])
 fi
 
 AM_CONDITIONAL([ENABLE_WINSOCK], [test "x${have_winsock}" = "xyes"])
