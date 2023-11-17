@@ -20,4 +20,4 @@ def main():
         return 'Missing DLL'
 
 
-print(f'Running with result "{main()}"')
+print(f'Running with args {sys.argv}, result "{main()}"')
