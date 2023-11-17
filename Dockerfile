@@ -186,9 +186,6 @@ RUN apk add --no-cache                \
         util-linux-login && \
     xargs apk add --no-cache < ${PREFIX_DIR}/DEPENDENCIES
 
-# Install Python package
-RUN pip install ${PREFIX_DIR}/wheels/*.whl
-
 # Checks the operating status every 5 minutes with a timeout of 5 seconds
 HEALTHCHECK --interval=5m --timeout=5s CMD nc -z 127.0.0.1 4822 || exit 1
 
@@ -203,6 +200,9 @@ USER guacd
 
 # Expose the default listener port
 EXPOSE 4822
+
+# Install Python package
+RUN pip install ${PREFIX_DIR}/wheels/*.whl
 
 # Start guacd, listening on port 0.0.0.0:4822
 #
