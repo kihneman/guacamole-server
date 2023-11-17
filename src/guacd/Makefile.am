@@ -44,7 +44,7 @@ noinst_HEADERS =  \
     proc.h        \
     proc-map.h
 
-libguacdinc_HEADERS = daemon.h
+include_HEADERS = daemon.h
 
 libguacd_la_SOURCES =  \
     conf-args.c  \
