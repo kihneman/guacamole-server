@@ -96,52 +96,66 @@ AC_CHECK_LIB([dl], [dlopen],
                             AC_MSG_ERROR("libdl is required on systems which do not otherwise provide dlopen()"),
                             [#include <dlfcn.h>])])
 
-if test "x$with_cygwin" = "xno"
+#
+# UUID library
+# First, check librpcrt4 (Windows), then libuuid, and finally OSSP UUID
+#
+
+AC_ARG_WITH([librpcrt4],
+            [AS_HELP_STRING([--with-librpcrt4],
+                            [use librpcrt4 to generate unique identifiers @<:@default=check@:>@])],
+            [],
+            [with_librpcrt4=check])
+
+# First, check for librpcrt4 (Windows)
+if test "x$with_librpcrt4" != "xno"
 then
-    #
-    # libuuid
-    #
+    have_librpcrt4=yes
+    AC_CHECK_LIB([rpcrt4], [UuidCreate],
+                [UUID_LIBS=-lrpcrt4]
+                [AC_DEFINE([HAVE_LIBRPCRT4],, [Whether librpcrt4 is available])],
+                [have_librpcrt4=no])
+fi
 
-    have_libuuid=disabled
-    AC_ARG_WITH([libuuid],
-                [AS_HELP_STRING([--with-libuuid],
-                                [use libuuid to generate unique identifiers @<:@default=check@:>@])],
-                [],
-                [with_libuuid=check])
+have_libuuid=disabled
+AC_ARG_WITH([libuuid],
+            [AS_HELP_STRING([--with-libuuid],
+                            [use libuuid to generate unique identifiers @<:@default=check@:>@])],
+            [],
+            [with_libuuid=check])
 
-    if test "x$with_libuuid" != "xno"
-    then
-        have_libuuid=yes
-        AC_CHECK_LIB([uuid], [uuid_generate],
-                    [UUID_LIBS=-luuid]
-                    [AC_DEFINE([HAVE_LIBUUID],, [Whether libuuid is available])],
-                    [have_libuuid=no])
-    fi
+if test "x$with_libuuid" != "xno" and "x$with_librpcrt4" != "xyes"
+then
+    have_libuuid=yes
+    AC_CHECK_LIB([uuid], [uuid_generate],
+                [UUID_LIBS=-luuid]
+                [AC_DEFINE([HAVE_LIBUUID],, [Whether libuuid is available])],
+                [have_libuuid=no])
+fi
 
-    # OSSP UUID (if libuuid is unavilable)
-    if test "x${have_libuuid}" != "xyes"
-    then
+# OSSP UUID (if libuuid is unavilable)
+if test "x${have_libuuid}" != "xyes" and "x$with_librpcrt4" != "xyes"
+then
 
-        AC_CHECK_LIB([ossp-uuid], [uuid_make], [UUID_LIBS=-lossp-uuid],
-                    AC_CHECK_LIB([uuid], [uuid_make], [UUID_LIBS=-luuid],
-                                AC_MSG_ERROR([
-    --------------------------------------------
-    Unable to find libuuid or the OSSP UUID library.
-    Either libuuid (from util-linux) or the OSSP UUID library is required for
-    guacamole-server to be built.
-    --------------------------------------------])))
+    AC_CHECK_LIB([ossp-uuid], [uuid_make], [UUID_LIBS=-lossp-uuid],
+                AC_CHECK_LIB([uuid], [uuid_make], [UUID_LIBS=-luuid],
+                            AC_MSG_ERROR([
+--------------------------------------------
+Unable to find librpcrt4 or libuuid or the OSSP UUID library.
+Either librpcrt4 (Windows) or libuuid (from util-linux) or the
+OSSP UUID library is required for guacamole-server to be built.
+--------------------------------------------])))
 
-        # Check for and validate OSSP uuid.h header
-        AC_CHECK_HEADERS([ossp/uuid.h])
-        AC_CHECK_DECL([uuid_make],,
-                    AC_MSG_ERROR("No OSSP uuid.h found in include path"),
-                    [#ifdef HAVE_OSSP_UUID_H
-                    #include <ossp/uuid.h>
-                    #else
-                    #include <uuid.h>
-                    #endif
-                    ])
-    fi
+    # Check for and validate OSSP uuid.h header
+    AC_CHECK_HEADERS([ossp/uuid.h])
+    AC_CHECK_DECL([uuid_make],,
+                AC_MSG_ERROR("No OSSP uuid.h found in include path"),
+                [#ifdef HAVE_OSSP_UUID_H
+                #include <ossp/uuid.h>
+                #else
+                #include <uuid.h>
+                #endif
+                ])
 fi
 
 # cunit
