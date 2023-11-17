@@ -43,6 +43,8 @@ RUN apk add --no-cache                \
         openssl1.1-compat-dev         \
         pango-dev                     \
         pulseaudio-dev                \
+        python3                       \
+        py3-pip                       \
         util-linux-dev
 
 # Copy source to container for sake of build
@@ -139,6 +141,10 @@ ARG LIBWEBSOCKETS_OPTS="\
 # Build guacamole-server and its core protocol library dependencies
 RUN ${BUILD_DIR}/src/guacd-docker/bin/build-all.sh
 
+# Build Python wheel
+RUN pip install wheel
+RUN python ${BUILD_DIR}/python/setup.py build_wheel -d ${PREFIX_DIR}/wheels
+
 # Record the packages of all runtime library dependencies
 RUN ${BUILD_DIR}/src/guacd-docker/bin/list-dependencies.sh \
         ${PREFIX_DIR}/sbin/guacd               \
@@ -171,12 +177,17 @@ RUN apk add --no-cache                \
         ca-certificates               \
         ghostscript                   \
         netcat-openbsd                \
+        python3                       \
+        py3-pip                       \
         shadow                        \
         terminus-font                 \
         ttf-dejavu                    \
         ttf-liberation                \
         util-linux-login && \
     xargs apk add --no-cache < ${PREFIX_DIR}/DEPENDENCIES
+
+# Install Python package
+RUN pip install ${PREFIX_DIR}/wheels/*.whl
 
 # Checks the operating status every 5 minutes with a timeout of 5 seconds
 HEALTHCHECK --interval=5m --timeout=5s CMD nc -z 127.0.0.1 4822 || exit 1
@@ -198,5 +209,5 @@ EXPOSE 4822
 # Note the path here MUST correspond to the value specified in the 
 # PREFIX_DIR build argument.
 #
-CMD /opt/guacamole/sbin/guacd -b 0.0.0.0 -L $GUACD_LOG_LEVEL -f
+CMD python -m guacd -b 0.0.0.0 -L $GUACD_LOG_LEVEL -f
 
