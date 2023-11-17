@@ -1,3 +1,6 @@
+# Python files
+**/*.egg-info/
+**/__pycache__/
 
 # Object code
 *.o
