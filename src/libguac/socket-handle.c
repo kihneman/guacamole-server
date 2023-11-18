@@ -20,9 +20,9 @@
 #include "config.h"
 
 #include "guacamole/error.h"
-#include "guacamole/handle-helpers.h"
 #include "guacamole/socket.h"
-#include "guacamole/wait-handle.h"
+#include "guacamole/handle-helpers.h"
+#include "wait-handle.h"
 
 #include <pthread.h>
 #include <stddef.h>

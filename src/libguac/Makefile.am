@@ -77,7 +77,6 @@ libguacinc_HEADERS =                  \
     guacamole/user-constants.h        \
     guacamole/user-fntypes.h          \
     guacamole/user-types.h            \
-    guacamole/wait-fd.h               \
     guacamole/wol.h                   \
     guacamole/wol-constants.h
 
@@ -86,7 +85,8 @@ noinst_HEADERS =      \
     encode-png.h      \
     palette.h         \
     user-handlers.h   \
-    raw_encoder.h
+    raw_encoder.h     \
+    wait-fd.h
 
 libguac_la_SOURCES =   \
     argv.c             \
@@ -137,20 +137,6 @@ libguac_la_SOURCES += socket-wsa.c
 libguacinc_HEADERS += guacamole/socket-wsa.h
 endif
 
-# Cygwin build
-if CYGWIN_BUILD
-libguac_la_SOURCES += handle-helpers.c
-libguac_la_SOURCES += socket-handle.c
-libguac_la_SOURCES += wait-handle.c
-libguacinc_HEADERS += guacamole/handle-helpers.h
-libguacinc_HEADERS += guacamole/socket-handle.h
-libguacinc_HEADERS += guacamole/wait-handle.h
-else
-libguac_la_SOURCES += wait-fd.c
-libguac_la_SOURCES += socket-fd.c
-libguacinc_HEADERS += guacamole/wait-fd.h
-endif
-
 libguac_la_CFLAGS = \
     @CYGWIN_CFLAGS@
 
@@ -167,4 +153,15 @@ libguac_la_LDFLAGS =     \
     @VORBIS_LIBS@        \
     @WEBP_LIBS@          \
     @WINSOCK_LIBS@
+
+# Cygwin build
+if CYGWIN_BUILD
+libguac_la_SOURCES += handle-helpers.c
+libguac_la_SOURCES += socket-handle.c
+libguac_la_SOURCES += wait-handle.c
+libguacinc_HEADERS += guacamole/socket-handle.h
+libguacinc_HEADERS += guacamole/handle-helpers.h
+libguacinc_HEADERS += wait-handle.h
+libguac_la_LDFLAGS += @UCRT_LIBS@
+endif
 
