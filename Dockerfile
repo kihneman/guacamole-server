@@ -143,7 +143,7 @@ RUN ${BUILD_DIR}/src/guacd-docker/bin/build-all.sh
 
 # Build Python wheel
 RUN pip install wheel
-RUN python ${BUILD_DIR}/python/setup.py bdist_wheel -d ${PREFIX_DIR}/wheels
+RUN pushd ${BUILD_DIR}/python; python ./setup.py bdist_wheel -d ${PREFIX_DIR}/wheels; popd
 
 # Record the packages of all runtime library dependencies
 RUN ${BUILD_DIR}/src/guacd-docker/bin/list-dependencies.sh \
