@@ -142,8 +142,16 @@ ARG LIBWEBSOCKETS_OPTS="\
 RUN ${BUILD_DIR}/src/guacd-docker/bin/build-all.sh
 
 # Build Python wheel
-RUN pip install wheel
-RUN cd ${BUILD_DIR}/python && python ./setup.py bdist_wheel -d ${PREFIX_DIR}/wheels
+RUN pip install wheel ctypesgen                       \
+    && cd ${BUILD_DIR}/python                         \
+    && ctypesgen -llibguacd -L /opt/guacamole/lib     \
+       -I /opt/guacamole/include -o python_wrapper.py \
+       /opt/guacamole/include/python_wrapper.h        \
+    && python ./setup.py bdist_wheel -d ${PREFIX_DIR}/wheels
+
+# To debug builder stage:
+# docker build --target builder -t guacd-builder .
+# docker run -it --name guacd-builder-1 guacd-builder /bin/sh
 
 # Record the packages of all runtime library dependencies
 RUN ${BUILD_DIR}/src/guacd-docker/bin/list-dependencies.sh \
