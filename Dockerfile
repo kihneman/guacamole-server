@@ -144,7 +144,7 @@ RUN ${BUILD_DIR}/src/guacd-docker/bin/build-all.sh
 # Build Python wheel
 RUN pip install wheel ctypesgen                                            \
     && cd ${BUILD_DIR}/python                                              \
-    && python ./setup.py bdist_wheel -d ${PREFIX_DIR}/python
+    && python ./setup.py bdist_wheel -d ${PREFIX_DIR}/wheels
 # Updated ctypes_wrapper.py goes into ${PREFIX_DIR} to be used for future source changes
     # && ctypesgen -llibguacd -L /opt/guacamole/lib                          \
     #    -I /opt/guacamole/include -o ${PREFIX_DIR}/python/ctypes_wrapper.py \
