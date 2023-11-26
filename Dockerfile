@@ -143,12 +143,12 @@ RUN ${BUILD_DIR}/src/guacd-docker/bin/build-all.sh
 
 # Build Python wheel
 # Updated ctypes_wrapper.py goes into ${PREFIX_DIR} to be used for future source changes
-RUN pip install wheel ctypesgen                                            \
-    && cd ${BUILD_DIR}/python                                              \
-    && ctypesgen -llibguacd -L /opt/guacamole/lib                          \
-       -I /opt/guacamole/include -o ${PREFIX_DIR}/python/ctypes_wrapper.py \
-       /opt/guacamole/include/ctypes_wrapper.h                             \
-    && python ./setup.py bdist_wheel -d ${PREFIX_DIR}/python
+# RUN pip install wheel ctypesgen                                            \
+#     && cd ${BUILD_DIR}/python                                              \
+#     && ctypesgen -llibguacd -L /opt/guacamole/lib                          \
+#        -I /opt/guacamole/include -o ${PREFIX_DIR}/python/ctypes_wrapper.py \
+#        /opt/guacamole/include/ctypes_wrapper.h                             \
+#     && python ./setup.py bdist_wheel -d ${PREFIX_DIR}/python
 
 # To debug builder stage:
 # docker build --target builder -t guacd-builder .
