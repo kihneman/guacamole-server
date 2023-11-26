@@ -1,21 +1,20 @@
 import ctypes
-import os
 import sys
-from os.path import exists, join
+
+import ctypes_wrapper
+from ctypes_wrapper import guac_client_log_level, String
+from .constants import GuacClientLogLevel
 
 
-GUACD_DLL = join(os.sep, 'opt', 'guacamole', 'lib', 'libguacd.so')
+def guacd_log(log_level: GuacClientLogLevel, msg: str):
+    ctypes_wrapper.guacd_log(
+        guac_client_log_level(log_level),
+        String(msg.encode())
+    )
 
 
-def main():
-    if exists(GUACD_DLL):
-        guacd_lib = ctypes.CDLL('/opt/guacamole/lib/libguacd.so')
-        guacd_lib.main.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)]
-        guacd_lib.main.restype = ctypes.c_int
-        argc = ctypes.c_int(len(sys.argv))
-        argv_values = [ctypes.c_char_p(s.encode()) for s in sys.argv]
-        argv = (ctypes.c_char_p * len(sys.argv))(*argv_values)
-        return guacd_lib.main(argc, argv)
-    else:
-        print(f'The Guacamole Server library {GUACD_DLL} does not exist.')
-        return 'Missing DLL'
+def guacd_main():
+    argc = ctypes.c_int(len(sys.argv))
+    argv_values = [ctypes.c_char_p(s.encode()) for s in sys.argv]
+    argv = (ctypes.c_char_p * len(sys.argv))(*argv_values)
+    return ctypes_wrapper.main(argc, argv)
