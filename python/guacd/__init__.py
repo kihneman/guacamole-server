@@ -1,8 +1,8 @@
 import ctypes
 import sys
 
-import ctypes_wrapper
-from ctypes_wrapper import guac_client_log_level, String
+from . import ctypes_wrapper
+from .ctypes_wrapper import guac_client_log_level, String
 from .constants import GuacClientLogLevel
 
 
