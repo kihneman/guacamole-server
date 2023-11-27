@@ -1,7 +1,7 @@
 r"""Wrapper for ctypes_wrapper.h
 
 Generated with:
-/usr/bin/ctypesgen -llibguacd -L /opt/guacamole/lib -I /opt/guacamole/include -o ctypes_wrapper.py /opt/guacamole/include/ctypes_wrapper.h
+/usr/bin/ctypesgen -llibguacd -L /opt/guacamole/lib -I /opt/guacamole/include -o python/ctypes_wrapper.py src/guacd/ctypes_wrapper.h
 
 Do not modify this file.
 """
@@ -871,19 +871,68 @@ enum_guac_client_log_level = c_int# /opt/guacamole/include/guacamole/client-type
 
 guac_client_log_level = enum_guac_client_log_level# /opt/guacamole/include/guacamole/client-types.h: 94
 
-# /opt/guacamole/include/ctypes_wrapper.h: 10
-if _libs["libguacd"].has("main", "cdecl"):
-    main = _libs["libguacd"].get("main", "cdecl")
-    main.argtypes = [c_int, POINTER(c_char_p)]
-    main.restype = c_int
+# /tmp/guacamole-server/src/guacd/ctypes_wrapper.h: 70
+class struct_guacd_config(Structure):
+    pass
 
-# /opt/guacamole/include/ctypes_wrapper.h: 11
+struct_guacd_config.__slots__ = [
+    'bind_host',
+    'bind_port',
+    'pidfile',
+    'foreground',
+    'print_version',
+    'max_log_level',
+]
+struct_guacd_config._fields_ = [
+    ('bind_host', String),
+    ('bind_port', String),
+    ('pidfile', String),
+    ('foreground', c_int),
+    ('print_version', c_int),
+    ('max_log_level', guac_client_log_level),
+]
+
+guacd_config = struct_guacd_config# /tmp/guacamole-server/src/guacd/ctypes_wrapper.h: 70
+
+# /tmp/guacamole-server/src/guacd/ctypes_wrapper.h: 78
+if _libs["libguacd"].has("guacd_conf_load", "cdecl"):
+    guacd_conf_load = _libs["libguacd"].get("guacd_conf_load", "cdecl")
+    guacd_conf_load.argtypes = []
+    guacd_conf_load.restype = POINTER(guacd_config)
+
+# /tmp/guacamole-server/src/guacd/ctypes_wrapper.h: 86
+if _libs["libguacd"].has("guacd_conf_parse_args", "cdecl"):
+    guacd_conf_parse_args = _libs["libguacd"].get("guacd_conf_parse_args", "cdecl")
+    guacd_conf_parse_args.argtypes = [POINTER(guacd_config), c_int, POINTER(POINTER(c_char))]
+    guacd_conf_parse_args.restype = c_int
+
+# /tmp/guacamole-server/src/guacd/ctypes_wrapper.h: 94
 if _libs["libguacd"].has("guacd_log", "cdecl"):
     _func = _libs["libguacd"].get("guacd_log", "cdecl")
     _restype = None
     _errcheck = None
     _argtypes = [guac_client_log_level, String]
     guacd_log = _variadic_function(_func,_restype,_argtypes,_errcheck)
+
+# /tmp/guacamole-server/src/guacd/ctypes_wrapper.h: 97
+if _libs["libguacd"].has("main", "cdecl"):
+    main = _libs["libguacd"].get("main", "cdecl")
+    main.argtypes = [c_int, POINTER(POINTER(c_char))]
+    main.restype = c_int
+
+# /tmp/guacamole-server/src/guacd/ctypes_wrapper.h: 15
+try:
+    GUACD_DEFAULT_BIND_HOST = 'localhost'
+except:
+    pass
+
+# /tmp/guacamole-server/src/guacd/ctypes_wrapper.h: 21
+try:
+    GUACD_DEFAULT_BIND_PORT = '4822'
+except:
+    pass
+
+guacd_config = struct_guacd_config# /tmp/guacamole-server/src/guacd/ctypes_wrapper.h: 70
 
 # No inserted files
 
