@@ -874,7 +874,7 @@ guac_client_log_level = enum_guac_client_log_level# /opt/guacamole/include/guaca
 # /opt/guacamole/include/ctypes_wrapper.h: 10
 if _libs["libguacd"].has("main", "cdecl"):
     main = _libs["libguacd"].get("main", "cdecl")
-    main.argtypes = [c_int, POINTER(POINTER(c_char))]
+    main.argtypes = [c_int, POINTER(c_char_p)]
     main.restype = c_int
 
 # /opt/guacamole/include/ctypes_wrapper.h: 11
