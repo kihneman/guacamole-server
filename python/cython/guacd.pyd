@@ -1,0 +1,2 @@
+cdef extern from "python_wrapper.h":
+    int main(int argc, char* argv[])

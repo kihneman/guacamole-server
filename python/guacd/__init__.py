@@ -1,8 +1,9 @@
 import ctypes
 import sys
+from typing import Optional
 
 from . import ctypes_wrapper
-from .ctypes_wrapper import guac_client_log_level, String
+from .ctypes_wrapper import guac_client_log_level, guacd_config, guacd_conf_load, guacd_conf_parse_args, String
 from .constants import GuacClientLogLevel
 
 
@@ -13,8 +14,25 @@ def guacd_log(log_level: GuacClientLogLevel, msg: str):
     )
 
 
-def guacd_main():
+def get_argc_argv() -> (ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)):
     argc = ctypes.c_int(len(sys.argv))
     argv_values = [ctypes.c_char_p(s.encode()) for s in sys.argv]
     argv = (ctypes.c_char_p * len(sys.argv))(*argv_values)
-    return ctypes_wrapper.main(argc, argv)
+    return argc, argv
+
+
+def guacd_main():
+    argc, argv = get_argc_argv()
+    result: ctypes.c_int = ctypes_wrapper.main(argc, argv)
+    return result.value
+
+
+def get_config() -> (Optional[int], Optional[guacd_config]):
+    config_ptr: ctypes.POINTER(guacd_config) = guacd_conf_load()
+    if config_ptr:
+        argc, argv = get_argc_argv()
+        result = guacd_conf_parse_args(config_ptr, argc, argv)
+        config: guacd_config = config_ptr.contents
+        return result.value, config
+    else:
+        return None, None
