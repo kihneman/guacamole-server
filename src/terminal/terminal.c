@@ -33,6 +33,10 @@
 #include "terminal/types.h"
 #include "terminal/typescript.h"
 
+#ifdef CYGWIN_BUILD
+#include <terminal/wcwidth.h>
+#endif
+
 #include <ctype.h>
 #include <errno.h>
 #include <pthread.h>

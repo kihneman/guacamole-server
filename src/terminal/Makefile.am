@@ -65,6 +65,12 @@ libguac_terminal_la_SOURCES =   \
     typescript.c                \
     xparsecolor.c
 
+# Cygwin build
+if CYGWIN_BUILD
+noinst_HEADERS += wcwidth.h
+libguac_terminal_la_SOURCES += wcwidth.c
+endif
+
 libguac_terminal_la_CFLAGS = \
     -Werror -Wall            \
     @CYGWIN_CFLAGS@          \
