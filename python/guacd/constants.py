@@ -1,6 +1,9 @@
 from enum import IntEnum
 
 
+GUACD_LOG_NAME = 'guacd'
+
+
 class GuacClientLogLevel(IntEnum):
     # Fatal errors.
     GUAC_LOG_ERROR = 3
