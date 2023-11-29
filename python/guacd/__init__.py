@@ -1,5 +1,4 @@
 import ctypes
-import sys
 from typing import Optional
 
 from . import ctypes_wrapper
@@ -14,24 +13,24 @@ def guacd_log(log_level: GuacClientLogLevel, msg: str):
     )
 
 
-def get_argc_argv() -> (ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)):
-    argc = ctypes.c_int(len(sys.argv))
-    argv_values = [ctypes.c_char_p(s.encode()) for s in sys.argv]
-    argv = (ctypes.c_char_p * len(sys.argv))(*argv_values)
+def get_argc_argv(sys_argv) -> (ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)):
+    argc = ctypes.c_int(len(sys_argv))
+    argv_values = [ctypes.c_char_p(s.encode()) for s in sys_argv]
+    argv = (ctypes.c_char_p * len(sys_argv))(*argv_values)
     return argc, argv
 
 
-def guacd_main():
-    argc, argv = get_argc_argv()
+def guacd_main(sys_argv):
+    argc, argv = get_argc_argv(sys_argv)
     argv_double_ptr = ctypes.cast(argv, ctypes.POINTER(ctypes.POINTER(ctypes.c_char)))
     result: ctypes.c_int = ctypes_wrapper.main(argc, argv_double_ptr)
     return result
 
 
-def get_config() -> (Optional[int], Optional[guacd_config]):
+def get_config(sys_argv) -> (Optional[int], Optional[guacd_config]):
     config_ptr: ctypes.POINTER(guacd_config) = guacd_conf_load()
     if config_ptr:
-        argc, argv = get_argc_argv()
+        argc, argv = get_argc_argv(sys_argv)
         argv_double_ptr = ctypes.cast(argv, ctypes.POINTER(ctypes.POINTER(ctypes.c_char)))
         result = guacd_conf_parse_args(config_ptr, argc, argv_double_ptr)
         config: guacd_config = config_ptr.contents
