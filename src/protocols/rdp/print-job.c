@@ -35,6 +35,7 @@
 
 #ifdef CYGWIN_BUILD
 #include <sys/cygwin.h>
+#include <guacamole/pipe.h>
 #endif
 
 /**

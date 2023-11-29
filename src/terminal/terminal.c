@@ -33,10 +33,6 @@
 #include "terminal/types.h"
 #include "terminal/typescript.h"
 
-#ifdef CYGWIN_BUILD
-#include <terminal/wcwidth.h>
-#endif
-
 #include <ctype.h>
 #include <errno.h>
 #include <pthread.h>
@@ -53,6 +49,11 @@
 #include <guacamole/protocol.h>
 #include <guacamole/socket.h>
 #include <guacamole/timestamp.h>
+
+#ifdef CYGWIN_BUILD
+#include "terminal/wcwidth.h"
+#include <guacamole/pipe.h>
+#endif
 
 /**
  * Sets the given range of columns to the given character.

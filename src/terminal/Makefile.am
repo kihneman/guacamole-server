@@ -67,7 +67,7 @@ libguac_terminal_la_SOURCES =   \
 
 # Cygwin build
 if CYGWIN_BUILD
-noinst_HEADERS += wcwidth.h
+noinst_HEADERS += terminal/wcwidth.h
 libguac_terminal_la_SOURCES += wcwidth.c
 endif
 
