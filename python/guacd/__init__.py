@@ -23,16 +23,18 @@ def get_argc_argv() -> (ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)):
 
 def guacd_main():
     argc, argv = get_argc_argv()
-    result: ctypes.c_int = ctypes_wrapper.main(argc, argv)
-    return result.value
+    argv_double_ptr = ctypes.cast(argv, ctypes.POINTER(ctypes.POINTER(ctypes.c_char)))
+    result: ctypes.c_int = ctypes_wrapper.main(argc, argv_double_ptr)
+    return result
 
 
 def get_config() -> (Optional[int], Optional[guacd_config]):
     config_ptr: ctypes.POINTER(guacd_config) = guacd_conf_load()
     if config_ptr:
         argc, argv = get_argc_argv()
-        result = guacd_conf_parse_args(config_ptr, argc, argv)
+        argv_double_ptr = ctypes.cast(argv, ctypes.POINTER(ctypes.POINTER(ctypes.c_char)))
+        result = guacd_conf_parse_args(config_ptr, argc, argv_double_ptr)
         config: guacd_config = config_ptr.contents
-        return result.value, config
+        return result, config
     else:
         return None, None

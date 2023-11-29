@@ -903,7 +903,7 @@ if _libs["libguacd"].has("guacd_conf_load", "cdecl"):
 # /tmp/guacamole-server/src/guacd/ctypes_wrapper.h: 86
 if _libs["libguacd"].has("guacd_conf_parse_args", "cdecl"):
     guacd_conf_parse_args = _libs["libguacd"].get("guacd_conf_parse_args", "cdecl")
-    guacd_conf_parse_args.argtypes = [POINTER(guacd_config), c_int, POINTER(c_char_p)]
+    guacd_conf_parse_args.argtypes = [POINTER(guacd_config), c_int, POINTER(POINTER(c_char))]
     guacd_conf_parse_args.restype = c_int
 
 # /tmp/guacamole-server/src/guacd/ctypes_wrapper.h: 94
@@ -917,7 +917,7 @@ if _libs["libguacd"].has("guacd_log", "cdecl"):
 # /tmp/guacamole-server/src/guacd/ctypes_wrapper.h: 97
 if _libs["libguacd"].has("main", "cdecl"):
     main = _libs["libguacd"].get("main", "cdecl")
-    main.argtypes = [c_int, POINTER(c_char_p)]
+    main.argtypes = [c_int, POINTER(POINTER(c_char))]
     main.restype = c_int
 
 # /tmp/guacamole-server/src/guacd/ctypes_wrapper.h: 15
