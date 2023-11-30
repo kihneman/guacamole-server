@@ -9,7 +9,7 @@ from .constants import (
     EXIT_SUCCESS, EXIT_FAILURE,
     GuacClientLogLevel, GUACD_DEFAULT_BIND_HOST, GUACD_DEFAULT_BIND_PORT, GUACD_LOG_NAME
 )
-from .ctypes_wrapper import guac_socket_open
+from .ctypes_wrapper import guac_socket_flush, guac_socket_open, guac_protocol_send_name
 
 
 def main():
@@ -69,9 +69,9 @@ def main():
             conn, addr = s.accept()
             with conn:
                 print(f'Connected by {addr}')
-                breakpoint()
-                guac_socket_ptr = guac_socket_open(s.fileno())
-                guac_socket = guac_socket_ptr.contents
+                guac_socket = guac_socket_open(s.fileno())
+                guac_protocol_send_name(guac_socket, 'Kevin')
+                guac_socket_flush(guac_socket)
 
     else:
         # parser.add_argument('-v', action='store_true')
