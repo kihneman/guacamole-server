@@ -33,7 +33,6 @@
 #include <openssl/ssl.h>
 
 #include <errno.h>
-#include <netdb.h>
 #include <netinet/in.h>
 #include <pthread.h>
 #include <pwd.h>
@@ -42,6 +41,12 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
+
+#ifdef CYGWIN_BUILD
+#include <winsock2.h>
+#else
+#include <netdb.h>
+#endif
 
 #ifdef LIBSSH2_USES_GCRYPT
 GCRY_THREAD_OPTION_PTHREAD_IMPL;

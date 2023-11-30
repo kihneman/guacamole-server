@@ -23,6 +23,7 @@ make install \
     mingw-w64-x86_64-libgcrypt \
     mingw-w64-x86_64-libwebsockets \
     mingw-w64-x86_64-libwebp \
+    mingw-w64-x86_64-libssh2 \
     mingw-w64-x86_64-openssl \
     mingw-w64-x86_64-libvorbis \
     mingw-w64-x86_64-pulseaudio

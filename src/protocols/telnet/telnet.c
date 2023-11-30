@@ -31,7 +31,6 @@
 #include <libtelnet.h>
 
 #include <errno.h>
-#include <netdb.h>
 #include <netinet/in.h>
 #include <poll.h>
 #include <pthread.h>
@@ -41,6 +40,12 @@
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <unistd.h>
+
+#ifdef CYGWIN_BUILD
+#include <winsock2.h>
+#else
+#include <netdb.h>
+#endif
 
 /**
  * Support levels for various telnet options, required for connection

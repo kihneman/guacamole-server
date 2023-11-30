@@ -33,7 +33,6 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <libgen.h>
-#include <netdb.h>
 #include <netinet/in.h>
 #include <signal.h>
 #include <stdio.h>
@@ -47,7 +46,9 @@
 #include <unistd.h>
 
 #ifdef CYGWIN_BUILD
-#include <sys/cygwin.h>
+#include <winsock2.h>
+#else
+#include <netdb.h>
 #endif
 
 #define GUACD_DEV_NULL "/dev/null"
