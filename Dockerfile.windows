@@ -22,6 +22,9 @@ RUN apt-get -y install \
 COPY scripts/install-msys2.sh /install-msys2.sh
 RUN bash /install-msys2.sh
 
+COPY scripts/fix-links.sh /fix-links.sh
+RUN bash /fix-links.sh
+
 RUN mkdir /guacamole-server
 COPY . /guacamole-server
 

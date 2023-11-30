@@ -158,19 +158,6 @@ OSSP UUID library is required for guacamole-server to be built.
                 ])
 fi
 
-if test "x$with_cygwin" = "xyes"
-then
-    have_libucrt=yes
-    AC_CHECK_LIB([ucrt], [setjmp],
-                [UCRT_LIBS=-lucrt]
-                [AC_DEFINE([HAVE_LIBUCRT],, [Whether libucrt is available])],
-                            AC_MSG_ERROR([
---------------------------------------------
-Unable to find required libucrt.
---------------------------------------------]))
-AC_SUBST(UCRT_LIBS)
-fi
-
 # cunit
 AC_CHECK_LIB([cunit], [CU_run_test], [CUNIT_LIBS=-lcunit])
 

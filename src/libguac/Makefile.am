@@ -163,6 +163,5 @@ libguacinc_HEADERS += guacamole/socket-handle.h
 libguacinc_HEADERS += guacamole/handle-helpers.h
 libguacinc_HEADERS += guacamole/pipe.h
 libguacinc_HEADERS += wait-handle.h
-libguac_la_LDFLAGS += @UCRT_LIBS@
 endif
 
