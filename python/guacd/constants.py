@@ -1,10 +1,19 @@
 from enum import IntEnum
 
 
+EXIT_SUCCESS = 0
+EXIT_FAILURE = 1
 GUACD_LOG_NAME = 'guacd'
+
+# The default host that guacd should bind to, if no other host is explicitly specified.
+GUACD_DEFAULT_BIND_HOST = 'localhost'
+
+# The default port that guacd should bind to, if no other port is explicitly specified.
+GUACD_DEFAULT_BIND_PORT = '4822'
 
 
 class GuacClientLogLevel(IntEnum):
+    """The contents of a guacd configuration file."""
     # Fatal errors.
     GUAC_LOG_ERROR = 3
 

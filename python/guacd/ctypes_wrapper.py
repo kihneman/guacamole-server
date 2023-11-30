@@ -1,7 +1,7 @@
 r"""Wrapper for ctypes_wrapper.h
 
 Generated with:
-/usr/bin/ctypesgen -llibguacd -L /opt/guacamole/lib -I /opt/guacamole/include -o python/ctypes_wrapper.py src/guacd/ctypes_wrapper.h
+/usr/bin/ctypesgen -llibguacd -L /opt/guacamole/lib -I /opt/guacamole/include -o ctypes_wrapper.py guacd/ctypes_wrapper.h libguac/guacamole/socket.h
 
 Do not modify this file.
 """
@@ -867,6 +867,12 @@ _libs["libguacd"] = load_library("libguacd")
 
 # No modules
 
+# /opt/guacamole/include/guacamole/client-types.h: 35
+class struct_guac_client(Structure):
+    pass
+
+guac_client = struct_guac_client# /opt/guacamole/include/guacamole/client-types.h: 35
+
 enum_guac_client_log_level = c_int# /opt/guacamole/include/guacamole/client-types.h: 94
 
 guac_client_log_level = enum_guac_client_log_level# /opt/guacamole/include/guacamole/client-types.h: 94
@@ -906,7 +912,7 @@ if _libs["libguacd"].has("guacd_conf_parse_args", "cdecl"):
     guacd_conf_parse_args.argtypes = [POINTER(guacd_config), c_int, POINTER(POINTER(c_char))]
     guacd_conf_parse_args.restype = c_int
 
-# /tmp/guacamole-server/src/guacd/ctypes_wrapper.h: 94
+# /tmp/guacamole-server/src/guacd/ctypes_wrapper.h: 99
 if _libs["libguacd"].has("guacd_log", "cdecl"):
     _func = _libs["libguacd"].get("guacd_log", "cdecl")
     _restype = None
@@ -914,11 +920,186 @@ if _libs["libguacd"].has("guacd_log", "cdecl"):
     _argtypes = [guac_client_log_level, String]
     guacd_log = _variadic_function(_func,_restype,_argtypes,_errcheck)
 
-# /tmp/guacamole-server/src/guacd/ctypes_wrapper.h: 97
+# /tmp/guacamole-server/src/guacd/ctypes_wrapper.h: 102
 if _libs["libguacd"].has("main", "cdecl"):
     main = _libs["libguacd"].get("main", "cdecl")
     main.argtypes = [c_int, POINTER(POINTER(c_char))]
     main.restype = c_int
+
+# /tmp/guacamole-server/src/libguac/guacamole/socket.h: 39
+class struct_guac_socket(Structure):
+    pass
+
+guac_socket = struct_guac_socket# /tmp/guacamole-server/src/libguac/guacamole/socket-types.h: 33
+
+enum_guac_socket_state = c_int# /tmp/guacamole-server/src/libguac/guacamole/socket-types.h: 50
+
+guac_socket_state = enum_guac_socket_state# /tmp/guacamole-server/src/libguac/guacamole/socket-types.h: 50
+
+guac_socket_read_handler = CFUNCTYPE(UNCHECKED(c_ptrdiff_t), POINTER(guac_socket), POINTER(None), c_size_t)# /tmp/guacamole-server/src/libguac/guacamole/socket-fntypes.h: 43
+
+guac_socket_write_handler = CFUNCTYPE(UNCHECKED(c_ptrdiff_t), POINTER(guac_socket), POINTER(None), c_size_t)# /tmp/guacamole-server/src/libguac/guacamole/socket-fntypes.h: 56
+
+guac_socket_select_handler = CFUNCTYPE(UNCHECKED(c_int), POINTER(guac_socket), c_int)# /tmp/guacamole-server/src/libguac/guacamole/socket-fntypes.h: 70
+
+guac_socket_flush_handler = CFUNCTYPE(UNCHECKED(c_ptrdiff_t), POINTER(guac_socket))# /tmp/guacamole-server/src/libguac/guacamole/socket-fntypes.h: 83
+
+guac_socket_lock_handler = CFUNCTYPE(UNCHECKED(None), POINTER(guac_socket))# /tmp/guacamole-server/src/libguac/guacamole/socket-fntypes.h: 93
+
+guac_socket_unlock_handler = CFUNCTYPE(UNCHECKED(None), POINTER(guac_socket))# /tmp/guacamole-server/src/libguac/guacamole/socket-fntypes.h: 103
+
+guac_socket_free_handler = CFUNCTYPE(UNCHECKED(c_int), POINTER(guac_socket))# /tmp/guacamole-server/src/libguac/guacamole/socket-fntypes.h: 113
+
+guac_timestamp = c_int64# /tmp/guacamole-server/src/libguac/guacamole/timestamp-types.h: 34
+
+# /usr/include/bits/alltypes.h: 273
+class struct___pthread(Structure):
+    pass
+
+pthread_t = POINTER(struct___pthread)# /usr/include/bits/alltypes.h: 273
+
+struct_guac_socket.__slots__ = [
+    'data',
+    'read_handler',
+    'write_handler',
+    'flush_handler',
+    'lock_handler',
+    'unlock_handler',
+    'select_handler',
+    'free_handler',
+    'state',
+    'last_write_timestamp',
+    '__ready',
+    '__ready_buf',
+    '__encoded_buf',
+    '__keep_alive_enabled',
+    '__keep_alive_thread',
+]
+struct_guac_socket._fields_ = [
+    ('data', POINTER(None)),
+    ('read_handler', POINTER(guac_socket_read_handler)),
+    ('write_handler', POINTER(guac_socket_write_handler)),
+    ('flush_handler', POINTER(guac_socket_flush_handler)),
+    ('lock_handler', POINTER(guac_socket_lock_handler)),
+    ('unlock_handler', POINTER(guac_socket_unlock_handler)),
+    ('select_handler', POINTER(guac_socket_select_handler)),
+    ('free_handler', POINTER(guac_socket_free_handler)),
+    ('state', guac_socket_state),
+    ('last_write_timestamp', guac_timestamp),
+    ('__ready', c_int),
+    ('__ready_buf', c_ubyte * int(768)),
+    ('__encoded_buf', c_char * int(1024)),
+    ('__keep_alive_enabled', c_int),
+    ('__keep_alive_thread', pthread_t),
+]
+
+# /tmp/guacamole-server/src/libguac/guacamole/socket.h: 130
+if _libs["libguacd"].has("guac_socket_alloc", "cdecl"):
+    guac_socket_alloc = _libs["libguacd"].get("guac_socket_alloc", "cdecl")
+    guac_socket_alloc.argtypes = []
+    guac_socket_alloc.restype = POINTER(guac_socket)
+
+# /tmp/guacamole-server/src/libguac/guacamole/socket.h: 137
+if _libs["libguacd"].has("guac_socket_free", "cdecl"):
+    guac_socket_free = _libs["libguacd"].get("guac_socket_free", "cdecl")
+    guac_socket_free.argtypes = [POINTER(guac_socket)]
+    guac_socket_free.restype = None
+
+# /tmp/guacamole-server/src/libguac/guacamole/socket.h: 147
+if _libs["libguacd"].has("guac_socket_require_keep_alive", "cdecl"):
+    guac_socket_require_keep_alive = _libs["libguacd"].get("guac_socket_require_keep_alive", "cdecl")
+    guac_socket_require_keep_alive.argtypes = [POINTER(guac_socket)]
+    guac_socket_require_keep_alive.restype = None
+
+# /tmp/guacamole-server/src/libguac/guacamole/socket.h: 155
+if _libs["libguacd"].has("guac_socket_instruction_begin", "cdecl"):
+    guac_socket_instruction_begin = _libs["libguacd"].get("guac_socket_instruction_begin", "cdecl")
+    guac_socket_instruction_begin.argtypes = [POINTER(guac_socket)]
+    guac_socket_instruction_begin.restype = None
+
+# /tmp/guacamole-server/src/libguac/guacamole/socket.h: 163
+if _libs["libguacd"].has("guac_socket_instruction_end", "cdecl"):
+    guac_socket_instruction_end = _libs["libguacd"].get("guac_socket_instruction_end", "cdecl")
+    guac_socket_instruction_end.argtypes = [POINTER(guac_socket)]
+    guac_socket_instruction_end.restype = None
+
+# /tmp/guacamole-server/src/libguac/guacamole/socket.h: 178
+if _libs["libguacd"].has("guac_socket_open", "cdecl"):
+    guac_socket_open = _libs["libguacd"].get("guac_socket_open", "cdecl")
+    guac_socket_open.argtypes = [c_int]
+    guac_socket_open.restype = POINTER(guac_socket)
+
+# /tmp/guacamole-server/src/libguac/guacamole/socket.h: 202
+if _libs["libguacd"].has("guac_socket_nest", "cdecl"):
+    guac_socket_nest = _libs["libguacd"].get("guac_socket_nest", "cdecl")
+    guac_socket_nest.argtypes = [POINTER(guac_socket), c_int]
+    guac_socket_nest.restype = POINTER(guac_socket)
+
+# /tmp/guacamole-server/src/libguac/guacamole/socket.h: 234
+if _libs["libguacd"].has("guac_socket_tee", "cdecl"):
+    guac_socket_tee = _libs["libguacd"].get("guac_socket_tee", "cdecl")
+    guac_socket_tee.argtypes = [POINTER(guac_socket), POINTER(guac_socket)]
+    guac_socket_tee.restype = POINTER(guac_socket)
+
+# /tmp/guacamole-server/src/libguac/guacamole/socket.h: 260
+if _libs["libguacd"].has("guac_socket_broadcast", "cdecl"):
+    guac_socket_broadcast = _libs["libguacd"].get("guac_socket_broadcast", "cdecl")
+    guac_socket_broadcast.argtypes = [POINTER(guac_client)]
+    guac_socket_broadcast.restype = POINTER(guac_socket)
+
+# /tmp/guacamole-server/src/libguac/guacamole/socket.h: 286
+if _libs["libguacd"].has("guac_socket_broadcast_pending", "cdecl"):
+    guac_socket_broadcast_pending = _libs["libguacd"].get("guac_socket_broadcast_pending", "cdecl")
+    guac_socket_broadcast_pending.argtypes = [POINTER(guac_client)]
+    guac_socket_broadcast_pending.restype = POINTER(guac_socket)
+
+# /tmp/guacamole-server/src/libguac/guacamole/socket.h: 300
+if _libs["libguacd"].has("guac_socket_write_int", "cdecl"):
+    guac_socket_write_int = _libs["libguacd"].get("guac_socket_write_int", "cdecl")
+    guac_socket_write_int.argtypes = [POINTER(guac_socket), c_int64]
+    guac_socket_write_int.restype = c_ptrdiff_t
+
+# /tmp/guacamole-server/src/libguac/guacamole/socket.h: 314
+if _libs["libguacd"].has("guac_socket_write_string", "cdecl"):
+    guac_socket_write_string = _libs["libguacd"].get("guac_socket_write_string", "cdecl")
+    guac_socket_write_string.argtypes = [POINTER(guac_socket), String]
+    guac_socket_write_string.restype = c_ptrdiff_t
+
+# /tmp/guacamole-server/src/libguac/guacamole/socket.h: 332
+if _libs["libguacd"].has("guac_socket_write_base64", "cdecl"):
+    guac_socket_write_base64 = _libs["libguacd"].get("guac_socket_write_base64", "cdecl")
+    guac_socket_write_base64.argtypes = [POINTER(guac_socket), POINTER(None), c_size_t]
+    guac_socket_write_base64.restype = c_ptrdiff_t
+
+# /tmp/guacamole-server/src/libguac/guacamole/socket.h: 346
+if _libs["libguacd"].has("guac_socket_write", "cdecl"):
+    guac_socket_write = _libs["libguacd"].get("guac_socket_write", "cdecl")
+    guac_socket_write.argtypes = [POINTER(guac_socket), POINTER(None), c_size_t]
+    guac_socket_write.restype = c_ptrdiff_t
+
+# /tmp/guacamole-server/src/libguac/guacamole/socket.h: 361
+if _libs["libguacd"].has("guac_socket_read", "cdecl"):
+    guac_socket_read = _libs["libguacd"].get("guac_socket_read", "cdecl")
+    guac_socket_read.argtypes = [POINTER(guac_socket), POINTER(None), c_size_t]
+    guac_socket_read.restype = c_ptrdiff_t
+
+# /tmp/guacamole-server/src/libguac/guacamole/socket.h: 372
+if _libs["libguacd"].has("guac_socket_flush_base64", "cdecl"):
+    guac_socket_flush_base64 = _libs["libguacd"].get("guac_socket_flush_base64", "cdecl")
+    guac_socket_flush_base64.argtypes = [POINTER(guac_socket)]
+    guac_socket_flush_base64.restype = c_ptrdiff_t
+
+# /tmp/guacamole-server/src/libguac/guacamole/socket.h: 383
+if _libs["libguacd"].has("guac_socket_flush", "cdecl"):
+    guac_socket_flush = _libs["libguacd"].get("guac_socket_flush", "cdecl")
+    guac_socket_flush.argtypes = [POINTER(guac_socket)]
+    guac_socket_flush.restype = c_ptrdiff_t
+
+# /tmp/guacamole-server/src/libguac/guacamole/socket.h: 401
+if _libs["libguacd"].has("guac_socket_select", "cdecl"):
+    guac_socket_select = _libs["libguacd"].get("guac_socket_select", "cdecl")
+    guac_socket_select.argtypes = [POINTER(guac_socket), c_int]
+    guac_socket_select.restype = c_int
 
 # /tmp/guacamole-server/src/guacd/ctypes_wrapper.h: 15
 try:
@@ -932,7 +1113,15 @@ try:
 except:
     pass
 
+# /tmp/guacamole-server/src/guacd/ctypes_wrapper.h: 93
+try:
+    GUACD_LOG_NAME = 'guacd'
+except:
+    pass
+
 guacd_config = struct_guacd_config# /tmp/guacamole-server/src/guacd/ctypes_wrapper.h: 70
+
+guac_socket = struct_guac_socket# /tmp/guacamole-server/src/libguac/guacamole/socket.h: 39
 
 # No inserted files
 
