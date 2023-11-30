@@ -44,34 +44,42 @@ def main():
             guacd_log(GuacClientLogLevel.GUAC_LOG_ERROR, f'Error parsing given address or port: {e}')
             exit(EXIT_FAILURE)
 
-        # for current_address in addresses:
-        #     socket.getnameinfo(current_address[-1], socket.NI_NUMERICHOST | socket.NI_NUMERICSERV)
-        current_address = addresses[-1]  # Default 127.0.0.1
-        bound_result = getnameinfo(current_address[-1], socket.NI_NUMERICHOST | socket.NI_NUMERICSERV)
-        bound_address, bound_port = bound_result
-
-        with socket.socket(current_address[0], socket.SOCK_STREAM) as s:
+        current_address = None
+        for current_address in addresses:
             try:
-                s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-                s.bind(current_address[-1])
+                bound_result = getnameinfo(current_address[-1], socket.NI_NUMERICHOST | socket.NI_NUMERICSERV)
             except Exception as e:
-                guacd_log(GuacClientLogLevel.GUAC_LOG_ERROR, f'Socket error binding to {bound_result}: {e}')
-                exit(EXIT_FAILURE)
+                guacd_log(GuacClientLogLevel.GUAC_LOG_ERROR, f'Unable to resolve host: {e}')
+                continue
             else:
-                guacd_log(GuacClientLogLevel.GUAC_LOG_INFO, f'Listening on host {bound_address}, port {bound_port}')
+                bound_address, bound_port = bound_result
 
-            try:
-                s.listen()
-            except Exception as e:
-                guacd_log(GuacClientLogLevel.GUAC_LOG_ERROR, f'Could not listen on socket: {e}')
-                exit(3)
+            with socket.socket(current_address[0], socket.SOCK_STREAM) as s:
+                try:
+                    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                    s.bind(current_address[-1])
+                except Exception as e:
+                    continue
+                else:
+                    guacd_log(GuacClientLogLevel.GUAC_LOG_INFO, f'Listening on host {bound_address}, port {bound_port}')
 
-            conn, addr = s.accept()
-            with conn:
-                print(f'Connected by {addr}')
-                guac_socket = guac_socket_open(s.fileno())
-                guac_protocol_send_name(guac_socket, 'Kevin')
-                guac_socket_flush(guac_socket)
+                try:
+                    s.listen()
+                except Exception as e:
+                    guacd_log(GuacClientLogLevel.GUAC_LOG_ERROR, f'Could not listen on socket: {e}')
+                    exit(3)
+
+                conn, addr = s.accept()
+                with conn:
+                    print(f'Connected by {addr}')
+                    guac_socket = guac_socket_open(s.fileno())
+                    guac_protocol_send_name(guac_socket, 'Kevin')
+                    guac_socket_flush(guac_socket)
+
+            break
+        else:
+            address_host_port = [a[-1] for a in addresses]
+            guacd_log(GuacClientLogLevel.GUAC_LOG_ERROR, f"Couldn't bind to addresses: {address_host_port}")
 
     else:
         # parser.add_argument('-v', action='store_true')
