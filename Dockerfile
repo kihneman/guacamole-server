@@ -154,6 +154,9 @@ RUN pip install wheel ctypesgen                                            \
 # docker build --target builder -t guacd-builder .
 # docker run -it --name guacd-builder-1 guacd-builder /bin/sh
 
+# Expose the default listener port
+EXPOSE 4822
+
 # Record the packages of all runtime library dependencies
 RUN ${BUILD_DIR}/src/guacd-docker/bin/list-dependencies.sh \
         ${PREFIX_DIR}/sbin/guacd               \
