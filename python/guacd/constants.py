@@ -11,6 +11,15 @@ GUACD_DEFAULT_BIND_HOST = 'localhost'
 # The default port that guacd should bind to, if no other port is explicitly specified.
 GUACD_DEFAULT_BIND_PORT = '4822'
 
+# The number of milliseconds to wait for messages in any phase before
+# timing out and closing the connection with an error.
+GUACD_TIMEOUT = 15000
+
+# The number of microseconds to wait for messages in any phase before
+# timing out and closing the conncetion with an error. This is always
+# equal to GUACD_TIMEOUT * 1000.
+GUACD_USEC_TIMEOUT = (GUACD_TIMEOUT*1000)
+
 
 class GuacClientLogLevel(IntEnum):
     """The contents of a guacd configuration file."""
