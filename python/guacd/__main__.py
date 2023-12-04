@@ -128,3 +128,5 @@ def main():
         result = guacd_main(argv)
         msg = f'Finished with result "{result}"'
         guacd_log(GuacClientLogLevel.GUAC_LOG_INFO, msg)
+
+    main()
