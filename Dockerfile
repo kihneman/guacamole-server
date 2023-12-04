@@ -221,5 +221,7 @@ RUN pip install ${PREFIX_DIR}/wheels/*.whl
 # Note the path here MUST correspond to the value specified in the 
 # PREFIX_DIR build argument.
 #
-CMD python -m guacd -b 0.0.0.0 -L $GUACD_LOG_LEVEL -f
+# CMD python -m guacd -b 0.0.0.0 -L $GUACD_LOG_LEVEL -f
 
+# For debugging
+CMD sleep infinity
