@@ -226,7 +226,7 @@ void guac_rdpdr_process_server_announce(guac_rdp_common_svc* svc,
 
     /* Must choose own client ID if minor not >= 12 */
     if (minor < 12)
-        client_id = random() & 0xFFFF;
+        client_id = rand() & 0xFFFF;
 
     guac_client_log(svc->client, GUAC_LOG_INFO, "Connected to RDPDR %u.%u as client 0x%04x", major, minor, client_id);
 
