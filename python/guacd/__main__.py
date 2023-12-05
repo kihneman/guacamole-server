@@ -6,7 +6,7 @@ from argparse import ArgumentParser
 from ctypes import cast, c_char_p, c_int
 from socket import getaddrinfo, getnameinfo
 
-from . import get_config, guacd_config, guacd_main
+from . import ctypes_wrapper, get_config, guacd_config, guacd_main
 from .constants import (
     EXIT_SUCCESS, EXIT_FAILURE, GuacClientLogLevel, GuacStatus,
     GUACD_DEFAULT_BIND_HOST, GUACD_DEFAULT_BIND_PORT, GUACD_LOG_NAME, GUACD_USEC_TIMEOUT
@@ -99,8 +99,8 @@ def main():
                         guac_socket = guac_socket_open(conn.fileno())
                         parser_ptr = guac_parser_alloc()
                         parser = parser_ptr.contents
-                        guac_error = c_int(GuacStatus.GUAC_STATUS_SUCCESS)
-                        guac_error_message = String(b'')
+                        ctypes_wrapper.__guac_error()[0] = c_int(GuacStatus.GUAC_STATUS_SUCCESS)
+                        ctypes_wrapper.__guac_error_message()[0] = String(b'').raw
                         if guac_parser_expect(parser_ptr, guac_socket, c_int(GUACD_USEC_TIMEOUT), String(b'select')) > 0:
                             guacd_log_handshake_failure()
                             guacd_log_guac_error(GuacClientLogLevel.GUAC_LOG_ERROR, 'Error reading "select"')
