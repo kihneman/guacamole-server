@@ -2,21 +2,8 @@ import ctypes
 from typing import Optional
 
 from . import ctypes_wrapper
-from .ctypes_wrapper import guac_client_log_level, guacd_config, guacd_conf_load, guacd_conf_parse_args, String
+from .ctypes_wrapper import guacd_config, guacd_conf_load, guacd_conf_parse_args
 from .constants import GuacClientLogLevel
-
-
-def guacd_log(log_level: GuacClientLogLevel, msg: str):
-    ctypes_wrapper.guacd_log(
-        guac_client_log_level(log_level),
-        String(msg.encode())
-    )
-
-
-def guacd_log_client(guac_client_ptr, log_level_cint: ctypes.c_int, msg: String, log_args):
-    guac_client = guac_client_ptr.contents
-    log_level = GuacClientLogLevel(log_level_cint.value)
-    ctypes_wrapper.guacd_log(guac_client_log_level(log_level), msg)
 
 
 def get_argc_argv(sys_argv) -> (ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)):

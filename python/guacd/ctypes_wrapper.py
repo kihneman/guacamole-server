@@ -1,7 +1,7 @@
 r"""Wrapper for ctypes_wrapper.h
 
 Generated with:
-/usr/bin/ctypesgen -llibguacd -L /opt/guacamole/lib -I /opt/guacamole/include -o ctypes_wrapper.py src/guacd/ctypes_wrapper.h src/libguac/guacamole/client.h src/libguac/guacamole/parser.h src/libguac/guacamole/protocol.h src/libguac/guacamole/socket.h src/libguac/guacamole/user.h
+/usr/bin/ctypesgen -llibguacd -L /opt/guacamole/lib -I /opt/guacamole/include -o ctypes_wrapper.py src/guacd/ctypes_wrapper.h src/libguac/guacamole/client.h src/libguac/guacamole/error.h src/libguac/guacamole/parser.h src/libguac/guacamole/protocol.h src/libguac/guacamole/socket.h src/libguac/guacamole/user.h
 
 Do not modify this file.
 """
@@ -1559,6 +1559,46 @@ try:
 except:
     pass
 
+enum_guac_status = c_int# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+guac_status = enum_guac_status# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+# /tmp/guacamole-server/src/libguac/guacamole/error.h: 36
+if _libs["libguacd"].has("guac_status_string", "cdecl"):
+    guac_status_string = _libs["libguacd"].get("guac_status_string", "cdecl")
+    guac_status_string.argtypes = [guac_status]
+    guac_status_string.restype = c_char_p
+
+# /tmp/guacamole-server/src/libguac/guacamole/error.h: 48
+if _libs["libguacd"].has("__guac_error", "cdecl"):
+    __guac_error = _libs["libguacd"].get("__guac_error", "cdecl")
+    __guac_error.argtypes = []
+    __guac_error.restype = POINTER(guac_status)
+
+# /tmp/guacamole-server/src/libguac/guacamole/error.h: 61
+if _libs["libguacd"].has("__guac_error_message", "cdecl"):
+    __guac_error_message = _libs["libguacd"].get("__guac_error_message", "cdecl")
+    __guac_error_message.argtypes = []
+    __guac_error_message.restype = POINTER(POINTER(c_char))
+
+# /tmp/guacamole-server/src/libguac/guacamole/error.h: 66
+if _libs["libguacd"].has("guac_status_string", "cdecl"):
+    guac_status_string = _libs["libguacd"].get("guac_status_string", "cdecl")
+    guac_status_string.argtypes = [guac_status]
+    guac_status_string.restype = c_char_p
+
+# /tmp/guacamole-server/src/libguac/guacamole/error.h: 78
+if _libs["libguacd"].has("__guac_error", "cdecl"):
+    __guac_error = _libs["libguacd"].get("__guac_error", "cdecl")
+    __guac_error.argtypes = []
+    __guac_error.restype = POINTER(guac_status)
+
+# /tmp/guacamole-server/src/libguac/guacamole/error.h: 91
+if _libs["libguacd"].has("__guac_error_message", "cdecl"):
+    __guac_error_message = _libs["libguacd"].get("__guac_error_message", "cdecl")
+    __guac_error_message.argtypes = []
+    __guac_error_message.restype = POINTER(POINTER(c_char))
+
 enum_guac_parse_state = c_int# /tmp/guacamole-server/src/libguac/guacamole/parser-types.h: 57
 
 guac_parse_state = enum_guac_parse_state# /tmp/guacamole-server/src/libguac/guacamole/parser-types.h: 57
@@ -2253,6 +2293,30 @@ except:
 # /tmp/guacamole-server/src/guacd/ctypes_wrapper.h: 93
 try:
     GUACD_LOG_NAME = 'guacd'
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/guacamole/error.h: 46
+try:
+    guac_error = ((__guac_error ())[0])
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/guacamole/error.h: 59
+try:
+    guac_error_message = ((__guac_error_message ())[0])
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/guacamole/error.h: 76
+try:
+    guac_error = ((__guac_error ())[0])
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/guacamole/error.h: 89
+try:
+    guac_error_message = ((__guac_error_message ())[0])
 except:
     pass
 

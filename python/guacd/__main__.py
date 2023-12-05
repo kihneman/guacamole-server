@@ -3,12 +3,12 @@ import socket
 import sys
 import syslog
 from argparse import ArgumentParser
-from ctypes import c_int
+from ctypes import cast, c_char_p, c_int
 from socket import getaddrinfo, getnameinfo
 
-from . import get_config, guacd_config, guacd_main, guacd_log, guacd_log_client
+from . import get_config, guacd_config, guacd_main
 from .constants import (
-    EXIT_SUCCESS, EXIT_FAILURE, GuacClientLogLevel,
+    EXIT_SUCCESS, EXIT_FAILURE, GuacClientLogLevel, GuacStatus,
     GUACD_DEFAULT_BIND_HOST, GUACD_DEFAULT_BIND_PORT, GUACD_LOG_NAME, GUACD_USEC_TIMEOUT
 )
 from .ctypes_wrapper import (
@@ -17,6 +17,7 @@ from .ctypes_wrapper import (
     guac_socket_flush, guac_socket_free, guac_socket_open, guac_socket_require_keep_alive,
     guac_user_alloc, guac_user_handle_connection
 )
+from .log import guacd_log, guacd_log_client, guacd_log_guac_error, guacd_log_handshake_failure
 
 
 PROTOCOL = b'ssh'
@@ -98,10 +99,14 @@ def main():
                         guac_socket = guac_socket_open(conn.fileno())
                         parser_ptr = guac_parser_alloc()
                         parser = parser_ptr.contents
-                        expect_result = guac_parser_expect(
-                            parser_ptr, guac_socket, c_int(GUACD_USEC_TIMEOUT), String(b'select')
-                        )
-                        print(f'Got parser result="{expect_result}", argc="{parser.argc.value}"')
+                        guac_error = c_int(GuacStatus.GUAC_STATUS_SUCCESS)
+                        guac_error_message = String(b'')
+                        if guac_parser_expect(parser_ptr, guac_socket, c_int(GUACD_USEC_TIMEOUT), String(b'select')) > 0:
+                            guacd_log_handshake_failure()
+                            guacd_log_guac_error(GuacClientLogLevel.GUAC_LOG_ERROR, 'Error reading "select"')
+                        else:
+                            argv = [cast(parser.argv[i], c_char_p).value for i in range(parser.argc)]
+                            print(f'Got "select" argv={argv}')
                         guac_parser_free(parser_ptr)
 
                     else:
