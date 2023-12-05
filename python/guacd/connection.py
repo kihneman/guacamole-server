@@ -12,7 +12,8 @@ from .log import guacd_log, guacd_log_guac_error, guacd_log_handshake_failure
 
 
 def guacd_route_connection(socket: POINTER(guac_socket)) -> int:
-    """
+    """Route a Guacamole connection
+
     Routes the connection on the given socket according to the Guacamole
     protocol, adding new users and creating new client processes as needed. If a
     new process is created, this function blocks until that process terminates,
@@ -40,10 +41,22 @@ def guacd_route_connection(socket: POINTER(guac_socket)) -> int:
     ctypes_wrapper.__guac_error_message()[0] = String(b'').raw
 
     # Get protocol from select instruction
-    if guac_parser_expect(parser_ptr, socket, c_int(GUACD_USEC_TIMEOUT), String(b'select')):
+    if parser_result := guac_parser_expect(parser_ptr, socket, c_int(GUACD_USEC_TIMEOUT), String(b'select')):
         # Log error
         guacd_log_handshake_failure()
-        guacd_log_guac_error(GuacClientLogLevel.GUAC_LOG_ERROR, 'Error reading "select"')
+        guacd_log_guac_error(GuacClientLogLevel.GUAC_LOG_ERROR, f'Error reading "select" ({parser_result})')
+
+        # Extra debug
+        if parser.argc == 0:
+            guacd_log(GuacClientLogLevel.GUAC_LOG_ERROR, f"Didn't get any parser args")
+        elif parser.argc == 1:
+            identifier = cast(parser.argv[0], c_char_p).value
+            guacd_log(GuacClientLogLevel.GUAC_LOG_INFO, f'Received protocol "{identifier}"')
+        else:
+            argv = [cast(parser.argv[i], c_char_p).value for i in range(parser.argc)] if 1 < parser.argc < 5 else None
+            argv_str = f': {argv}' if argv else ''
+            guacd_log(GuacClientLogLevel.GUAC_LOG_ERROR, f'Received {parser.argc} args but expected 1{argv_str}')
+
         guac_parser_free(parser_ptr)
         return 1
 
