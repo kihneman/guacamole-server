@@ -49,6 +49,7 @@
 #include <unistd.h>
 
 #ifdef CYGWIN_BUILD
+#include <fileapi.h>
 #include <winbase.h>
 #else
 #include <pwd.h>
@@ -69,6 +70,38 @@
  */
 static int is_writable_directory(const char* path) {
 
+#ifdef CYGWIN_BUILD
+
+    /*
+     * Attempt to create a file handle with the permission to add a new file at
+     * the provided path - this can only work for a directory that the current
+     * user can write to. Any other path will produce an invalid handle.
+     */
+    HANDLE dir_handle = CreateFile(
+            path, FILE_ADD_FILE, FILE_SHARE_WRITE, NULL,
+            OPEN_EXISTING,
+
+            /*
+             * From the CreateFile() API docs:
+             * You must set this flag to obtain a handle to a directory. A directory handle can be
+             * passed to some functions instead of a file handle. For more, see
+             * https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilea
+            */
+            FILE_FLAG_BACKUP_SEMANTICS,
+
+            NULL);
+
+    /* The path is not a writeable directory */
+    if (dir_handle == INVALID_HANDLE_VALUE )
+        return 0;
+
+    /* If the handle is valid, the directory exists, and is writeable */
+    CloseHandle(dir_handle);
+    return 1;
+
+
+#else
+
     /* Verify path is writable */
     if (faccessat(AT_FDCWD, path, W_OK, 0))
         return 0;
@@ -81,6 +114,8 @@ static int is_writable_directory(const char* path) {
     /* Path is both writable and a directory */
     closedir(dir);
     return 1;
+
+#endif
 
 }
 
