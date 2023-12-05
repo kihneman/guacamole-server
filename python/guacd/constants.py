@@ -5,8 +5,11 @@ EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
 GUACD_LOG_NAME = 'guacd'
 
+# The character prefix which identifies a client ID.
+GUAC_CLIENT_ID_PREFIX = '$'
+
 # The default host that guacd should bind to, if no other host is explicitly specified.
-GUACD_DEFAULT_BIND_HOST = 'localhost'
+GUACD_DEFAULT_BIND_HOST = '0.0.0.0'
 
 # The default port that guacd should bind to, if no other port is explicitly specified.
 GUACD_DEFAULT_BIND_PORT = '4822'
