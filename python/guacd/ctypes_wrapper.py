@@ -1,7 +1,7 @@
 r"""Wrapper for ctypes_wrapper.h
 
 Generated with:
-/usr/bin/ctypesgen -llibguacd -L /opt/guacamole/lib -I /opt/guacamole/include -o ctypes_wrapper.py src/guacd/ctypes_wrapper.h src/libguac/guacamole/client.h src/libguac/guacamole/error.h src/libguac/guacamole/parser.h src/libguac/guacamole/protocol.h src/libguac/guacamole/socket.h src/libguac/guacamole/user.h
+/usr/bin/ctypesgen -llibguacd -L /opt/guacamole/lib -I /opt/guacamole/include -o ctypes_wrapper.py src/guacd/ctypes_wrapper.h src/libguac/guacamole/client.h src/libguac/guacamole/error.h src/libguac/guacamole/error-types.h src/libguac/guacamole/parser.h src/libguac/guacamole/protocol.h src/libguac/guacamole/socket.h src/libguac/guacamole/user.h
 
 Do not modify this file.
 """
@@ -1560,6 +1560,54 @@ except:
     pass
 
 enum_guac_status = c_int# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_SUCCESS = 0# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_NO_MEMORY = (GUAC_STATUS_SUCCESS + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_CLOSED = (GUAC_STATUS_NO_MEMORY + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_TIMEOUT = (GUAC_STATUS_CLOSED + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_SEE_ERRNO = (GUAC_STATUS_TIMEOUT + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_IO_ERROR = (GUAC_STATUS_SEE_ERRNO + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_INVALID_ARGUMENT = (GUAC_STATUS_IO_ERROR + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_INTERNAL_ERROR = (GUAC_STATUS_INVALID_ARGUMENT + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_NO_SPACE = (GUAC_STATUS_INTERNAL_ERROR + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_INPUT_TOO_LARGE = (GUAC_STATUS_NO_SPACE + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_RESULT_TOO_LARGE = (GUAC_STATUS_INPUT_TOO_LARGE + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_PERMISSION_DENIED = (GUAC_STATUS_RESULT_TOO_LARGE + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_BUSY = (GUAC_STATUS_PERMISSION_DENIED + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_NOT_AVAILABLE = (GUAC_STATUS_BUSY + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_NOT_SUPPORTED = (GUAC_STATUS_NOT_AVAILABLE + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_NOT_INPLEMENTED = (GUAC_STATUS_NOT_SUPPORTED + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_TRY_AGAIN = (GUAC_STATUS_NOT_INPLEMENTED + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_PROTOCOL_ERROR = (GUAC_STATUS_TRY_AGAIN + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_NOT_FOUND = (GUAC_STATUS_PROTOCOL_ERROR + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_CANCELED = (GUAC_STATUS_NOT_FOUND + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_OUT_OF_RANGE = (GUAC_STATUS_CANCELED + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_REFUSED = (GUAC_STATUS_OUT_OF_RANGE + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_TOO_MANY = (GUAC_STATUS_REFUSED + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
+
+GUAC_STATUS_WOULD_BLOCK = (GUAC_STATUS_TOO_MANY + 1)# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
 
 guac_status = enum_guac_status# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
 

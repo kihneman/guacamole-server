@@ -31,7 +31,7 @@ def main():
     # Remove --python from argv to not affect libguacd parser
     ns, argv = parser.parse_known_args(sys.argv)
 
-    use_python = ns.python or ns.test_sock
+    use_python = ns.python or ns.test_sock or ns.test_select
     if use_python:
         result, config = get_config(argv)
         if not config:
