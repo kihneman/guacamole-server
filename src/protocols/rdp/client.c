@@ -49,6 +49,7 @@
 #include <unistd.h>
 
 #ifdef CYGWIN_BUILD
+#include <winbase.h>
 #else
 #include <pwd.h>
 #endif
@@ -146,6 +147,57 @@ int guac_client_init(guac_client* client, int argc, char** argv) {
     const char* current_home = getenv("HOME");
     if (current_home == NULL) {
 
+        /*
+         * There appears to be no Windows equivalent of getpwuid(), so env
+         * variables must be the source of truth.
+         */
+        const char* user_profile = getenv("USERPROFILE");
+        const char* home_drive = getenv("HOMEDRIVE");
+        const char* home_path = getenv("HOMEPATH");
+
+        /* If USERPROFILE is available, just use that */
+        if (user_profile != NULL)
+            current_home = user_profile;
+
+        /* Otherwise, concatenate HOMEDRIVE and HOMEPATH */
+        else if (home_drive != NULL && home_path != NULL) {
+
+            /* Copy both variables into a buffer that should be large enough */
+            char buffer[1024];
+
+            size_t drive_length = strlen(home_drive);
+            size_t path_length = strlen(home_path);
+
+            /* If the full path won't fit in the buffer, something is wrong*/
+            if ((drive_length + path_length + 1) >= sizeof(buffer))
+                guac_client_log(client, GUAC_LOG_WARNING, "FreeRDP initialization "
+                        "may fail: The \"HOME\" and \"USERPROFILE\" environment "
+                        "variables are unset, and the \"HOMEDRIVE\" and \"HOMEPATH\" "
+                        "variables are invalid.");
+
+            /* Concatenate the two variables into the buffer to get the home */
+            strncpy(buffer, home_drive, drive_length);
+            strncpy(buffer + drive_length, home_path, path_length);
+            buffer[drive_length + path_length] = '\0';
+            current_home = buffer;
+
+        }
+
+        else
+            guac_client_log(client, GUAC_LOG_WARNING, "FreeRDP initialization "
+                "may fail: The \"HOME\", \"USERPROFILE\", \"HOMEDRIVE\", "
+                "and \"HOMEPATH\" variables are all unset.");
+
+        /* Attempt to set the variable for the current process */
+        if (current_home && !SetEnvironmentVariable("HOME", current_home))
+            guac_client_log(client, GUAC_LOG_WARNING, "FreeRDP initialization "
+                    "may fail: The \"HOME\" environment variable is unset "
+                    "and its correct value (detected as \"%s\") could not be "
+                    "assigned: %u", current_home, GetLastError());
+
+#ifdef CYGWIN_BUILD
+#else
+
         /* Warn if the correct home directory cannot be determined */
         struct passwd* passwd = getpwuid(getuid());
         if (passwd == NULL)
@@ -169,6 +221,7 @@ int guac_client_init(guac_client* client, int argc, char** argv) {
                     "automatically set to \"%s\"", passwd->pw_dir);
             current_home = passwd->pw_dir;
         }
+#endif
 
     }
 
