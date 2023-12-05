@@ -47,7 +47,6 @@
 #endif
 
 #include <errno.h>
-#include <netinet/in.h>
 #include <poll.h>
 #include <pthread.h>
 #include <stdbool.h>
@@ -55,12 +54,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/socket.h>
 #include <sys/time.h>
+
 #ifdef CYGWIN_BUILD
 #include <winsock2.h>
 #else
 #include <netdb.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
 #endif
 
 /**

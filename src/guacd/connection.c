@@ -42,7 +42,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-#include <sys/socket.h>
 #include <sys/wait.h>
 
 #ifdef CYGWIN_BUILD
@@ -55,6 +54,15 @@
 #include <guacamole/socket-handle.h>
 
 #include "move-pipe.h"
+
+#else
+
+#include "move-fd.h"
+#include <sys/socket.h>
+
+#endif
+
+#ifdef CYGWIN_BUILD
 
 /**
  * Behaves exactly as write(), but writes as much as possible, returning
@@ -94,8 +102,6 @@ static int __write_all(HANDLE handle, char* buffer, int length) {
 }
 
 #else
-
-#include "move-fd.h"
 
 /**
  * Behaves exactly as write(), but writes as much as possible, returning

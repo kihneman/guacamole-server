@@ -33,13 +33,11 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <libgen.h>
-#include <netinet/in.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <syslog.h>
-#include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -49,6 +47,8 @@
 #include <winsock2.h>
 #else
 #include <netdb.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
 #endif
 
 #define GUACD_DEV_NULL "/dev/null"

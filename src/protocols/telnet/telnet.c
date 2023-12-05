@@ -31,7 +31,6 @@
 #include <libtelnet.h>
 
 #include <errno.h>
-#include <netinet/in.h>
 #include <poll.h>
 #include <pthread.h>
 #include <stdbool.h>
@@ -45,6 +44,7 @@
 #include <winsock2.h>
 #else
 #include <netdb.h>
+#include <netinet/in.h>
 #endif
 
 /**

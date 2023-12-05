@@ -40,7 +40,6 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <sys/types.h>
-#include <sys/socket.h>
 #include <sys/wait.h>
 
 // Don't do it
@@ -52,6 +51,8 @@
 #include <io.h>
 #include <handleapi.h>
 #include <sys/cygwin.h>
+#else
+#include <sys/socket.h>
 #endif
 
 /**
