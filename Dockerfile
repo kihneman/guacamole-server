@@ -30,6 +30,7 @@ RUN apk add --no-cache                \
         autoconf                      \
         automake                      \
         build-base                    \
+        busybox-extras                \
         cairo-dev                     \
         cmake                         \
         cunit-dev                     \
@@ -186,6 +187,7 @@ COPY --from=builder ${PREFIX_DIR} ${PREFIX_DIR}
 
 # Bring runtime environment up to date and install runtime dependencies
 RUN apk add --no-cache                \
+        busybox-extras                \
         ca-certificates               \
         ghostscript                   \
         netcat-openbsd                \
