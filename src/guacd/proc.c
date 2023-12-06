@@ -50,7 +50,6 @@
 #include "guacamole/socket-handle.h"
 #include <io.h>
 #include <handleapi.h>
-#include <sys/cygwin.h>
 #else
 #include <sys/socket.h>
 #endif
@@ -396,13 +395,6 @@ guacd_proc* guacd_proc_self = NULL;
  */
 static void signal_stop_handler(int signal) {
 
-#ifdef CYGWIN_BUILD
-        /* Convert to a windows PID for logging */
-        pid_t windows_pid = cygwin_internal(CW_CYGWIN_PID_TO_WINPID, guacd_proc_self->pid);
-        fprintf(stderr, "I caught signal %i and am accordingly killing self with cyg %i, win %i\n",
-                signal, guacd_proc_self->pid, windows_pid);
-#endif
-
     /* Stop the current guacd proc */
     guacd_proc_stop(guacd_proc_self);
 
@@ -507,18 +499,10 @@ cleanup_client:
     pid_t child_pid;
     while ((child_pid = waitpid(0, NULL, WNOHANG)) > 0) {
 
-#ifdef CYGWIN_BUILD
-        /* Convert to a windows PID for logging */
-        pid_t windows_pid = cygwin_internal(CW_CYGWIN_PID_TO_WINPID, child_pid);
-#endif
-
         guacd_log(GUAC_LOG_DEBUG, "Automatically reaped unreaped "
                 "(zombie) child process with PID %i.",
-#ifdef CYGWIN_BUILD
-                windows_pid);
-#else
                 child_pid);
-#endif
+
     }
 
     /* If running children remain, warn and forcibly kill */
@@ -619,14 +603,6 @@ guacd_proc* guacd_create_proc(const char* protocol) {
  */
 static void guacd_proc_kill(guacd_proc* proc) {
 
-
-#ifdef CYGWIN_BUILD
-    pid_t windows_pid = cygwin_internal(CW_CYGWIN_PID_TO_WINPID, proc->pid);
-
-    guacd_log(GUAC_LOG_DEBUG, "Trying to kill child - cyg: %i, win: %i", proc->pid, windows_pid);
-#endif
-
-
     /* Request orderly termination of process */
     if (kill(proc->pid, SIGTERM))
         guacd_log(GUAC_LOG_DEBUG, "Unable to request termination of "
@@ -636,18 +612,9 @@ static void guacd_proc_kill(guacd_proc* proc) {
     pid_t child_pid;
     while ((child_pid = waitpid(-proc->pid, NULL, 0)) > 0 || errno == EINTR) {
 
-#ifdef CYGWIN_BUILD
-        /* Convert to a windows PID for logging */
-        pid_t windows_pid = cygwin_internal(CW_CYGWIN_PID_TO_WINPID, child_pid);
-#endif
 
         guacd_log(GUAC_LOG_DEBUG, "Child process %i of connection \"%s\" has terminated",
-#ifdef CYGWIN_BUILD
-            windows_pid,
-#else
-            child_pid,
-#endif
-            proc->client->connection_id);
+            child_pid, proc->client->connection_id);
     }
 
     guacd_log(GUAC_LOG_DEBUG, "All child processes for connection \"%s\" have been terminated.",

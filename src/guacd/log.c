@@ -29,10 +29,6 @@
 #include <syslog.h>
 #include <unistd.h>
 
-#ifdef CYGWIN_BUILD
-#include <sys/cygwin.h>
-#endif
-
 int guacd_log_level = GUAC_LOG_INFO;
 
 void vguacd_log(guac_client_log_level level, const char* format,
@@ -95,12 +91,6 @@ void vguacd_log(guac_client_log_level level, const char* format,
 
     /* Log to STDERR */
     pid_t pid = getpid();
-
-#ifdef CYGWIN_BUILD
-    /* Convert to a windows PID for logging */
-    pid = cygwin_internal(CW_CYGWIN_PID_TO_WINPID, pid);
-#endif
-
     fprintf(stderr, GUACD_LOG_NAME "[%i]: %s:\t%s\n",
             pid, priority_name, message);
 

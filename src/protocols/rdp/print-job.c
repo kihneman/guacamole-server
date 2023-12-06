@@ -34,7 +34,6 @@
 #include <unistd.h>
 
 #ifdef CYGWIN_BUILD
-#include <sys/cygwin.h>
 #include <guacamole/pipe.h>
 #endif
 
@@ -370,18 +369,9 @@ static pid_t guac_rdp_create_filter_process(guac_client* client,
     }
 
     /* Log fork success */
-
-#ifdef CYGWIN_BUILD
-    /* Convert to a windows PID for logging */
-    pid_t windows_pid = cygwin_internal(CW_CYGWIN_PID_TO_WINPID, child_pid);
-#endif
     guac_client_log(client, GUAC_LOG_INFO, "Created PDF filter process "
             "PID=%i",
-#ifdef CYGWIN_BUILD
-            windows_pid);
-#else
             child_pid);
-#endif
 
     /* Close unneeded ends of pipe */
     close(stdin_pipe[0]);
