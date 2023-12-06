@@ -360,21 +360,13 @@ int guac_rdp_fs_open(guac_rdp_fs* fs, const char* path,
             __func__, real_path, flags);
 
     /* Open file */
-#ifdef CYGWIN_BUILD
-    _sopen_s(&fd, real_path, flags, S_IRUSR | S_IWUSR);
-#else
     fd = open(real_path, flags, S_IRUSR | S_IWUSR);
-#endif
 
     /* If file open failed as we're trying to write a dir, retry as read-only */
     if (fd == -1 && errno == EISDIR) {
         flags &= ~(O_WRONLY | O_RDWR);
         flags |= O_RDONLY;
-#ifdef CYGWIN_BUILD
-        _sopen_s(&fd, real_path, flags, S_IRUSR | S_IWUSR);
-#else
         fd = open(real_path, flags, S_IRUSR | S_IWUSR);
-#endif
     }
 
     if (fd == -1) {
