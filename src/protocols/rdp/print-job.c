@@ -303,6 +303,17 @@ static int guac_rdp_print_filter_ack_handler(guac_user* user,
 static pid_t guac_rdp_create_filter_process(guac_client* client,
         int* input_fd, int* output_fd) {
 
+#ifdef CYGWIN_BUILD
+
+    // fork() isn't a thing in Windows, so this won't work as is. FIXME: Figure
+    // out a good solution and implement it. Should we even _use_ ghostscript
+    // anymore? ¯\_(ツ)_/¯
+    guac_client_log(client, GUAC_LOG_ERROR,
+            "RDP Print functionality not implemented yet for Windows.");
+    return -1;
+
+#else
+
     int child_pid;
     int stdin_pipe[2];
     int stdout_pipe[2];
@@ -377,6 +388,8 @@ static pid_t guac_rdp_create_filter_process(guac_client* client,
     close(stdin_pipe[0]);
     close(stdout_pipe[1]);
     return child_pid;
+
+#endif
 
 }
 
@@ -670,6 +683,8 @@ void guac_rdp_print_job_free(guac_rdp_print_job* job) {
 
 void guac_rdp_print_job_kill(guac_rdp_print_job* job) {
 
+#ifndef CYGWIN_BUILD
+
     /* Forcibly kill filter process, if running */
     kill(job->filter_pid, SIGKILL);
 
@@ -679,6 +694,8 @@ void guac_rdp_print_job_kill(guac_rdp_print_job* job) {
 
     /* Mark stream as closed */
     guac_rdp_print_job_set_state(job, GUAC_RDP_PRINT_JOB_CLOSED);
+
+#endif
 
 }
 
