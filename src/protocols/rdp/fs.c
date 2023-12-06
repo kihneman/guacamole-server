@@ -43,9 +43,6 @@
 
 #ifdef CYGWIN_BUILD
 #include <direct.h>
-#include <shlwapi.h>
-#else
-#include <fnmatch.h>
 #endif
 
 guac_rdp_fs* guac_rdp_fs_alloc(guac_client* client, const char* drive_path,
@@ -745,12 +742,8 @@ guac_rdp_fs_file* guac_rdp_fs_get_file(guac_rdp_fs* fs, int file_id) {
 
 }
 
-int (const char* filename, const char* pattern) {
-#ifdef CYGWIN_BUILD
-    return PathMatchSpec(filename, pattern);
-#else
-    return fnmatch(pattern, filename, FNM_NOESCAPE) != 0;
-#endif
+int guac_rdp_fs_matches(const char* filename, const char* pattern) {
+    return FilePatternMatchA(filename, pattern) != 0;
 }
 
 int guac_rdp_fs_get_info(guac_rdp_fs* fs, guac_rdp_fs_info* info) {
