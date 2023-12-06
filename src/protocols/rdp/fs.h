@@ -619,9 +619,10 @@ guac_rdp_fs_file* guac_rdp_fs_get_file(guac_rdp_fs* fs, int file_id);
 
 /**
  * Returns whether the given filename matches the given pattern. The pattern
- * given is a shell wildcard pattern as accepted by the POSIX fnmatch()
- * function. Backslashes will be interpreted as literal backslashes, not
- * escape characters.
+ * given is a shell wildcard pattern as accepted by the POSIX fnmatch() function.
+ * Backslashes will be interpreted as literal backslashes, not escape characters.
+ * Or, when running on Windows, the pattern must match the ms-dos style as
+ * accepted by the PathMatchSpec() function.
  *
  * @param filename
  *     The filename to check
