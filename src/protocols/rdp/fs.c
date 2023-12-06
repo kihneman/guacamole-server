@@ -44,6 +44,7 @@
 #include <direct.h>
 #include <fileapi.h>
 #include <winerror.h>
+#include <stringapiset.h>
 #else
 #include <sys/statvfs.h>
 #endif
@@ -613,7 +614,25 @@ const char* guac_rdp_fs_read_dir(guac_rdp_fs* fs, int file_id) {
 
     /* Open directory if not yet open, stop if error */
     if (file->dir == NULL) {
+#ifdef CYGWIN_BUILD
+
+        wchar_t file_name_buffer[1024];
+
+        /* It _should_ be ok to just cast the fd to a handle. Maybe? */
+        DWORD return_value = GetFinalPathNameByHandleW(
+                (HANDLE) ((size_t) file->fd), file_name_buffer, sizeof(file_name_buffer),
+                FILE_NAME_NORMALIZED);
+        if (return_value == 0)
+            return NULL;
+
+        char file_name[2048];
+        WideCharToMultiByte(CP_UTF8, 0, file_name_buffer, -1,
+                file_name, sizeof(file_name), NULL, NULL);
+
+        file->dir = opendir(file_name);
+#else
         file->dir = fdopendir(file->fd);
+#endif
         if (file->dir == NULL)
             return NULL;
     }
