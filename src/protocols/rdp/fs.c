@@ -38,11 +38,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <sys/statvfs.h>
 #include <unistd.h>
 
 #ifdef CYGWIN_BUILD
 #include <direct.h>
+#include <fileapi.h>
+#include <winerror.h>
+#else
+#include <sys/statvfs.h>
 #endif
 
 guac_rdp_fs* guac_rdp_fs_alloc(guac_client* client, const char* drive_path,
@@ -748,6 +751,43 @@ int guac_rdp_fs_matches(const char* filename, const char* pattern) {
 
 int guac_rdp_fs_get_info(guac_rdp_fs* fs, guac_rdp_fs_info* info) {
 
+#ifdef CYGWIN_BUILD
+
+    /* Variables to store the result of the call */
+    DWORD sectors_per_cluster;
+    DWORD bytes_per_sector;
+    DWORD number_of_free_clusters;
+    DWORD number_of_total_clusters;
+
+    if (!GetDiskFreeSpace(fs->drive_path, &sectors_per_cluster, &bytes_per_sector,
+            &number_of_free_clusters, &number_of_total_clusters)) {
+
+
+        DWORD error_code = GetLastError();
+        switch(error_code) {
+
+            case ERROR_FILE_NOT_FOUND:
+            case ERROR_INVALID_DRIVE:
+            case ERROR_PATH_NOT_FOUND:
+                return GUAC_RDP_FS_ENOENT;
+
+            case ERROR_ACCESS_DENIED:
+                return GUAC_RDP_FS_EACCES;
+
+            /* Default to GUAC_RDP_FS_EINVAL for unknown errors */
+            default:
+                return GUAC_RDP_FS_EINVAL;
+        }
+    }
+
+    /* Treat sectors as equivalent to blocks */
+    info->block_size = bytes_per_sector;
+    info->blocks_available = number_of_free_clusters * sectors_per_cluster;
+    info->blocks_total = number_of_total_clusters * sectors_per_cluster;
+    return 0;
+
+#else
+
     /* Read FS information */
     struct statvfs fs_stat;
     if (statvfs(fs->drive_path, &fs_stat))
@@ -758,6 +798,8 @@ int guac_rdp_fs_get_info(guac_rdp_fs* fs, guac_rdp_fs_info* info) {
     info->blocks_total = fs_stat.f_blocks;
     info->block_size = fs_stat.f_bsize;
     return 0;
+
+#endif
 
 }
 

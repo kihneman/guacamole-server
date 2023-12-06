@@ -136,6 +136,7 @@ typedef struct guac_rdp_fs_file {
 
     /**
      * Associated local file descriptor.
+     * TODO: Replace this with a handle for windows times
      */
     int fd;
 
@@ -232,17 +233,17 @@ typedef struct guac_rdp_fs_info {
     /**
      * The number of free blocks available.
      */
-    int blocks_available;
+    unsigned int blocks_available;
 
     /**
      * The number of blocks in the filesystem.
      */
-    int blocks_total;
+    unsigned int blocks_total;
 
     /**
      * The number of bytes per block.
      */
-    int block_size;
+    unsigned int block_size;
 
 } guac_rdp_fs_info;
 
