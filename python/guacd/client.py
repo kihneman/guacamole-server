@@ -69,6 +69,9 @@ def guacd_create_client(socket: POINTER(guac_socket), protocol: bytes):
     # Enable keep alive on the broadcast socket
     guac_socket_require_keep_alive(client.socket)
 
+    # Extra debug
+    guacd_log(GuacClientLogLevel.GUAC_LOG_INFO, f'Keep client socket alive for connection id "{client.connection_id}"')
+
     # Add each received file descriptor as a new user
     # while received_fd := guacd_recv_fd(fd_socket) != -1:
     #     guacd_proc_add_user(proc, received_fd, owner)
@@ -82,6 +85,8 @@ def guacd_create_client(socket: POINTER(guac_socket), protocol: bytes):
     user.socket = socket
     user.client = client_ptr
     user.owner = 1
+    # Extra debug
+    guacd_log(GuacClientLogLevel.GUAC_LOG_INFO, f'Created user id "{user.user_id}"')
 
     # Handle user connection from handshake until disconnect/completion
     guac_user_handle_connection(user_ptr, GUACD_USEC_TIMEOUT)
