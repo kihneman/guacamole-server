@@ -27,7 +27,7 @@
 #include "terminal/types.h"
 #include "terminal/xparsecolor.h"
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 #include <terminal/wcwidth.h>
 #endif
 

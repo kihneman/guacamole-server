@@ -138,7 +138,7 @@ libguacinc_HEADERS += guacamole/socket-wsa.h
 endif
 
 libguac_la_CFLAGS = \
-    @CYGWIN_CFLAGS@
+    @WINDOWS_CFLAGS@
 
 libguac_la_LDFLAGS =     \
     -version-info 22:0:1 \
@@ -155,7 +155,7 @@ libguac_la_LDFLAGS =     \
     @WINSOCK_LIBS@
 
 # Cygwin build
-if CYGWIN_BUILD
+if WINDOWS_BUILD
 libguac_la_SOURCES += handle-helpers.c
 libguac_la_SOURCES += socket-handle.c
 libguac_la_SOURCES += wait-handle.c

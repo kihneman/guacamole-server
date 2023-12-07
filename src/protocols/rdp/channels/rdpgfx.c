@@ -64,7 +64,7 @@ static void guac_rdp_rdpgfx_channel_connected(rdpContext* context,
     RdpgfxClientContext* rdpgfx = (RdpgfxClientContext*) args->pInterface;
     rdpGdi* gdi = context->gdi;
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
     /* Return type is void under cygwin */
     gdi_graphics_pipeline_init(gdi, rdpgfx);

@@ -39,7 +39,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #else

@@ -56,7 +56,7 @@ test_libguac_SOURCES =               \
 
 
 test_libguac_CFLAGS =       \
-    @CYGWIN_CFLAGS@         \
+    @WINDOWS_CFLAGS@         \
     @LIBGUAC_INCLUDE@
 
 test_libguac_LDADD = \

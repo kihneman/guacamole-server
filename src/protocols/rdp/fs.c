@@ -40,7 +40,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 #include <direct.h>
 #include <fileapi.h>
 #include <winerror.h>
@@ -60,7 +60,7 @@ guac_rdp_fs* guac_rdp_fs_alloc(guac_client* client, const char* drive_path,
 
         /* Log error if directory creation fails */
         if (
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
                 _mkdir(drive_path)
 #else
                 mkdir(drive_path, S_IRWXU)
@@ -338,7 +338,7 @@ int guac_rdp_fs_open(guac_rdp_fs* fs, const char* path,
     if ((create_options & FILE_DIRECTORY_FILE) && (flags & O_CREAT)) {
 
         /* Create directory */
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
         if (_mkdir(real_path)) {
 #else
         if (mkdir(real_path, S_IRWXU)) {
@@ -614,7 +614,7 @@ const char* guac_rdp_fs_read_dir(guac_rdp_fs* fs, int file_id) {
 
     /* Open directory if not yet open, stop if error */
     if (file->dir == NULL) {
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
         wchar_t file_name_buffer[1024];
 
@@ -770,7 +770,7 @@ int guac_rdp_fs_matches(const char* filename, const char* pattern) {
 
 int guac_rdp_fs_get_info(guac_rdp_fs* fs, guac_rdp_fs_info* info) {
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
     /* Variables to store the result of the call */
     DWORD sectors_per_cluster;

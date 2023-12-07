@@ -31,7 +31,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 #include <direct.h>
 #endif
 
@@ -116,7 +116,7 @@ guac_terminal_typescript* guac_terminal_typescript_alloc(const char* path,
 
     /* Create path if it does not exist, fail if impossible */
     if (create_path
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
             && _mkdir(path)
 #else
             && mkdir(path, S_IRWXU | S_IRGRP | S_IXGRP)

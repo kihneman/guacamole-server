@@ -63,7 +63,7 @@ libguac_common_la_SOURCES = \
     surface.c
 
 libguac_common_la_CFLAGS =  \
-    @CYGWIN_CFLAGS@         \
+    @WINDOWS_CFLAGS@         \
     @LIBGUAC_INCLUDE@
 
 libguac_common_la_LIBADD = \

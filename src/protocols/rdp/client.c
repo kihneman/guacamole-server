@@ -48,7 +48,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 #include <fileapi.h>
 #include <winbase.h>
 #else
@@ -70,7 +70,7 @@
  */
 static int is_writable_directory(const char* path) {
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
     /*
      * Attempt to create a file handle with the permission to add a new file at
@@ -182,7 +182,7 @@ int guac_client_init(guac_client* client, int argc, char** argv) {
     const char* current_home = getenv("HOME");
     if (current_home == NULL) {
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
         /*
          * There appears to be no Windows equivalent of getpwuid(), so env

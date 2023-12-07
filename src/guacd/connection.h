@@ -28,7 +28,7 @@
 #include <openssl/ssl.h>
 #endif
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 #include <handleapi.h>
 #endif
 
@@ -97,7 +97,7 @@ typedef struct guacd_connection_io_thread_params {
     guac_socket* socket;
 
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
     /**
      * The named pipe handle which is being handled by a guac_socket within the

@@ -36,7 +36,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 #include <direct.h>
 #endif
 

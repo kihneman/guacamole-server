@@ -45,7 +45,7 @@
 // Don't do it
 #include <stdio.h>
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 #include "move-pipe.h"
 #include "guacamole/socket-handle.h"
 #include <io.h>
@@ -64,7 +64,7 @@ typedef struct guacd_user_thread_params {
      */
     guacd_proc* proc;
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
     /**
      * The file handle for communicating with the joining user.
@@ -106,7 +106,7 @@ static void* guacd_user_thread(void* data) {
     guac_client* client = proc->client;
 
     /* Get guac_socket for user's file descriptor */
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
     guac_socket* socket = guac_socket_open_handle(params->handle);
 #else
     guac_socket* socket = guac_socket_open(params->fd);
@@ -141,7 +141,7 @@ static void* guacd_user_thread(void* data) {
 
 }
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
 /**
  * Begins a new user connection under a given process, using the given file
@@ -453,7 +453,7 @@ static void guacd_exec_proc(guacd_proc* proc, const char* protocol) {
     sigaction(SIGINT, &signal_stop_action, NULL);
     sigaction(SIGTERM, &signal_stop_action, NULL);
     
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
     /* Add each received file handle as a new user */
     HANDLE handle;

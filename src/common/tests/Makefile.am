@@ -49,7 +49,7 @@ test_common_SOURCES =          \
     string/split.c
 
 test_common_CFLAGS =        \
-    @CYGWIN_CFLAGS@         \
+    @WINDOWS_CFLAGS@         \
     @COMMON_INCLUDE@
 
 test_common_LDADD =  \

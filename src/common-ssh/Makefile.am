@@ -44,7 +44,7 @@ noinst_HEADERS =            \
     common-ssh/user.h
 
 libguac_common_ssh_la_CFLAGS = \
-    @CYGWIN_CFLAGS@            \
+    @WINDOWS_CFLAGS@            \
     @COMMON_INCLUDE@           \
     @LIBGUAC_INCLUDE@
 
@@ -55,5 +55,5 @@ libguac_common_ssh_la_LDFLAGS = \
     @PTHREAD_LIBS@              \
     @SSH_LIBS@                  \
     @SSL_LIBS@                  \
-    @CYWGIN_LDFLAGS@
+    @WINDOWS_LDFLAGS@
 

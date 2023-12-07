@@ -60,7 +60,7 @@ typedef enum guac_status {
      */
     GUAC_STATUS_SEE_ERRNO,
     
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
     /**
      * An error occurred, and further information about the error can be

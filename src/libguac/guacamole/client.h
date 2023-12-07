@@ -47,7 +47,7 @@
 #include <stdarg.h>
 #include <time.h>
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 #include <windef.h>
 #endif
 
@@ -198,7 +198,7 @@ struct guac_client {
      * use within the client. This will be NULL until the first user joins
      * the connection, as it is lazily instantiated at that time.
      */
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
     HANDLE __pending_users_timer;
 #else
     timer_t __pending_users_timer;

@@ -66,15 +66,14 @@ libguac_terminal_la_SOURCES =   \
     xparsecolor.c
 
 # Cygwin build
-if CYGWIN_BUILD
+if WINDOWS_BUILD
 noinst_HEADERS += terminal/wcwidth.h
 libguac_terminal_la_SOURCES += wcwidth.c
 endif
 
 libguac_terminal_la_CFLAGS = \
     -Werror -Wall            \
-    @CYGWIN_CFLAGS@          \
-    @CYGWIN_CFLAGS@          \
+    @WINDOWS_CFLAGS@         \
     @COMMON_INCLUDE@         \
     @LIBGUAC_INCLUDE@        \
     @PANGO_CFLAGS@           \
@@ -92,5 +91,5 @@ libguac_terminal_la_LDFLAGS = \
     @PANGO_LIBS@              \
     @PANGOCAIRO_LIBS@         \
     @PTHREAD_LIBS@            \
-    @CYWGIN_LDFLAGS@
+    @WINDOWS_LDFLAGS@
 

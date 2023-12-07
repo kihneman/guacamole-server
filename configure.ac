@@ -40,21 +40,21 @@ AC_PROG_LIBTOOL
 # Headers
 AC_CHECK_HEADERS([fcntl.h stdlib.h string.h sys/socket.h time.h sys/time.h syslog.h unistd.h cairo/cairo.h pngstruct.h])
 
-# Cygwin build
-CYWGIN_LDFLAGS=
-CYGWIN_CFLAGS=-Werror -Wall -pedantic
-AC_ARG_WITH([cygwin],
-            [AS_HELP_STRING([--with-cygwin],
-                            [use Cygwin to build under Windows @<:@default=no@:>@])],
-            [with_cygwin=yes], [with_cygwin=no])
+# windows build
+WINDOWS_LDFLAGS=
+WINDOWS_CFLAGS=-Werror -Wall -pedantic
+AC_ARG_WITH([windows],
+            [AS_HELP_STRING([--with-windows],
+                            [build under/for Windows @<:@default=no@:>@])],
+            [with_windows=yes], [with_windows=no])
 
-AM_CONDITIONAL([CYGWIN_BUILD], [test "x${with_cygwin}" = "xyes"])
+AM_CONDITIONAL([WINDOWS_BUILD], [test "x${with_windows}" = "xyes"])
 
-if test "x$with_cygwin" = "xyes"
+if test "x$with_windows" = "xyes"
 then
-    CYWGIN_LDFLAGS=-no-undefined
-    CYGWIN_CFLAGS=-Werror -Wall -Wno-error=expansion-to-defined
-    AC_DEFINE([CYGWIN_BUILD],,[Build against Cygwin on Windows])
+    WINDOWS_LDFLAGS=-no-undefined
+    WINDOWS_CFLAGS=-Werror -Wall -Wno-error=expansion-to-defined
+    AC_DEFINE([WINDOWS_BUILD],,[Build against windows on Windows])
 
     AC_CHECK_LIB([systre], [regcomp], [SYSTRE_LIBS=-lsystre],
                 AC_MSG_ERROR("libsystre is required for regex functionality"))
@@ -65,7 +65,7 @@ fi
 # Source characteristics
 AC_DEFINE([_XOPEN_SOURCE], [700], [Uses X/Open and POSIX APIs])
 
-if test "x$with_cygwin" = "xno"
+if test "x$with_windows" = "xno"
 then
     AC_DEFINE([__BSD_VISIBLE], [1], [Uses BSD-specific APIs (if available)])
 fi
@@ -174,8 +174,8 @@ AC_SUBST(CAIRO_LIBS)
 AC_SUBST(PTHREAD_LIBS)
 AC_SUBST(UUID_LIBS)
 AC_SUBST(CUNIT_LIBS)
-AC_SUBST(CYWGIN_LDFLAGS)
-AC_SUBST(CYGWIN_CFLAGS)
+AC_SUBST(WINDOWS_LDFLAGS)
+AC_SUBST(WINDOWS_CFLAGS)
 AC_SUBST(SYSTRE_LIBS)
 
 # Library functions

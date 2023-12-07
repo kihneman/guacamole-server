@@ -46,7 +46,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 #include <synchapi.h>
 #include <threadpoollegacyapiset.h>
 #endif
@@ -171,7 +171,7 @@ void guac_client_free_stream(guac_client* client, guac_stream* stream) {
  *     Unused - Windows only.
  */
 static void guac_client_promote_pending_users(
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
         LPVOID data,
         BOOLEAN timerOrWaitFired
 #else
@@ -179,7 +179,7 @@ static void guac_client_promote_pending_users(
 #endif
     ) {
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
     guac_client* client = (guac_client*) data;
 #else
     guac_client* client = (guac_client*) data.sival_ptr;
@@ -385,7 +385,7 @@ void guac_client_free(guac_client* client) {
 
     /* If the timer was registered, stop it before destroying the lock */
     if (was_started) {
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
         DeleteTimerQueueTimer(NULL, client->__pending_users_timer, NULL);
 #else
         timer_delete(client->__pending_users_timer);
@@ -517,7 +517,7 @@ static int guac_client_start_pending_users_timer(guac_client* client) {
         return 0;
     }
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
     if (!CreateTimerQueueTimer(
             &(client->__pending_users_timer),
             NULL,

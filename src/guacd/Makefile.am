@@ -52,7 +52,7 @@ guacd_SOURCES =  \
     proc-map.c
 
 # Cygwin build
-if CYGWIN_BUILD
+if WINDOWS_BUILD
 noinst_HEADERS += move-pipe.h
 guacd_SOURCES += move-pipe.c
 else
@@ -61,7 +61,7 @@ guacd_SOURCES += move-fd.c
 endif
 
 guacd_CFLAGS =              \
-    @CYGWIN_CFLAGS@         \
+    @WINDOWS_CFLAGS@         \
     @COMMON_INCLUDE@        \
     @LIBGUAC_INCLUDE@
 

@@ -44,7 +44,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
 #include <io.h>
 #include <sddl.h>
@@ -62,7 +62,7 @@
 
 #endif
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
 /**
  * Behaves exactly as write(), but writes as much as possible, returning
@@ -172,7 +172,7 @@ static void* guacd_connection_write_thread(void* data) {
     /* Read all buffered data from parser first */
     while ((length = guac_parser_shift(params->parser, buffer, sizeof(buffer))) > 0) {
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
         if (__write_all(params->handle, buffer, length) < 0)
 #else
         if (__write_all(params->fd, buffer, length) < 0)
@@ -187,7 +187,7 @@ static void* guacd_connection_write_thread(void* data) {
     /* Transfer data from file descriptor to socket */
     while ((length = guac_socket_read(params->socket, buffer, sizeof(buffer))) > 0) {
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
         if (__write_all(params->handle, buffer, length) < 0)
 #else
         if (__write_all(params->fd, buffer, length) < 0)
@@ -208,7 +208,7 @@ void* guacd_connection_io_thread(void* data) {
     pthread_t write_thread;
     pthread_create(&write_thread, NULL, guacd_connection_write_thread, params);
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
     /* Transfer data from file handle to socket */
     while (1) {
@@ -242,7 +242,7 @@ void* guacd_connection_io_thread(void* data) {
     /* Clean up */
     guac_socket_free(params->socket);
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
     CloseHandle(params->handle);
 #else
     close(params->fd);
@@ -279,7 +279,7 @@ void* guacd_connection_io_thread(void* data) {
  */
 static int guacd_add_user(guacd_proc* proc, guac_parser* parser, guac_socket* socket) {
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
     SECURITY_ATTRIBUTES attributes = { 0 };
     attributes.nLength = sizeof(SECURITY_ATTRIBUTES);
@@ -434,7 +434,7 @@ static int guacd_add_user(guacd_proc* proc, guac_parser* parser, guac_socket* so
     params->parser = parser;
     params->socket = socket;
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
     params->handle = pipe_handle;
 #else
     params->fd = user_fd;

@@ -40,7 +40,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 #include <fileapi.h>
 #include <winbase.h>
 #endif
@@ -1522,7 +1522,7 @@ void guac_rdp_push_settings(guac_client* client,
 
     /* Timezone redirection */
     if (guac_settings->timezone) {
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
         if (!SetEnvironmentVariable("TZ", guac_settings->timezone)) {
 #else
         if (setenv("TZ", guac_settings->timezone, 1)) {
@@ -1530,7 +1530,7 @@ void guac_rdp_push_settings(guac_client* client,
 
             guac_client_log(client, GUAC_LOG_WARNING,
                 "Unable to forward timezone: TZ environment variable "
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
                 "could not be set (windows code): %u", GetLastError());
 #else
                 "could not be set: %s", strerror(errno));

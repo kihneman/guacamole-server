@@ -30,7 +30,7 @@
 
 #include "error-types.h"
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 #include <windef.h>
 #endif
 
@@ -65,7 +65,7 @@ guac_status* __guac_error();
 
 char** __guac_error_message();
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
 /**
  * Returns an error code describing the Windows error that occured when

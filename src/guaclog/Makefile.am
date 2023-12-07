@@ -49,7 +49,7 @@ guaclog_SOURCES =     \
 
 guaclog_CFLAGS =      \
     -Werror -Wall     \
-    @CYGWIN_CFLAGS@   \
+    @WINDOWS_CFLAGS@   \
     @LIBGUAC_INCLUDE@
 
 guaclog_LDADD =     \

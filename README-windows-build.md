@@ -111,7 +111,7 @@ In this example, `guacamole-server` was built under Cygwin, on a Windows Server 
     export LDFLAGS="-L/usr/bin/ -L/usr/lib/ -L/usr/local/lib -L/usr/local/bin -L/cygdrive/c/msys64/mingw64/bin -L/cygdrive/c/msys64/mingw64/lib -L/cygdrive/c/msys64/usr/bin"
     export CFLAGS="-idirafter /cygdrive/c/msys64/mingw64/include/winpr2 -idirafter /usr/include/ -idirafter /cygdrive/c/msys64/mingw64/include -idirafter /cygdrive/c/msys64/mingw64/include/pango-1.0 -idirafter /cygdrive/c/msys64/mingw64/include/cairo -idirafter /usr/local/include/freerdp2 -idirafter /cygdrive/c/msys64/mingw64/include/glib-2.0 -idirafter /cygdrive/c/msys64/mingw64/include/harfbuzz -idirafter /cygdrive/c/msys64/mingw64/lib/glib-2.0/include -idirafter /cygdrive/c/msys64/usr/include"
     export PKG_CONFIG_PATH="/cygdrive/c/msys64/mingw64/lib/pkgconfig/:/usr/local/lib/pkgconfig"
-    ./configure --with-cygwin || cat config.log
+    ./configure --with-windows || cat config.log
     make
     ```
 

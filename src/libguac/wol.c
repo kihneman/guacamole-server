@@ -27,7 +27,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 #include <ws2tcpip.h>
 #include <winsock2.h>
 #else

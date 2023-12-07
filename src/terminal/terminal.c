@@ -50,7 +50,7 @@
 #include <guacamole/socket.h>
 #include <guacamole/timestamp.h>
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 #include "terminal/wcwidth.h"
 #include <guacamole/pipe.h>
 #endif

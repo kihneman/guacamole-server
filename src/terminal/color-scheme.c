@@ -73,7 +73,7 @@ static int guac_terminal_color_scheme_compare_token(const char* str_start,
 static void guac_terminal_color_scheme_strip_spaces(const char** str_start,
         const char** str_end) {
      
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
     /* Cast to unsigned below to avoid error: array subscript has type 'char' */
 

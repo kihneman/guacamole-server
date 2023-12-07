@@ -761,7 +761,7 @@ static int guac_terminal_named_color_search(const void* a, const void* b) {
 
         /* Skip any spaces in key (name will never have spaces) */
         
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
         /* Cast to unsigned to avoid error: array subscript has type 'char' */
         while (*key && isspace((unsigned char) *key)) key++;

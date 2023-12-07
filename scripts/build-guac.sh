@@ -65,7 +65,7 @@ export CFLAGS="-isystem/mingw64/include/ \
                -Wno-error=expansion-to-defined -Wno-error=attributes"
 
 autoreconf -fi
-./configure --host=x86_64-w64-mingw32 --with-cygwin --disable-guacenc --disable-guacd --disable-guaclog --without-terminal || cat config.log
+./configure --host=x86_64-w64-mingw32 --with-windows --disable-guacenc --disable-guacd --disable-guaclog --without-terminal || cat config.log
 
 cat config.log
 

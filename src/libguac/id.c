@@ -23,7 +23,7 @@
 #include <guacamole/id.h>
 
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 #include <rpc.h>
 #include <rpcdce.h>
 #elif defined(HAVE_LIBUUID)
@@ -51,7 +51,7 @@ char* guac_generate_id(char prefix) {
 
     identifier = &(buffer[1]);
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
     /* Generate a UUID using a built in windows function */
     UUID uuid;

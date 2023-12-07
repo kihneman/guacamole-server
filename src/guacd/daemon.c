@@ -43,7 +43,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 #include <winsock2.h>
 #else
 #include <netdb.h>

@@ -26,7 +26,7 @@
 #include "terminal/terminal-priv.h"
 #include "terminal/types.h"
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 #include <terminal/wcwidth.h>
 #endif
 

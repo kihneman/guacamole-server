@@ -29,7 +29,7 @@
 #include <pthread.h>
 #endif
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 #include <io.h>
 #include <stdio.h>
 #include <windows.h>
@@ -64,7 +64,7 @@ const char* __GUAC_STATUS_REFUSED_STR           = "Operation refused";
 const char* __GUAC_STATUS_TOO_MANY_STR          = "Insufficient resources";
 const char* __GUAC_STATUS_WOULD_BLOCK_STR       = "Operation would block";
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
 /*
  * A format for a backup message in case Windows can't produce one. 
@@ -185,7 +185,7 @@ char* guac_status_string(guac_status status) {
 		case GUAC_STATUS_SEE_ERRNO:
             return guac_status_duplicate_constant(strerror(errno));
     
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
         /* Further information available from the Windows API. */
         case GUAC_STATUS_SEE_WINDOWS_ERROR:
@@ -353,7 +353,7 @@ char** __guac_error_message() {
 
 }
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
 /**
  * PThread key for the thread local Windows error code associated with
@@ -418,7 +418,7 @@ char** __guac_error_message() {
 /* Warn about threadsafety */
 #warn No threadsafe implementation of __guac_error exists for your platform, so a default non-threadsafe implementation has been used instead. This may lead to incorrect status codes being reported for failures. Please consider adding support for your platform, or filing a bug report with the Guacamole project.
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
 /**
  * Non-threadsafe storage for the Windows error code.

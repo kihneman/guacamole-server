@@ -26,7 +26,7 @@
 #include "terminal/terminal.h"
 #include "user.h"
 
-#ifndef CYGWIN_BUILD
+#ifndef WINDOWS_BUILD
 #include <langinfo.h>
 #endif
 
@@ -87,7 +87,7 @@ int guac_client_init(guac_client* client) {
     guac_argv_register(GUAC_SSH_ARGV_FONT_SIZE, guac_ssh_argv_callback, NULL, GUAC_ARGV_OPTION_ECHO);
 
     /* Set locale and warn if not UTF-8 */
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
     if(!setlocale(LC_CTYPE, ".UTF8"))
 #else
     setlocale(LC_CTYPE, "");

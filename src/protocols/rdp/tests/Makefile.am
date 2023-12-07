@@ -38,7 +38,7 @@ test_rdp_SOURCES =      \
     fs/normalize_path.c
 
 test_rdp_CFLAGS =                \
-    @CYGWIN_CFLAGS@              \
+    @WINDOWS_CFLAGS@              \
     @LIBGUAC_CLIENT_RDP_INCLUDE@ \
     @LIBGUAC_INCLUDE@
 

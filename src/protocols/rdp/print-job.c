@@ -33,7 +33,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 #include <guacamole/pipe.h>
 #endif
 
@@ -303,7 +303,7 @@ static int guac_rdp_print_filter_ack_handler(guac_user* user,
 static pid_t guac_rdp_create_filter_process(guac_client* client,
         int* input_fd, int* output_fd) {
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
     // fork() isn't a thing in Windows, so this won't work as is. FIXME: Figure
     // out a good solution and implement it. Should we even _use_ ghostscript
@@ -683,7 +683,7 @@ void guac_rdp_print_job_free(guac_rdp_print_job* job) {
 
 void guac_rdp_print_job_kill(guac_rdp_print_job* job) {
 
-#ifndef CYGWIN_BUILD
+#ifndef WINDOWS_BUILD
 
     /* Forcibly kill filter process, if running */
     kill(job->filter_pid, SIGKILL);

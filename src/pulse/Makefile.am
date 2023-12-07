@@ -35,7 +35,7 @@ libguac_pulse_la_SOURCES = \
     pulse.c
 
 libguac_pulse_la_CFLAGS =   \
-    @CYGWIN_CFLAGS@         \
+    @WINDOWS_CFLAGS@         \
     @LIBGUAC_INCLUDE@
 
 libguac_pulse_la_LIBADD = \
@@ -43,5 +43,5 @@ libguac_pulse_la_LIBADD = \
 
 libguac_pulse_la_LDFLAGS = \
     @PULSE_LIBS@           \
-    @CYWGIN_LDFLAGS@
+    @WINDOWS_LDFLAGS@
 

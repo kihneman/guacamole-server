@@ -28,7 +28,7 @@
  * @file plugin-constants.h
  */
 
-#ifdef CYGWIN_BUILD
+#ifdef WINDOWS_BUILD
 
 /**
  * String prefix which begins the library filename of all client plugins.
