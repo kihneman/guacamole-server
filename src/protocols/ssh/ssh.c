@@ -47,7 +47,6 @@
 #endif
 
 #include <errno.h>
-#include <poll.h>
 #include <pthread.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -57,11 +56,16 @@
 #include <sys/time.h>
 
 #ifdef CYGWIN_BUILD
+#include <ws2tcpip.h>
 #include <winsock2.h>
 #else
 #include <netdb.h>
 #include <netinet/in.h>
-#include <sys/socket.h>
+#    ifdef HAVE_POLL
+#        include <poll.h>
+#    else
+#        include <sys/select.h>
+#    endif
 #endif
 
 /**
@@ -527,6 +531,8 @@ void* ssh_client_thread(void* data) {
         /* Wait for more data if reads turn up empty */
         if (total_read == 0) {
 
+#ifdef HAVE_POLL
+
             /* Wait on the SSH session file descriptor only */
             struct pollfd fds[] = {{
                 .fd      = ssh_client->session->fd,
@@ -538,6 +544,26 @@ void* ssh_client_thread(void* data) {
             if (poll(fds, 1, timeout) < 0)
                 break;
 
+#else
+
+            int fd = ssh_client->session->fd;
+            fd_set fds;
+
+            /* Initialize fd_set with single underlying file descriptor */
+            FD_ZERO(&fds);
+            FD_SET(fd, &fds);
+
+            /* Handle timeout if specified */
+            struct timeval timeout_struct = {
+                .tv_sec  = timeout / 1000,
+                .tv_usec = timeout % 1000
+            };
+
+            /* Wait up to computed timeout */
+            if (select(fd, &fds, NULL, NULL, &timeout_struct) < 0)
+                break;
+
+#endif
         }
 
     }
