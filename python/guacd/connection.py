@@ -1,12 +1,9 @@
 from ctypes import cast, c_char_p, c_int, POINTER
 
 from . import ctypes_wrapper
-from .ctypes_wrapper import (
-    String, guac_client_alloc, guac_client_load_plugin, guac_client_log_handler,
-    guac_parser_alloc, guac_parser_expect, guac_parser_free, guac_protocol_send_name,
-    guac_socket, guac_socket_flush, guac_socket_free, guac_socket_open, guac_socket_require_keep_alive,
-    guac_user_alloc, guac_user_handle_connection
-)
+from .ctypes_wrapper import String, guac_parser_alloc, guac_parser_expect, guac_parser_free, guac_socket
+
+from .client import guacd_create_client
 from .constants import GuacClientLogLevel, GuacStatus, GUAC_CLIENT_ID_PREFIX, GUACD_USEC_TIMEOUT
 from .log import guacd_log, guacd_log_guac_error, guacd_log_handshake_failure
 
@@ -79,12 +76,12 @@ def guacd_route_connection(socket: POINTER(guac_socket)) -> int:
     # Otherwise, create new client
     else:
         guacd_log(GuacClientLogLevel.GUAC_LOG_INFO, f'Creating new client for protocol "{identifier}"')
+
+        # Create new client
+        guacd_create_client(socket, identifier)
+
         guac_parser_free(parser_ptr)
         return 0
-
-        # Create new process
-        # proc = guacd_create_proc(identifier)
-        # new_process = 1
 
     # /* Abort if no process exists for the requested connection */
     # if (proc == NULL) {

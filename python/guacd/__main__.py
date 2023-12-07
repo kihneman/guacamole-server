@@ -3,22 +3,17 @@ import socket
 import sys
 import syslog
 from argparse import ArgumentParser
-from ctypes import cast, c_char_p, c_int
 from socket import getaddrinfo, getnameinfo
 
-from . import ctypes_wrapper, get_config, guacd_config, guacd_main
+from . import get_config, guacd_main
 from .connection import guacd_route_connection
 from .constants import (
-    EXIT_SUCCESS, EXIT_FAILURE, GuacClientLogLevel, GuacStatus,
-    GUACD_DEFAULT_BIND_HOST, GUACD_DEFAULT_BIND_PORT, GUACD_LOG_NAME, GUACD_USEC_TIMEOUT
+    EXIT_SUCCESS, EXIT_FAILURE, GuacClientLogLevel, GUACD_DEFAULT_BIND_HOST, GUACD_DEFAULT_BIND_PORT, GUACD_LOG_NAME
 )
 from .ctypes_wrapper import (
-    String, guac_client_alloc, guac_client_load_plugin, guac_client_log_handler,
-    guac_parser_alloc, guac_parser_expect, guac_parser_free, guac_protocol_send_name,
-    guac_socket_flush, guac_socket_free, guac_socket_open, guac_socket_require_keep_alive,
-    guac_user_alloc, guac_user_handle_connection
+    String, guac_protocol_send_name, guac_socket_flush, guac_socket_free, guac_socket_open
 )
-from .log import guacd_log, guacd_log_client, guacd_log_guac_error, guacd_log_handshake_failure
+from .log import guacd_log
 
 
 PROTOCOL = b'ssh'
@@ -32,7 +27,7 @@ def main():
     # Remove --python from argv to not affect libguacd parser
     ns, argv = parser.parse_known_args(sys.argv)
 
-    use_python = ns.python or ns.test_sock or ns.test_select
+    use_python = ns.python or ns.test_sock
     if use_python:
         result, config = get_config(argv)
         if not config:
@@ -69,6 +64,8 @@ def main():
             else:
                 bound_address, bound_port = bound_result
 
+            guac_socket = None
+
             with socket.socket(current_address[0], socket.SOCK_STREAM) as s:
                 try:
                     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -90,22 +87,14 @@ def main():
                 conn, addr = s.accept()
                 with conn:
                     print(f'Connected by {addr}')
-                    guac_socket = None
                     if ns.test_sock:
                         guac_socket = guac_socket_open(conn.fileno())
                         guac_protocol_send_name(guac_socket, String(b'simple-socket-test'))
                         guac_socket_flush(guac_socket)
 
-                    elif ns.test_select:
+                    else:
                         guac_socket = guac_socket_open(conn.fileno())
                         guacd_route_connection(guac_socket)
-
-                    else:
-                        guac_client_ptr = guac_client_alloc()
-                        guac_client = guac_client_ptr.contents
-                        guac_client.log_handler = guac_client_log_handler(guacd_log_client)
-                        load_plugin_result = guac_client_load_plugin(guac_client, String(PROTOCOL))
-                        print(f'Load plugin result: "{load_plugin_result}"')
 
             if guac_socket:
                 guac_socket_free(guac_socket)

@@ -6,17 +6,15 @@ from .ctypes_wrapper import guac_client_log_level, String
 from .constants import GuacClientLogLevel, GuacStatus, guac_status_to_string
 
 
+def guacd_client_log(guac_client_ptr, log_level: c_int, msg_ptr, log_args):
+    ctypes_wrapper.guacd_log(log_level, msg_ptr, log_args)
+
+
 def guacd_log(log_level: GuacClientLogLevel, msg: str):
     ctypes_wrapper.guacd_log(
         guac_client_log_level(log_level),
         String(msg.encode())
     )
-
-
-def guacd_log_client(guac_client_ptr, log_level_cint: c_int, msg: String, log_args):
-    guac_client = guac_client_ptr.contents
-    log_level = GuacClientLogLevel(log_level_cint.value)
-    ctypes_wrapper.guacd_log(guac_client_log_level(log_level), msg)
 
 
 def guacd_log_guac_error(level: GuacClientLogLevel, message: str):
