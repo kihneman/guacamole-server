@@ -59,6 +59,9 @@ def guacd_create_client(socket: POINTER(guac_socket), protocol: bytes):
             guacd_log_guac_error(GuacClientLogLevel.GUAC_LOG_ERROR, 'Unable to load client plugin')
 
         cleanup_client(client_ptr)
+    else:
+        # Extra debug
+        guacd_log(GuacClientLogLevel.GUAC_LOG_INFO, f'Loaded plugin for connection id "{client.connection_id}"')
 
     # The first file descriptor is the owner
     owner = 1
@@ -78,7 +81,7 @@ def guacd_create_client(socket: POINTER(guac_socket), protocol: bytes):
     user = user_ptr.contents
     user.socket = socket
     user.client = client_ptr
-    user.owner  = 1
+    user.owner = 1
 
     # Handle user connection from handshake until disconnect/completion
     guac_user_handle_connection(user_ptr, GUACD_USEC_TIMEOUT)
