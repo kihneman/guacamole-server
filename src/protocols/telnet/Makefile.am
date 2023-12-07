@@ -63,5 +63,6 @@ libguac_client_telnet_la_LDFLAGS = \
     -version-info 0:0:0            \
     @PTHREAD_LIBS@                 \
     @TELNET_LIBS@                  \
-    @CYWGIN_LDFLAGS@
+    @CYWGIN_LDFLAGS@               \
+    @SYSTRE_LIBS@
 

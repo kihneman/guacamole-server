@@ -55,6 +55,11 @@ then
     CYWGIN_LDFLAGS=-no-undefined
     CYGWIN_CFLAGS=-Werror -Wall -Wno-error=expansion-to-defined
     AC_DEFINE([CYGWIN_BUILD],,[Build against Cygwin on Windows])
+
+    AC_CHECK_LIB([systre], [regcomp], [SYSTRE_LIBS=-lsystre],
+                AC_MSG_ERROR("libsystre is required for regex functionality"))
+else
+    SYSTRE_LIBS=
 fi
 
 # Source characteristics
@@ -171,6 +176,8 @@ AC_SUBST(UUID_LIBS)
 AC_SUBST(CUNIT_LIBS)
 AC_SUBST(CYWGIN_LDFLAGS)
 AC_SUBST(CYGWIN_CFLAGS)
+AC_SUBST(SYSTRE_LIBS)
+
 # Library functions
 AC_CHECK_FUNCS([clock_gettime gettimeofday memmove memset select strdup nanosleep])
 
