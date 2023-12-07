@@ -182,6 +182,8 @@ int guac_client_init(guac_client* client, int argc, char** argv) {
     const char* current_home = getenv("HOME");
     if (current_home == NULL) {
 
+#ifdef CYGWIN_BUILD
+
         /*
          * There appears to be no Windows equivalent of getpwuid(), so env
          * variables must be the source of truth.
@@ -230,7 +232,6 @@ int guac_client_init(guac_client* client, int argc, char** argv) {
                     "and its correct value (detected as \"%s\") could not be "
                     "assigned: %u", current_home, GetLastError());
 
-#ifdef CYGWIN_BUILD
 #else
 
         /* Warn if the correct home directory cannot be determined */
