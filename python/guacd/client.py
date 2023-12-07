@@ -1,4 +1,4 @@
-from ctypes import POINTER
+from ctypes import POINTER, pointer
 
 from . import ctypes_wrapper
 from .ctypes_wrapper import (
@@ -45,7 +45,7 @@ def guacd_create_client(socket: POINTER(guac_socket), protocol: bytes):
     client = client_ptr.contents
 
     # Init logging
-    client.log_handler = guac_client_log_handler(guacd_client_log)
+    client.log_handler = pointer(guac_client_log_handler(guacd_client_log))
 
     # Init client for selected protocol
     if guac_client_load_plugin(client_ptr, String(protocol)):

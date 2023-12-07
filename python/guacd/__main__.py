@@ -23,7 +23,6 @@ def main():
     parser = ArgumentParser(add_help=False)
     parser.add_argument('--python', action='store_true')
     parser.add_argument('--test-sock', action='store_true')
-    parser.add_argument('--test-select', action='store_true')
     # Remove --python from argv to not affect libguacd parser
     ns, argv = parser.parse_known_args(sys.argv)
 
