@@ -129,7 +129,7 @@ AC_ARG_WITH([libuuid],
             [],
             [with_libuuid=check])
 
-if test "x$with_libuuid" != "xno" and "x$with_librpcrt4" != "xyes"
+if test "x$with_libuuid" != "xno" -a "x$with_librpcrt4" != "xyes"
 then
     have_libuuid=yes
     AC_CHECK_LIB([uuid], [uuid_generate],
@@ -139,7 +139,7 @@ then
 fi
 
 # OSSP UUID (if libuuid is unavilable)
-if test "x${have_libuuid}" != "xyes" and "x$with_librpcrt4" != "xyes"
+if test "x${have_libuuid}" != "xyes" -a "x$with_librpcrt4" != "xyes"
 then
 
     AC_CHECK_LIB([ossp-uuid], [uuid_make], [UUID_LIBS=-lossp-uuid],

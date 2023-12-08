@@ -81,6 +81,7 @@ libguacinc_HEADERS =                  \
     guacamole/wol-constants.h
 
 noinst_HEADERS =      \
+    client-internal.h \
     encode-jpeg.h     \
     encode-png.h      \
     palette.h         \
