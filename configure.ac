@@ -113,6 +113,7 @@ AC_ARG_WITH([librpcrt4],
             [with_librpcrt4=check])
 
 # First, check for librpcrt4 (Windows)
+have_librpcrt4=disabled
 if test "x$with_librpcrt4" != "xno"
 then
     have_librpcrt4=yes
@@ -122,6 +123,7 @@ then
                 [have_librpcrt4=no])
 fi
 
+# Next, look for libuuid
 have_libuuid=disabled
 AC_ARG_WITH([libuuid],
             [AS_HELP_STRING([--with-libuuid],
@@ -129,7 +131,7 @@ AC_ARG_WITH([libuuid],
             [],
             [with_libuuid=check])
 
-if test "x$with_libuuid" != "xno" -a "x$with_librpcrt4" != "xyes"
+if test "x$with_libuuid" != "xno" -a "x$have_librpcrt4" != "xyes"
 then
     have_libuuid=yes
     AC_CHECK_LIB([uuid], [uuid_generate],
@@ -138,8 +140,8 @@ then
                 [have_libuuid=no])
 fi
 
-# OSSP UUID (if libuuid is unavilable)
-if test "x${have_libuuid}" != "xyes" -a "x$with_librpcrt4" != "xyes"
+# OSSP UUID (if librpcrt4 and libuuid are unavilable)
+if test "x$have_librpcrt4" != "xyes" -a "x$have_libuuid" != "xyes"
 then
 
     AC_CHECK_LIB([ossp-uuid], [uuid_make], [UUID_LIBS=-lossp-uuid],
