@@ -41,10 +41,12 @@ RUN apk add --no-cache                \
         libtool                       \
         libwebp-dev                   \
         make                          \
+        openssl-dev                   \
         pango-dev                     \
         pulseaudio-dev                \
         python3                       \
         py3-pip                       \
+        py3-wheel                     \
         util-linux-dev
 
 # Copy source to container for sake of build
@@ -142,13 +144,13 @@ ARG LIBWEBSOCKETS_OPTS="\
 RUN ${BUILD_DIR}/src/guacd-docker/bin/build-all.sh
 
 # Build Python wheel
-RUN pip install wheel ctypesgen                                            \
-    && cd ${BUILD_DIR}/python                                              \
-    && python ./setup.py bdist_wheel -d ${PREFIX_DIR}/wheels
+RUN cd ${BUILD_DIR}/python && python ./setup.py bdist_wheel -d ${PREFIX_DIR}/wheels
+
 # Updated ctypes_wrapper.py goes into ${PREFIX_DIR} to be used for future source changes
-    # && ctypesgen -llibguacd -L /opt/guacamole/lib                          \
-    #    -I /opt/guacamole/include -o ${PREFIX_DIR}/python/ctypes_wrapper.py \
-    #    /opt/guacamole/include/ctypes_wrapper.h                             \
+# RUN pip install wheel ctypesgen                                            \
+#     && ctypesgen -llibguacd -L /opt/guacamole/lib                          \
+#        -I /opt/guacamole/include -o ${PREFIX_DIR}/python/ctypes_wrapper.py \
+#        /opt/guacamole/include/ctypes_wrapper.h                             \
 
 # To debug builder stage:
 # docker build --target builder -t guacd-builder .
