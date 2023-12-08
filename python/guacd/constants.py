@@ -74,6 +74,50 @@ class GuacClientLogLevel(IntEnum):
     GUAC_LOG_TRACE = 8
 
 
+class GuacClientState(IntEnum):
+    """
+    Possible current states of the Guacamole client. Currently, the only
+    two states are GUAC_CLIENT_RUNNING and GUAC_CLIENT_STOPPING.
+    """
+
+    # The state of the client from when it has been allocated by the main
+    # daemon until it is killed or disconnected.
+    GUAC_CLIENT_RUNNING = 0
+
+    # The state of the client when a stop has been requested, signalling the
+    # I/O threads to shutdown.
+    GUAC_CLIENT_STOPPING = auto()
+
+
+class GuacProtocolVersion(IntEnum):
+    """
+    The set of protocol versions known to guacd to handle negotiation or feature
+    support between differing versions of Guacamole clients and guacd.
+    """
+    # An unknown version of the Guacamole protocol.
+    GUAC_PROTOCOL_VERSION_UNKNOWN = 0x000000
+
+    # Original protocol version 1.0.0, which lacks support for negotiating
+    # parameters and protocol version, and requires that parameters in the
+    # client/server handshake be delivered in order.
+    GUAC_PROTOCOL_VERSION_1_0_0 = 0x010000
+
+    # Protocol version 1.1.0, which includes support for parameter and version
+    # negotiation and for sending timezone information from the client
+    # to the server.
+    GUAC_PROTOCOL_VERSION_1_1_0 = 0x010100
+
+    # Protocol version 1.3.0, which supports the "required" instruction,
+    # allowing connections in guacd to request information from the client and
+    # await a response.
+    GUAC_PROTOCOL_VERSION_1_3_0 = 0x010300
+
+    # Protocol version 1.5.0, which supports the "msg" instruction, allowing
+    # messages to be sent to the client, and adds support for the "name"
+    # handshake instruction.
+    GUAC_PROTOCOL_VERSION_1_5_0 = 0x010500
+
+
 class GuacStatus(IntEnum):
     # No errors occurred and the operation was successful.
     GUAC_STATUS_SUCCESS = 0

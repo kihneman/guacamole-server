@@ -3,10 +3,11 @@ from ctypes import POINTER, pointer
 from . import ctypes_wrapper
 from .ctypes_wrapper import (
     String, guac_client_alloc, guac_client_free, guac_client_load_plugin, guac_client_log_handler, guac_client_stop,
-    guac_socket, guac_socket_require_keep_alive, guac_user_alloc, guac_user_free, guac_user_handle_connection
+    guac_socket, guac_socket_require_keep_alive, guac_user_alloc, guac_user_free
 )
 from .constants import GuacClientLogLevel, GuacStatus, GUACD_USEC_TIMEOUT
 from .log import guacd_client_log, guacd_log, guacd_log_guac_error
+from .user_handshake import guac_user_handle_connection
 
 
 def cleanup_client(client):

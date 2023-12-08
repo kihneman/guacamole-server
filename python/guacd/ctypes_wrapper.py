@@ -1,7 +1,7 @@
 r"""Wrapper for ctypes_wrapper.h
 
 Generated with:
-/usr/bin/ctypesgen -llibguacd -L /opt/guacamole/lib -I /opt/guacamole/include -o ctypes_wrapper.py src/guacd/ctypes_wrapper.h src/libguac/guacamole/client.h src/libguac/guacamole/error.h src/libguac/guacamole/error-types.h src/libguac/guacamole/parser.h src/libguac/guacamole/protocol.h src/libguac/guacamole/socket.h src/libguac/guacamole/user.h
+/tmp/guacamole-server/ctypesgen/bin/ctypesgen -llibguacd -L /opt/guacamole/lib -I /opt/guacamole/include -o ctypes_wrapper.py src/guacd/ctypes_wrapper.h src/libguac/user-handlers.h src/libguac/guacamole/client.h src/libguac/guacamole/error.h src/libguac/guacamole/error-types.h src/libguac/guacamole/mem.h src/libguac/guacamole/parser.h src/libguac/guacamole/protocol.h src/libguac/guacamole/socket.h src/libguac/guacamole/user.h
 
 Do not modify this file.
 """
@@ -1286,11 +1286,11 @@ struct_guac_rwlock._fields_ = [
 
 guac_rwlock = struct_guac_rwlock# /tmp/guacamole-server/src/libguac/guacamole/rwlock.h: 62
 
-# /usr/include/cairo/cairo.h: 153
+# /usr/include/cairo/cairo.h: 164
 class struct__cairo_surface(Structure):
     pass
 
-cairo_surface_t = struct__cairo_surface# /usr/include/cairo/cairo.h: 153
+cairo_surface_t = struct__cairo_surface# /usr/include/cairo/cairo.h: 164
 
 struct_guac_client.__slots__ = [
     'socket',
@@ -1559,6 +1559,191 @@ try:
 except:
     pass
 
+__guac_instruction_handler = CFUNCTYPE(UNCHECKED(c_int), POINTER(guac_user), c_int, POINTER(POINTER(c_char)))# /tmp/guacamole-server/src/libguac/user-handlers.h: 55
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 72
+class struct___guac_instruction_handler_mapping(Structure):
+    pass
+
+struct___guac_instruction_handler_mapping.__slots__ = [
+    'opcode',
+    'handler',
+]
+struct___guac_instruction_handler_mapping._fields_ = [
+    ('opcode', String),
+    ('handler', POINTER(__guac_instruction_handler)),
+]
+
+__guac_instruction_handler_mapping = struct___guac_instruction_handler_mapping# /tmp/guacamole-server/src/libguac/user-handlers.h: 72
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 79
+try:
+    __guac_handle_sync = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handle_sync")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 86
+try:
+    __guac_handle_mouse = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handle_mouse")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 93
+try:
+    __guac_handle_touch = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handle_touch")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 100
+try:
+    __guac_handle_key = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handle_key")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 107
+try:
+    __guac_handle_audio = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handle_audio")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 114
+try:
+    __guac_handle_clipboard = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handle_clipboard")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 121
+try:
+    __guac_handle_file = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handle_file")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 128
+try:
+    __guac_handle_pipe = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handle_pipe")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 135
+try:
+    __guac_handle_argv = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handle_argv")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 142
+try:
+    __guac_handle_ack = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handle_ack")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 149
+try:
+    __guac_handle_blob = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handle_blob")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 156
+try:
+    __guac_handle_end = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handle_end")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 163
+try:
+    __guac_handle_get = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handle_get")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 170
+try:
+    __guac_handle_put = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handle_put")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 177
+try:
+    __guac_handle_size = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handle_size")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 185
+try:
+    __guac_handle_disconnect = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handle_disconnect")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 192
+try:
+    __guac_handle_nop = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handle_nop")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 198
+try:
+    __guac_handshake_size_handler = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handshake_size_handler")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 205
+try:
+    __guac_handshake_audio_handler = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handshake_audio_handler")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 212
+try:
+    __guac_handshake_video_handler = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handshake_video_handler")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 219
+try:
+    __guac_handshake_image_handler = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handshake_image_handler")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 226
+try:
+    __guac_handshake_name_handler = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handshake_name_handler")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 233
+try:
+    __guac_handshake_timezone_handler = (__guac_instruction_handler).in_dll(_libs["libguacd"], "__guac_handshake_timezone_handler")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 242
+try:
+    __guac_instruction_handler_map = (POINTER(__guac_instruction_handler_mapping)).in_dll(_libs["libguacd"], "__guac_instruction_handler_map")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 251
+try:
+    __guac_handshake_handler_map = (POINTER(__guac_instruction_handler_mapping)).in_dll(_libs["libguacd"], "__guac_handshake_handler_map")
+except:
+    pass
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 262
+if _libs["libguacd"].has("guac_free_mimetypes", "cdecl"):
+    guac_free_mimetypes = _libs["libguacd"].get("guac_free_mimetypes", "cdecl")
+    guac_free_mimetypes.argtypes = [POINTER(POINTER(c_char))]
+    guac_free_mimetypes.restype = None
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 280
+if _libs["libguacd"].has("guac_copy_mimetypes", "cdecl"):
+    guac_copy_mimetypes = _libs["libguacd"].get("guac_copy_mimetypes", "cdecl")
+    guac_copy_mimetypes.argtypes = [POINTER(POINTER(c_char)), c_int]
+    guac_copy_mimetypes.restype = POINTER(POINTER(c_char))
+
+# /tmp/guacamole-server/src/libguac/user-handlers.h: 309
+if _libs["libguacd"].has("__guac_user_call_opcode_handler", "cdecl"):
+    __guac_user_call_opcode_handler = _libs["libguacd"].get("__guac_user_call_opcode_handler", "cdecl")
+    __guac_user_call_opcode_handler.argtypes = [POINTER(__guac_instruction_handler_mapping), POINTER(guac_user), String, c_int, POINTER(POINTER(c_char))]
+    __guac_user_call_opcode_handler.restype = c_int
+
 enum_guac_status = c_int# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
 
 GUAC_STATUS_SUCCESS = 0# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 166
@@ -1646,6 +1831,76 @@ if _libs["libguacd"].has("__guac_error_message", "cdecl"):
     __guac_error_message = _libs["libguacd"].get("__guac_error_message", "cdecl")
     __guac_error_message.argtypes = []
     __guac_error_message.restype = POINTER(POINTER(c_char))
+
+# /tmp/guacamole-server/src/libguac/guacamole/private/mem.h: 64
+if _libs["libguacd"].has("PRIV_guac_mem_alloc", "cdecl"):
+    PRIV_guac_mem_alloc = _libs["libguacd"].get("PRIV_guac_mem_alloc", "cdecl")
+    PRIV_guac_mem_alloc.argtypes = [c_size_t, POINTER(c_size_t)]
+    PRIV_guac_mem_alloc.restype = POINTER(c_ubyte)
+    PRIV_guac_mem_alloc.errcheck = lambda v,*a : cast(v, c_void_p)
+
+# /tmp/guacamole-server/src/libguac/guacamole/private/mem.h: 94
+if _libs["libguacd"].has("PRIV_guac_mem_zalloc", "cdecl"):
+    PRIV_guac_mem_zalloc = _libs["libguacd"].get("PRIV_guac_mem_zalloc", "cdecl")
+    PRIV_guac_mem_zalloc.argtypes = [c_size_t, POINTER(c_size_t)]
+    PRIV_guac_mem_zalloc.restype = POINTER(c_ubyte)
+    PRIV_guac_mem_zalloc.errcheck = lambda v,*a : cast(v, c_void_p)
+
+# /tmp/guacamole-server/src/libguac/guacamole/private/mem.h: 119
+if _libs["libguacd"].has("PRIV_guac_mem_ckd_mul", "cdecl"):
+    PRIV_guac_mem_ckd_mul = _libs["libguacd"].get("PRIV_guac_mem_ckd_mul", "cdecl")
+    PRIV_guac_mem_ckd_mul.argtypes = [POINTER(c_size_t), c_size_t, POINTER(c_size_t)]
+    PRIV_guac_mem_ckd_mul.restype = c_int
+
+# /tmp/guacamole-server/src/libguac/guacamole/private/mem.h: 144
+if _libs["libguacd"].has("PRIV_guac_mem_ckd_add", "cdecl"):
+    PRIV_guac_mem_ckd_add = _libs["libguacd"].get("PRIV_guac_mem_ckd_add", "cdecl")
+    PRIV_guac_mem_ckd_add.argtypes = [POINTER(c_size_t), c_size_t, POINTER(c_size_t)]
+    PRIV_guac_mem_ckd_add.restype = c_int
+
+# /tmp/guacamole-server/src/libguac/guacamole/private/mem.h: 170
+if _libs["libguacd"].has("PRIV_guac_mem_ckd_sub", "cdecl"):
+    PRIV_guac_mem_ckd_sub = _libs["libguacd"].get("PRIV_guac_mem_ckd_sub", "cdecl")
+    PRIV_guac_mem_ckd_sub.argtypes = [POINTER(c_size_t), c_size_t, POINTER(c_size_t)]
+    PRIV_guac_mem_ckd_sub.restype = c_int
+
+# /tmp/guacamole-server/src/libguac/guacamole/private/mem.h: 190
+if _libs["libguacd"].has("PRIV_guac_mem_ckd_mul_or_die", "cdecl"):
+    PRIV_guac_mem_ckd_mul_or_die = _libs["libguacd"].get("PRIV_guac_mem_ckd_mul_or_die", "cdecl")
+    PRIV_guac_mem_ckd_mul_or_die.argtypes = [c_size_t, POINTER(c_size_t)]
+    PRIV_guac_mem_ckd_mul_or_die.restype = c_size_t
+
+# /tmp/guacamole-server/src/libguac/guacamole/private/mem.h: 209
+if _libs["libguacd"].has("PRIV_guac_mem_ckd_add_or_die", "cdecl"):
+    PRIV_guac_mem_ckd_add_or_die = _libs["libguacd"].get("PRIV_guac_mem_ckd_add_or_die", "cdecl")
+    PRIV_guac_mem_ckd_add_or_die.argtypes = [c_size_t, POINTER(c_size_t)]
+    PRIV_guac_mem_ckd_add_or_die.restype = c_size_t
+
+# /tmp/guacamole-server/src/libguac/guacamole/private/mem.h: 229
+if _libs["libguacd"].has("PRIV_guac_mem_ckd_sub_or_die", "cdecl"):
+    PRIV_guac_mem_ckd_sub_or_die = _libs["libguacd"].get("PRIV_guac_mem_ckd_sub_or_die", "cdecl")
+    PRIV_guac_mem_ckd_sub_or_die.argtypes = [c_size_t, POINTER(c_size_t)]
+    PRIV_guac_mem_ckd_sub_or_die.restype = c_size_t
+
+# /tmp/guacamole-server/src/libguac/guacamole/private/mem.h: 266
+if _libs["libguacd"].has("PRIV_guac_mem_realloc", "cdecl"):
+    PRIV_guac_mem_realloc = _libs["libguacd"].get("PRIV_guac_mem_realloc", "cdecl")
+    PRIV_guac_mem_realloc.argtypes = [POINTER(None), c_size_t, POINTER(c_size_t)]
+    PRIV_guac_mem_realloc.restype = POINTER(c_ubyte)
+    PRIV_guac_mem_realloc.errcheck = lambda v,*a : cast(v, c_void_p)
+
+# /tmp/guacamole-server/src/libguac/guacamole/private/mem.h: 303
+if _libs["libguacd"].has("PRIV_guac_mem_realloc_or_die", "cdecl"):
+    PRIV_guac_mem_realloc_or_die = _libs["libguacd"].get("PRIV_guac_mem_realloc_or_die", "cdecl")
+    PRIV_guac_mem_realloc_or_die.argtypes = [POINTER(None), c_size_t, POINTER(c_size_t)]
+    PRIV_guac_mem_realloc_or_die.restype = POINTER(c_ubyte)
+    PRIV_guac_mem_realloc_or_die.errcheck = lambda v,*a : cast(v, c_void_p)
+
+# /tmp/guacamole-server/src/libguac/guacamole/private/mem.h: 314
+if _libs["libguacd"].has("PRIV_guac_mem_free", "cdecl"):
+    PRIV_guac_mem_free = _libs["libguacd"].get("PRIV_guac_mem_free", "cdecl")
+    PRIV_guac_mem_free.argtypes = [POINTER(None)]
+    PRIV_guac_mem_free.restype = None
 
 enum_guac_parse_state = c_int# /tmp/guacamole-server/src/libguac/guacamole/parser-types.h: 57
 
@@ -2368,6 +2623,14 @@ try:
 except:
     pass
 
+# /tmp/guacamole-server/src/libguac/guacamole/mem.h: 394
+def guac_mem_free(mem):
+    return (PRIV_guac_mem_free (mem))
+
+# /tmp/guacamole-server/src/libguac/guacamole/mem.h: 410
+def guac_mem_free_const(mem):
+    return (PRIV_guac_mem_free (cast(mem, POINTER(None))))
+
 guac_client = struct_guac_client# /tmp/guacamole-server/src/libguac/guacamole/client.h: 48
 
 guacd_config = struct_guacd_config# /tmp/guacamole-server/src/guacd/ctypes_wrapper.h: 70
@@ -2377,6 +2640,8 @@ guac_socket = struct_guac_socket# /tmp/guacamole-server/src/libguac/guacamole/so
 guac_user = struct_guac_user# /tmp/guacamole-server/src/libguac/guacamole/user.h: 115
 
 guac_user_info = struct_guac_user_info# /tmp/guacamole-server/src/libguac/guacamole/user.h: 46
+
+__guac_instruction_handler_mapping = struct___guac_instruction_handler_mapping# /tmp/guacamole-server/src/libguac/user-handlers.h: 72
 
 guac_parser = struct_guac_parser# /tmp/guacamole-server/src/libguac/guacamole/parser.h: 34
 
