@@ -217,7 +217,7 @@ USER guacd
 EXPOSE 4822
 
 # Install Python package
-RUN pip install ${PREFIX_DIR}/wheels/*.whl
+RUN cd ~ && python -m venv venv-guacd && source venv-guacd/bin/activate && pip install ${PREFIX_DIR}/wheels/*.whl
 
 # Start guacd, listening on port 0.0.0.0:4822
 #
