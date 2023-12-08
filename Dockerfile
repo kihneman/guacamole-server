@@ -41,7 +41,6 @@ RUN apk add --no-cache                \
         libtool                       \
         libwebp-dev                   \
         make                          \
-        openssl1.1-compat-dev         \
         pango-dev                     \
         pulseaudio-dev                \
         python3                       \
