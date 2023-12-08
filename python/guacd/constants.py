@@ -66,7 +66,9 @@ class GuacClientLogLevel(IntEnum):
     # otherwise not useful to users or administrators. It is expected that
     # debug level messages, while verbose, will not negatively affect
     # performance.
-    GUAC_LOG_DEBUG = 7
+    # GUAC_LOG_DEBUG = 7
+    # Hack to easily show debug messages for now
+    GUAC_LOG_DEBUG = GUAC_LOG_INFO
 
     # Informational messages which can be useful for debugging, like
     # GUAC_LOG_DEBUG, but which are so low-level that they may affect

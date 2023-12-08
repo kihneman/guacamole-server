@@ -10,8 +10,9 @@ from .ctypes_wrapper import (
     guac_free_mimetypes, guac_mem_free_const,
     guac_parser, guac_parser_alloc, guac_parser_free, guac_parser_read,
     guac_protocol_send_args, guac_protocol_send_disconnect, guac_protocol_send_ready, guac_protocol_string_to_version,
-    guac_socket, guac_socket_flush, guac_user, guac_user_abort, guac_user_log, guac_user_stop, String
+    guac_socket, guac_socket_flush, guac_user, guac_user_abort, guac_user_stop, String
 )
+from .log import guac_user_log
 
 
 # The client took too long to respond.
@@ -61,21 +62,16 @@ def guac_user_log_guac_error(user: POINTER(guac_user), level: GuacClientLogLevel
     if guac_error != GuacStatus.GUAC_STATUS_SUCCESS:
         # If error message provided, include in log
         if guac_error_message:
-            guac_user_log(
-                user, guac_client_log_level(level),
-                String.from_param(f'{message}: {guac_error_message.decode()}')
-            )
+            guac_user_log(user, level, f'{message}: {guac_error_message.decode()}')
 
         # Otherwise just log with standard status string
         else:
             status_string = guac_status_to_string.get(guac_error, guac_status_to_string[None])
-            guac_user_log(
-                user, guac_client_log_level(level), String.from_param(f'{message}: {status_string}')
-            )
+            guac_user_log(user, level, f'{message}: {status_string}')
 
     # Just log message if no status code
     else:
-        guac_user_log(user, guac_client_log_level(level), String.from_param(message))
+        guac_user_log(user, level, message)
 
 
 def guac_user_log_handshake_failure(user: POINTER(guac_user)):
@@ -90,20 +86,18 @@ def guac_user_log_handshake_failure(user: POINTER(guac_user)):
     guac_error_message = cast(ctypes_wrapper.__guac_error_message()[0], c_char_p).value
 
     if guac_error == GuacStatus.GUAC_STATUS_CLOSED:
-        guac_user_log(
-            user, guac_client_log_level(GuacClientLogLevel.GUAC_LOG_DEBUG),
-            String.from_param('Guacamole connection closed during handshake')
-        )
+        guac_user_log(user, GuacClientLogLevel.GUAC_LOG_DEBUG, 'Guacamole connection closed during handshake')
+
     elif guac_error == GuacStatus.GUAC_STATUS_PROTOCOL_ERROR:
-        guac_user_log(user, guac_client_log_level(GuacClientLogLevel.GUAC_LOG_ERROR), String.from_param(
+        guac_user_log(
+            user, GuacClientLogLevel.GUAC_LOG_ERROR,
             'Guacamole protocol violation. Perhaps the version of '
             'guacamole-client is incompatible with this version of libguac?'
-        ))
+        )
+
     else:
         status_string = guac_status_to_string.get(guac_error, guac_status_to_string[None])
-        guac_user_log(
-            user, GuacClientLogLevel.GUAC_LOG_WARNING, String.from_param(f'Guacamole handshake failed: {status_string}')
-        )
+        guac_user_log(user, GuacClientLogLevel.GUAC_LOG_WARNING, f'Guacamole handshake failed: {status_string}')
 
 
 def guac_user_input_thread(data):
@@ -141,7 +135,9 @@ def guac_user_input_thread(data):
                 guac_user_abort(user_ptr, GUAC_PROTOCOL_STATUS_CLIENT_TIMEOUT, "User is not responding.");
 
             elif guac_error != GuacStatus.GUAC_STATUS_CLOSED:
-                guac_user_log_guac_error(user_ptr, GuacClientLogLevel.GUAC_LOG_WARNING, 'Guacamole connection failure')
+                guac_user_log_guac_error(
+                    user_ptr, GuacClientLogLevel.GUAC_LOG_WARNING, 'Guacamole connection failure'
+                )
                 guac_user_stop(user_ptr)
 
             return None
@@ -160,8 +156,8 @@ def guac_user_input_thread(data):
 
             # Log handler details
             guac_user_log(
-                user_ptr, guac_client_log_level(GuacClientLogLevel.GUAC_LOG_DEBUG),
-                String.from_param(f'Failing instruction handler in user was "{parser.opcode.value.decode()}"')
+                user_ptr, GuacClientLogLevel.GUAC_LOG_DEBUG,
+                f'Failing instruction handler in user was "{parser.opcode.data.decode()}"'
             )
 
             guac_user_stop(user_ptr)
@@ -198,10 +194,7 @@ def guac_user_start(parser_ptr: POINTER(guac_parser), user_ptr: POINTER(guac_use
     try:
         input_thread.start()
     except Exception as e:
-        guac_user_log(
-            user_ptr, guac_client_log_level(GuacClientLogLevel.GUAC_LOG_ERROR),
-            String.from_param(f'Unable to start input thread: {e}')
-        )
+        guac_user_log(user_ptr, GuacClientLogLevel.GUAC_LOG_ERROR, f'Unable to start input thread: {e}')
         guac_user_stop(user_ptr)
         return -1
 
@@ -246,12 +239,11 @@ def __guac_user_handshake(user_ptr: POINTER(guac_user), parser_ptr: POINTER(guac
     # Handle each of the opcodes.
     while guac_parser_read(parser_ptr, socket_ptr, usec_timeout) == 0:
         # If we receive the connect opcode, we're done.
-        if parser.opcode.value == b'connect':
+        if parser.opcode.data == b'connect':
             return 0
 
         guac_user_log(
-            user_ptr, guac_client_log_level(GuacClientLogLevel.GUAC_LOG_DEBUG),
-            String.from_param(f'Processing instruction: {parser.opcode.value.decode()}')
+            user_ptr, GuacClientLogLevel.GUAC_LOG_DEBUG, f'Processing instruction: {parser.opcode.data.decode()}'
         )
 
         # Run instruction handler for opcode with arguments.
@@ -263,8 +255,7 @@ def __guac_user_handshake(user_ptr: POINTER(guac_user), parser_ptr: POINTER(guac
                 user_ptr, GuacClientLogLevel.GUAC_LOG_DEBUG, 'Error handling instruction during handshake.'
             )
             guac_user_log(
-                user_ptr, guac_client_log_level(GuacClientLogLevel.GUAC_LOG_DEBUG),
-                String.from_param(f'Failed opcode: {parser.opcode.value.decode()}')
+                user_ptr, GuacClientLogLevel.GUAC_LOG_DEBUG, f'Failed opcode: {parser.opcode.data.decode()}'
             )
 
             guac_parser_free(parser_ptr)
@@ -272,8 +263,7 @@ def __guac_user_handshake(user_ptr: POINTER(guac_user), parser_ptr: POINTER(guac
 
     # If we get here it's because we never got the connect instruction.
     guac_user_log(
-        user_ptr, guac_client_log_level(GuacClientLogLevel.GUAC_LOG_ERROR),
-        'Handshake failed, "connect" instruction was not received.'
+        user_ptr, GuacClientLogLevel.GUAC_LOG_ERROR, 'Handshake failed, "connect" instruction was not received.'
     )
     return 1
 
@@ -287,8 +277,8 @@ def guac_user_handle_connection(user_ptr: POINTER(guac_user), usec_timeout: int)
     user.info.audio_mimetypes = None
     user.info.image_mimetypes = None
     user.info.video_mimetypes = None
-    user.info.name = None
-    user.info.timezone = None
+    user.info.name = String()
+    user.info.timezone = String()
 
     # Count number of arguments.
     max_args = 10
