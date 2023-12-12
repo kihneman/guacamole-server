@@ -1,13 +1,15 @@
-from ctypes import cast, c_char_p, c_int, POINTER
+from ctypes import cast, c_char_p, c_int, c_void_p, POINTER
 from typing import Optional
 
 from . import ctypes_wrapper
-from .ctypes_wrapper import guac_client_log_level, guac_user, String
+from .ctypes_wrapper import String, guac_client_log_level, guac_user, guac_user_log as libguac_user_log
 from .constants import GuacClientLogLevel, GuacStatus, guac_status_to_string
 
 
-def guacd_client_log(guac_client_ptr, log_level: c_int, msg_ptr, log_args):
-    ctypes_wrapper.guacd_log(log_level, msg_ptr, log_args)
+def guacd_client_log(guac_client_ptr, log_level: c_int, msg: String, log_args: c_void_p):
+    """Compatible with ctypes_wrapper.guac_client_log_handler
+    """
+    guacd_log(GuacClientLogLevel(log_level.value), msg.data.decode())
 
 
 def guacd_log(log_level: GuacClientLogLevel, msg: str):

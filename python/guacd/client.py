@@ -1,12 +1,12 @@
 from ctypes import POINTER, pointer
 
-from . import ctypes_wrapper
+from . import ctypes_wrapper, log
 from .ctypes_wrapper import (
-    String, guac_client_alloc, guac_client_free, guac_client_load_plugin, guac_client_log_handler, guac_client_stop,
+    String, guac_client_alloc, guac_client_free, guac_client_load_plugin, guac_client_stop,
     guac_socket, guac_socket_require_keep_alive, guac_user_alloc, guac_user_free
 )
 from .constants import GuacClientLogLevel, GuacStatus, GUACD_USEC_TIMEOUT
-from .log import guacd_client_log, guacd_log, guacd_log_guac_error
+from .log import guacd_log, guacd_log_guac_error
 from .user_handshake import guac_user_handle_connection
 
 
@@ -46,7 +46,7 @@ def guacd_create_client(socket: POINTER(guac_socket), protocol: bytes):
     client = client_ptr.contents
 
     # Init logging
-    client.log_handler = pointer(guac_client_log_handler(guacd_client_log))
+    client.log_handler = ctypes_wrapper.guac_client_log_handler(log.guacd_client_log)
 
     # Init client for selected protocol
     if guac_client_load_plugin(client_ptr, String(protocol)):
