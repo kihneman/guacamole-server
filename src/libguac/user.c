@@ -238,6 +238,8 @@ void guac_user_log(guac_user* user, guac_client_log_level level,
     va_list args;
     va_start(args, format);
 
+    fprintf(stderr, "Got variable args");
+
     vguac_client_log(user->client, level, format, args);
 
     va_end(args);

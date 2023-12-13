@@ -1,4 +1,4 @@
-from ctypes import cast, c_char_p, c_int, POINTER, Structure
+from ctypes import addressof, cast, c_char_p, c_int, POINTER, Structure
 from threading import Thread
 from typing import Optional
 
@@ -241,6 +241,11 @@ def __guac_user_handshake(user_ptr: POINTER(guac_user), parser_ptr: POINTER(guac
         if parser.opcode.data == b'connect':
             return 0
 
+        user_addr = hex(addressof(user))
+        client = user.client.contents
+        client_addr = hex(addressof(client))
+        log_handler_addr = hex(addressof(client.log_handler.contents))
+        print(f'Addresses: user ({user_addr}), client ({client_addr}), log_handler ({log_handler_addr})')
         guac_user_log(
             user_ptr, GuacClientLogLevel.GUAC_LOG_DEBUG, f'Processing instruction: {parser.opcode.data.decode()}'
         )
