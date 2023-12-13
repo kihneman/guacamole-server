@@ -262,7 +262,7 @@ static int __guac_user_handshake(guac_user* user, guac_parser* parser,
         /* If we receive the connect opcode, we're done. */
         if (strcmp(parser->opcode, "connect") == 0)
             return 0;
-        breakpoint()
+        
         guac_user_log(user, GUAC_LOG_DEBUG, "Processing instruction: %s",
                 parser->opcode);
         
