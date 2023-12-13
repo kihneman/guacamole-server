@@ -231,7 +231,7 @@ void guac_user_log(guac_user* user, guac_client_log_level level,
     );
     fprintf(
         stderr, "Addresses: user (%p), client (%p), log_handler (%p), user id (%p), connection id (%p), users (%p)\n",
-        (void *) user, (void *) user->client, (void *) user->client->log_handler,
+        (void *) user, (void *) user->client, (guac_client_log_handler *) user->client->log_handler,
         (void *) user->user_id, (void *) user->client->connection_id, (void *) &user->client->connected_users
     );
 
