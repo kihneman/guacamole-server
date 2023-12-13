@@ -9,7 +9,7 @@ from .constants import GuacClientLogLevel, GuacStatus, guac_status_to_string
 def guacd_client_log(guac_client_ptr, log_level: c_int, msg: String, log_args: c_void_p):
     """Compatible with ctypes_wrapper.guac_client_log_handler
     """
-    guacd_log(GuacClientLogLevel(log_level.value), msg.data.decode())
+    guacd_log(GuacClientLogLevel(log_level), msg.data.decode())
 
 
 def guacd_log(log_level: GuacClientLogLevel, msg: str):
