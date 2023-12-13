@@ -230,9 +230,9 @@ void guac_user_log(guac_user* user, guac_client_log_level level,
         user->user_id, user->client->connection_id, user->client->connected_users
     );
     fprintf(
-        stderr, "Addresses: user (%p), client (%p, %p, %p), log_handler (%p, %p, %p)\n",
-        (void *) &user, (void *) user.client, (void *) &user->client, (void *) &(user->client),
-        (void *) user->client.log_handler, (void *) &user->client->log_handler, (void *) &(user->client->log_handler)
+        stderr, "Addresses: user (%p), client (%p, %p), log_handler (%p, %p)\n",
+        (void *) &user, (void *) &user->client, (void *) &(user->client),
+        (void *) &user->client->log_handler, (void *) &(user->client->log_handler)
     );
 
     va_list args;
