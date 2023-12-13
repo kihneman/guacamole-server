@@ -222,6 +222,13 @@ void vguac_user_log(guac_user* user, guac_client_log_level level,
 void guac_user_log(guac_user* user, guac_client_log_level level,
         const char* format, ...) {
 
+    /* Log to STDERR */
+    /* fprintf(stderr, GUACD_LOG_NAME "[%i]: %s:\t%s\n", getpid(), priority_name, message); */
+    fprintf(
+        stderr, "Printing log for user id \"%s\" using connection id \"%s\" (%i users now present)",
+        user->user_id, user->client->connection_id, user->client->connected_users
+    );
+
     va_list args;
     va_start(args, format);
 
