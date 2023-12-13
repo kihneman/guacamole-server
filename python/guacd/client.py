@@ -46,7 +46,7 @@ def guacd_create_client(socket: POINTER(guac_socket), protocol: bytes):
     client = client_ptr.contents
 
     # Init logging
-    client.log_handler = ctypes_wrapper.guac_client_log_handler(log.guacd_client_log)
+    client.log_handler = pointer(ctypes_wrapper.guac_client_log_handler(log.guacd_client_log))
 
     # Init client for selected protocol
     if guac_client_load_plugin(client_ptr, String(protocol)):

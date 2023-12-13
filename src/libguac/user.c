@@ -226,8 +226,13 @@ void guac_user_log(guac_user* user, guac_client_log_level level,
     /* Log to STDERR */
     /* fprintf(stderr, GUACD_LOG_NAME "[%i]: %s:\t%s\n", getpid(), priority_name, message); */
     fprintf(
-        stderr, "Printing log for user id \"%s\" using connection id \"%s\" (%i users now present)",
+        stderr, "Printing log for user id \"%s\" using connection id \"%s\" (%i users now present)\n",
         user->user_id, user->client->connection_id, user->client->connected_users
+    );
+    fprintf(
+        stderr, "Addresses: user (%p), client (%p, %p, %p), log_handler (%p, %p, %p)\n",
+        (void *) &user, (void *) user.client, (void *) &user->client, (void *) &(user->client),
+        (void *) user->client.log_handler, (void *) &user->client->log_handler, (void *) &(user->client->log_handler)
     );
 
     va_list args;
