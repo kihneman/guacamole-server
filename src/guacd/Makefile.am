@@ -58,7 +58,7 @@ libguacd_la_SOURCES =  \
     proc-map.c
 
 libguacd_la_CFLAGS =        \
-    -Werror -Wall           \
+    -Werror -Wall -pedantic \
     @COMMON_INCLUDE@        \
     @LIBGUAC_INCLUDE@
 
@@ -83,7 +83,7 @@ guacd_SOURCES =  \
     proc-map.c
 
 guacd_CFLAGS =              \
-    -Werror -Wall           \
+    -Werror -Wall -pedantic \
     @COMMON_INCLUDE@        \
     @LIBGUAC_INCLUDE@
 

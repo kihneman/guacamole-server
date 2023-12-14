@@ -157,8 +157,7 @@ libguacinc_HEADERS += guacamole/socket-wsa.h
 endif
 
 libguac_la_CFLAGS = \
-    -Werror -Wall
-#   -Werror -Wall -pedantic
+    -Werror -Wall -pedantic
 
 libguac_la_LDFLAGS =     \
     -version-info 22:0:1 \
