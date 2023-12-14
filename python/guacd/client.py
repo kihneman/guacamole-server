@@ -1,13 +1,13 @@
-from ctypes import POINTER, pointer
+from ctypes import c_int, pointer, POINTER
 
 from . import ctypes_wrapper, log
 from .ctypes_wrapper import (
     String, guac_client_alloc, guac_client_free, guac_client_load_plugin, guac_client_stop,
-    guac_socket, guac_socket_require_keep_alive, guac_user_alloc, guac_user_free
+    guac_socket, guac_socket_require_keep_alive, guac_user_alloc, guac_user_free, guac_user_handle_connection
 )
 from .constants import GuacClientLogLevel, GuacStatus, GUACD_USEC_TIMEOUT
 from .log import guacd_log, guacd_log_guac_error
-from .user_handshake import guac_user_handle_connection
+# from .user_handshake import guac_user_handle_connection
 
 
 def cleanup_client(client):
@@ -90,7 +90,7 @@ def guacd_create_client(socket: POINTER(guac_socket), protocol: bytes):
     guacd_log(GuacClientLogLevel.GUAC_LOG_INFO, f'Created user id "{user.user_id}"')
 
     # Handle user connection from handshake until disconnect/completion
-    guac_user_handle_connection(user_ptr, GUACD_USEC_TIMEOUT)
+    guac_user_handle_connection(user_ptr, c_int(GUACD_USEC_TIMEOUT))
 
     # Stop client and prevent future users if all users are disconnected
     if client.connected_users == 0:
