@@ -82,7 +82,6 @@ guacd_SOURCES =  \
     proc.c       \
     proc-map.c
 
-#   -Werror -Wall -pedantic \
 guacd_CFLAGS =              \
     -Werror -Wall           \
     @COMMON_INCLUDE@        \
