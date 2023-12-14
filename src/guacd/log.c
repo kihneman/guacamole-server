@@ -109,6 +109,9 @@ void guacd_client_log(guac_client* client, guac_client_log_level level,
 void guacd_client_log_set(guac_client* client) {
     /* Init logging */
     client->log_handler = guacd_client_log;
+
+    /* Log to STDERR */
+    fprintf(stderr, GUACD_LOG_NAME "Set client log_handler to %p\n", (void *) guacd_client_log);
 }
 
 void guacd_log_guac_error(guac_client_log_level level, const char* message) {
