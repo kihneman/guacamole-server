@@ -10,9 +10,8 @@ from .ctypes_wrapper import (
     guac_free_mimetypes, guac_mem_free_const,
     guac_parser, guac_parser_alloc, guac_parser_free, guac_parser_read,
     guac_protocol_send_args, guac_protocol_send_disconnect, guac_protocol_send_ready, guac_protocol_string_to_version,
-    guac_socket, guac_socket_flush, guac_user, guac_user_abort, guac_user_stop, String
+    guac_socket, guac_socket_flush, guac_user, guac_user_abort, guac_user_log, guac_user_stop, String
 )
-from .log import guac_user_log
 
 
 # The client took too long to respond.
@@ -249,7 +248,8 @@ def __guac_user_handshake(user_ptr: POINTER(guac_user), parser_ptr: POINTER(guac
         # log_handler_addr = hex(addressof(client.log_handler.contents))
         # print(f'Addresses: user ({user_addr}), client ({client_addr}), log_handler ({log_handler_addr})')
         guac_user_log(
-            user_ptr, GuacClientLogLevel.GUAC_LOG_DEBUG, f'Processing instruction: {parser.opcode.data.decode()}'
+            user_ptr, guac_client_log_level(GuacClientLogLevel.GUAC_LOG_DEBUG),
+            String(f'Processing instruction: {parser.opcode.data.decode()}'.encode())
         )
 
         # Run instruction handler for opcode with arguments.
