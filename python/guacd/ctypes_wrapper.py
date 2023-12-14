@@ -1577,13 +1577,19 @@ if _libs["libguacd"].has("guacd_client_log", "cdecl"):
     guacd_client_log.argtypes = [POINTER(guac_client), guac_client_log_level, String, c_void_p]
     guacd_client_log.restype = None
 
-# /tmp/guacamole-server/src/guacd/log.h: 63
+# /tmp/guacamole-server/src/guacd/log.h: 58
+if _libs["libguacd"].has("guacd_client_log_set", "cdecl"):
+    guacd_client_log_set = _libs["libguacd"].get("guacd_client_log_set", "cdecl")
+    guacd_client_log_set.argtypes = [POINTER(guac_client)]
+    guacd_client_log_set.restype = None
+
+# /tmp/guacamole-server/src/guacd/log.h: 65
 if _libs["libguacd"].has("guacd_log_guac_error", "cdecl"):
     guacd_log_guac_error = _libs["libguacd"].get("guacd_log_guac_error", "cdecl")
     guacd_log_guac_error.argtypes = [guac_client_log_level, String]
     guacd_log_guac_error.restype = None
 
-# /tmp/guacamole-server/src/guacd/log.h: 69
+# /tmp/guacamole-server/src/guacd/log.h: 71
 if _libs["libguacd"].has("guacd_log_handshake_failure", "cdecl"):
     guacd_log_handshake_failure = _libs["libguacd"].get("guacd_log_handshake_failure", "cdecl")
     guacd_log_handshake_failure.argtypes = []
