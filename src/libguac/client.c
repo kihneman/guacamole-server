@@ -384,7 +384,7 @@ void vguac_client_log(guac_client* client, guac_client_log_level level,
 
     /* Call handler if defined */
     if (client->log_handler != NULL) {
-        fprintf(stderr, "Got to call of client->log_handler");
+        fprintf(stderr, "Got to call of client->log_handler\n");
         client->log_handler(client, level, format, ap);
     }
 }

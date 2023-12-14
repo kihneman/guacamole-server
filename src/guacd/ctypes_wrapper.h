@@ -86,19 +86,6 @@ guacd_config* guacd_conf_load();
 int guacd_conf_parse_args(guacd_config* config, int argc, char** argv);
 
 
-/** log.h **/
-/**
- * The string to prepend to all log messages.
- */
-#define GUACD_LOG_NAME "guacd"
-
-/**
- * Writes a message to guacd's logs. This function accepts parameters
- * identically to printf.
- */
-void guacd_log(guac_client_log_level level, const char* format, ...);
-
-
 int main(int argc, char* argv[]);
 
 #endif
