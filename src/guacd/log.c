@@ -106,6 +106,11 @@ void guacd_client_log(guac_client* client, guac_client_log_level level,
     vguacd_log(level, format, args);
 }
 
+void guacd_client_log_set(guac_client* client) {
+    /* Init logging */
+    client->log_handler = guacd_client_log;
+}
+
 void guacd_log_guac_error(guac_client_log_level level, const char* message) {
 
     if (guac_error != GUAC_STATUS_SUCCESS) {
