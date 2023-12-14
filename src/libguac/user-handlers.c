@@ -762,20 +762,21 @@ int __guac_user_call_opcode_handler(__guac_instruction_handler_mapping* map,
 
     /* For each defined instruction */
     __guac_instruction_handler_mapping* current = map;
-    fprintf(stderr, "Set current handler to check");
+    fprintf(stderr, "Set current handler to check\n");
     while (current->opcode != NULL) {
 
         /* If recognized, call handler */
         if (strcmp(opcode, current->opcode) == 0) {
-            fprintf(stderr, "Found handler to call");
+            fprintf(stderr, "Found handler to call\n");
             return current->handler(user, argc, argv);
         }
 
-        fprintf(stderr, "Checking next handler");
+        fprintf(stderr, "Checking next handler\n");
         current++;
     }
 
     /* If unrecognized, log and ignore */
+    fprintf(stderr, "Handler not found for \"%s\"\n", opcode);
     guac_user_log(user, GUAC_LOG_DEBUG, "Handler not found for \"%s\"",
             opcode);
     return 0;
