@@ -766,9 +766,10 @@ int __guac_user_call_opcode_handler(__guac_instruction_handler_mapping* map,
     while (current->opcode != NULL) {
 
         /* If recognized, call handler */
-        if (strcmp(opcode, current->opcode) == 0)
+        if (strcmp(opcode, current->opcode) == 0) {
             fprintf(stderr, "Found handler to call");
             return current->handler(user, argc, argv);
+        }
 
         fprintf(stderr, "Checking next handler");
         current++;
