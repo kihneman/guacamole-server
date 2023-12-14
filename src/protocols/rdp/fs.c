@@ -41,6 +41,7 @@
 #include <unistd.h>
 
 #ifdef WINDOWS_BUILD
+#include <io.h>
 #include <direct.h>
 #include <fileapi.h>
 #include <winerror.h>
@@ -618,9 +619,9 @@ const char* guac_rdp_fs_read_dir(guac_rdp_fs* fs, int file_id) {
 
         wchar_t file_name_buffer[1024];
 
-        /* It _should_ be ok to just cast the fd to a handle. Maybe? */
         DWORD return_value = GetFinalPathNameByHandleW(
-                (HANDLE) ((size_t) file->fd), file_name_buffer, sizeof(file_name_buffer),
+                ((HANDLE) _get_osfhandle(file->fd)),
+                file_name_buffer, sizeof(file_name_buffer),
                 FILE_NAME_NORMALIZED);
         if (return_value == 0)
             return NULL;

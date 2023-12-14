@@ -1236,6 +1236,7 @@ AC_CONFIG_FILES([Makefile
                  src/protocols/kubernetes/Makefile
                  src/protocols/kubernetes/tests/Makefile
                  src/protocols/rdp/Makefile
+                 src/protocols/rdp/guacxpstopdf/Makefile
                  src/protocols/rdp/tests/Makefile
                  src/protocols/ssh/Makefile
                  src/protocols/telnet/Makefile

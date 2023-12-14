@@ -196,6 +196,12 @@ typedef struct guac_rdp_client {
      */
     pthread_mutex_t message_lock;
 
+    /**
+     * Non-zero if XPS mode is enabled, or zero otherwise. See
+     * https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-rdpepc/f97d26e7-d862-4cca-8ec9-98d3c69e2717
+     */
+    int xps_printer_mode_enabled;
+
 } guac_rdp_client;
 
 /**

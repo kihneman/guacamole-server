@@ -136,7 +136,6 @@ typedef struct guac_rdp_fs_file {
 
     /**
      * Associated local file descriptor.
-     * TODO: Replace this with a handle for windows times
      */
     int fd;
 

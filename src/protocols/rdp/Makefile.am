@@ -270,3 +270,8 @@ EXTRA_DIST =                           \
     $(rdp_keymaps)                     \
     keymaps/generate.pl                \
     plugins/generate-entry-wrappers.pl
+
+if WINDOWS_BUILD
+DIST_SUBDIRS = guacxpstopdf
+SUBDIRS += guacxpstopdf
+endif
