@@ -191,6 +191,7 @@ RUN apk add --no-cache                \
         busybox-extras                \
         ca-certificates               \
         ghostscript                   \
+        git                           \
         netcat-openbsd                \
         python3                       \
         py3-pip                       \
