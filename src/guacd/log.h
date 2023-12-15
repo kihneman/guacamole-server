@@ -55,8 +55,6 @@ void guacd_log(guac_client_log_level level, const char* format, ...);
 void guacd_client_log(guac_client* client, guac_client_log_level level,
         const char* format, va_list args);
 
-void guacd_client_log_set(guac_client* client);
-
 /**
  * Prints an error message to guacd's logs, automatically including any
  * information present in guac_error. This function accepts parameters

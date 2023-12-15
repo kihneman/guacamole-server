@@ -383,56 +383,9 @@ void vguac_client_log(guac_client* client, guac_client_log_level level,
         const char* format, va_list ap) {
 
     /* Call handler if defined */
-    /* if (client->log_handler != NULL)
+    if (client->log_handler != NULL)
         client->log_handler(client, level, format, ap);
-    */
 
-    const char* priority_name;
-
-    char message[2048];
-
-    /* Don't bother if the log level is too high */
-    if (level > GUAC_LOG_DEBUG)
-        return;
-
-    /* Copy log message into buffer */
-    vsnprintf(message, sizeof(message), format, ap);
-
-    switch (level) {
-
-        /* Error log level */
-        case GUAC_LOG_ERROR:
-            priority_name = "ERROR";
-            break;
-
-        /* Warning log level */
-        case GUAC_LOG_WARNING:
-            priority_name = "WARNING";
-            break;
-
-        /* Informational log level */
-        case GUAC_LOG_INFO:
-            priority_name = "INFO";
-            break;
-
-        /* Debug log level */
-        case GUAC_LOG_DEBUG:
-            priority_name = "DEBUG";
-            break;
-
-        /* Trace log level */
-        case GUAC_LOG_TRACE:
-            priority_name = "TRACE";
-            break;
-
-        /* Any unknown/undefined log level */
-        default:
-            priority_name = "UNKNOWN";
-            break;
-    }
-
-    /* Log to STDERR */
-    fprintf(stderr, "%s:\t%s\n", priority_name, message);
 }
 
 void guac_client_log(guac_client* client, guac_client_log_level level,

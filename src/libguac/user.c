@@ -37,7 +37,6 @@
 
 #include <errno.h>
 #include <limits.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -222,19 +221,6 @@ void vguac_user_log(guac_user* user, guac_client_log_level level,
 
 void guac_user_log(guac_user* user, guac_client_log_level level,
         const char* format, ...) {
-
-    /* Extra debug info */
-    /*
-     *  fprintf(
-     *      stderr, "Printing log for user id \"%s\" using connection id \"%s\" (%i users now present)\n",
-     *      user->user_id, user->client->connection_id, user->client->connected_users
-     *  );
-     *  fprintf(
-     *      stderr, "Addresses: user (%p), client (%p), log_handler (%p), user id (%p), connection id (%p), users (%p)\n",
-     *      (void *) user, (void *) user->client, (void *) user->client->log_handler,
-     *      (void *) user->user_id, (void *) user->client->connection_id, (void *) &user->client->connected_users
-     *  );
-     */
 
     va_list args;
     va_start(args, format);
