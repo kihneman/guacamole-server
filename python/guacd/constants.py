@@ -52,7 +52,11 @@ GUAC_STATUS_ERRNO                 = "Error number needs to be checked"
 
 
 class GuacClientLogLevel(IntEnum):
-    """The contents of a guacd configuration file."""
+    """
+    All supported log levels used by the logging subsystem of each Guacamole
+    client. With the exception of GUAC_LOG_TRACE, these log levels correspond to
+    a subset of the log levels defined by RFC 5424.
+    """
     # Fatal errors.
     GUAC_LOG_ERROR = 3
 

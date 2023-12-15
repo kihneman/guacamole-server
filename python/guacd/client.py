@@ -1,7 +1,7 @@
 from ctypes import c_int, pointer, POINTER
 
-from . import ctypes_wrapper, log
-from .ctypes_wrapper import (
+from . import libguac_wrapper, log
+from .libguac_wrapper import (
     String, guac_client_alloc, guac_client_free, guac_client_load_plugin, guac_client_stop,
     guac_socket, guac_socket_require_keep_alive, guac_user_alloc, guac_user_free, guac_user_handle_connection
 )
@@ -46,12 +46,12 @@ def guacd_create_client(socket: POINTER(guac_socket), protocol: bytes):
     client = client_ptr.contents
 
     # Init logging
-    client.log_handler = pointer(ctypes_wrapper.guac_client_log_handler(log.guacd_client_log))
+    # client.log_handler = pointer(ctypes_wrapper.guac_client_log_handler(log.guacd_client_log))
 
     # Init client for selected protocol
     if guac_client_load_plugin(client_ptr, String(protocol)):
         # Log error
-        guac_error = ctypes_wrapper.__guac_error()[0]
+        guac_error = libguac_wrapper.__guac_error()[0]
         if guac_error == GuacStatus.GUAC_STATUS_NOT_FOUND:
             guacd_log(
                 GuacClientLogLevel.GUAC_LOG_WARNING, f'Support for protocol "{protocol.decode()}" is not installed'
