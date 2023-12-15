@@ -2,7 +2,7 @@ from argparse import ArgumentError, ArgumentParser
 from dataclasses import dataclass
 from typing import Optional
 
-from constants import GuacClientLogLevel, GUACD_DEFAULT_BIND_HOST, GUACD_DEFAULT_BIND_PORT
+from .constants import GuacClientLogLevel, GUACD_DEFAULT_BIND_HOST, GUACD_DEFAULT_BIND_PORT
 
 
 GUACD_ARG_TO_LOG_LEVEL = {
