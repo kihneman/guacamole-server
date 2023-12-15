@@ -3,7 +3,7 @@ from socket import getaddrinfo, getnameinfo
 
 from .conf import guacd_conf_parse_args
 from .connection import guacd_route_connection
-from .constants import EXIT_FAILURE, GuacClientLogLevel, GUACD_DEFAULT_BIND_HOST, GUACD_DEFAULT_BIND_PORT
+from .constants import EXIT_FAILURE, GuacClientLogLevel
 from .libguac_wrapper import guac_socket_free, guac_socket_open
 from .log import guacd_log
 
@@ -20,7 +20,7 @@ def main():
     # Get addresses for binding
     try:
         addresses = getaddrinfo(
-            GUACD_DEFAULT_BIND_HOST, GUACD_DEFAULT_BIND_PORT,
+            config.bind_host, config.bind_port,
             family=socket.AF_UNSPEC, type=socket.SOCK_STREAM, proto=socket.IPPROTO_TCP
         )
     except Exception as e:
