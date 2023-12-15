@@ -2,9 +2,9 @@ from ctypes import addressof, cast, c_char_p, c_int, POINTER, Structure
 from threading import Thread
 from typing import Optional
 
-from . import ctypes_wrapper
-from .constants import GuacClientLogLevel, GuacClientState, GuacProtocolVersion, GuacStatus, guac_status_to_string
-from .ctypes_wrapper import (
+from ..libguacd import ctypes_wrapper
+from ..constants import GuacClientLogLevel, GuacClientState, GuacProtocolVersion, GuacStatus, guac_status_to_string
+from ..libguacd.ctypes_wrapper import (
     __guac_handshake_handler_map, __guac_instruction_handler_map, __guac_user_call_opcode_handler,
     guac_client, guac_client_add_user, guac_client_log, guac_client_log_level, guac_client_remove_user,
     guac_free_mimetypes, guac_mem_free_const,

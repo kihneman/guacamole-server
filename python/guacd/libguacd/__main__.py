@@ -6,17 +6,14 @@ from argparse import ArgumentParser
 from socket import getaddrinfo, getnameinfo
 
 from . import get_config, guacd_main
-from .connection import guacd_route_connection
-from .constants import (
+from ..connection import guacd_route_connection
+from ..constants import (
     EXIT_SUCCESS, EXIT_FAILURE, GuacClientLogLevel, GUACD_DEFAULT_BIND_HOST, GUACD_DEFAULT_BIND_PORT, GUACD_LOG_NAME
 )
 from .ctypes_wrapper import (
     String, guac_protocol_send_name, guac_socket_flush, guac_socket_free, guac_socket_open
 )
 from .log import guacd_log
-
-
-PROTOCOL = b'ssh'
 
 
 def main():
@@ -112,5 +109,6 @@ def main():
         result = guacd_main(argv)
         msg = f'Finished with result "{result}"'
         guacd_log(GuacClientLogLevel.GUAC_LOG_INFO, msg)
+
 
 main()

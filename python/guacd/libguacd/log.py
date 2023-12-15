@@ -1,9 +1,8 @@
 from ctypes import cast, c_char_p, c_int, c_void_p, POINTER
-from typing import Optional
 
 from . import ctypes_wrapper
 from .ctypes_wrapper import String, guac_client_log_level, guac_user, guac_user_log as libguac_user_log
-from .constants import GuacClientLogLevel, GuacStatus, guac_status_to_string
+from ..constants import GuacClientLogLevel, GuacStatus, guac_status_to_string
 
 
 def guacd_client_log(guac_client_ptr, log_level: c_int, msg: String, log_args: c_void_p):

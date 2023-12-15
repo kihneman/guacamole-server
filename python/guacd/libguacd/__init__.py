@@ -3,7 +3,6 @@ from typing import Optional
 
 from . import ctypes_wrapper
 from .ctypes_wrapper import guacd_config, guacd_conf_load, guacd_conf_parse_args
-from .constants import GuacClientLogLevel
 
 
 def get_argc_argv(sys_argv) -> (ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)):
