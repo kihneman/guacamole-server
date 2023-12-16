@@ -32,7 +32,7 @@
  * The full path to the libgxps-provided executable that translates XPS to PDF.
  * TODO: Must this be hardcoded?
  */
-#define TRANSLATION_EXECUTABLE_PATH ".\\xpstopdf.exe"
+#define TRANSLATION_EXECUTABLE_PATH "xpstopdf.exe"
 
 /**
  * Create a new temporary file, in the configured temporary directory, returning
@@ -200,21 +200,33 @@ int main(int argc, char* argv[]) {
     fprintf(stderr, "xps_path_length: %llu\n", xps_path_length);
     fprintf(stderr, "pdf_path_length: %llu\n", pdf_path_length);
 
-    /* Copy the two arguments in with a space in between, and null terminator */
-    char argument_string[(MAX_PATH * 2) + 2];
-    strncpy(argument_string, temp_xps_path, xps_path_length);
-    argument_string[xps_path_length] = ' ';
-    strncpy(argument_string + xps_path_length + 1, temp_pdf_path, pdf_path_length);
-    argument_string[xps_path_length + 1 + pdf_path_length] = '\0';
+    /* Create a single space-seperated string with the exe and arguments */
+    char argument_string[(MAX_PATH * 3) + 2];
+    char* next_argument;
+
+    /* First, the executable itself */
+    size_t exe_path_length = strlen(exe_path);
+    strncpy(argument_string, exe_path, exe_path_length);
+    argument_string[exe_path_length] = ' ';
+    next_argument = argument_string + exe_path_length + 1;
+
+    /* Second, the input file name */
+    strncpy(next_argument, temp_xps_path, xps_path_length);
+    next_argument[xps_path_length] = ' ';
+    next_argument = argument_string + xps_path_length + 1;
+
+    /* Finally, the output file name */
+    strncpy(next_argument, temp_pdf_path, pdf_path_length);
+    next_argument[pdf_path_length] = '\0';
 
     // TODO: not this
-    fprintf(stderr, "Running %s %s\n", exe_path, argument_string);
+    fprintf(stderr, "Running %s\n", argument_string);
 
     /* Start up the translation program */
     if (!CreateProcess(
 
-        /* The program to invoke */
-        exe_path,
+        /* Set to NULL to use the first argument as the exe  */
+        NULL,
 
         /* The arguments - both temporary files, each quoted */
         argument_string,
