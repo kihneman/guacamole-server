@@ -30,6 +30,7 @@ RUN apk add --no-cache                \
         autoconf                      \
         automake                      \
         build-base                    \
+        busybox-extras                \
         cairo-dev                     \
         cmake                         \
         cunit-dev                     \
@@ -40,9 +41,12 @@ RUN apk add --no-cache                \
         libtool                       \
         libwebp-dev                   \
         make                          \
-        openssl1.1-compat-dev         \
+        openssl-dev                   \
         pango-dev                     \
         pulseaudio-dev                \
+        python3                       \
+        py3-pip                       \
+        py3-wheel                     \
         util-linux-dev
 
 # Copy source to container for sake of build
@@ -139,6 +143,22 @@ ARG LIBWEBSOCKETS_OPTS="\
 # Build guacamole-server and its core protocol library dependencies
 RUN ${BUILD_DIR}/src/guacd-docker/bin/build-all.sh
 
+# Build Python wheel
+# RUN cd ${BUILD_DIR}/python && python ./setup.py bdist_wheel -d ${PREFIX_DIR}/wheels
+
+# Updated ctypes_wrapper.py goes into ${PREFIX_DIR} to be used for future source changes
+# RUN pip install wheel ctypesgen                                            \
+#     && ctypesgen -llibguacd -L /opt/guacamole/lib                          \
+#        -I /opt/guacamole/include -o ${PREFIX_DIR}/python/ctypes_wrapper.py \
+#        /opt/guacamole/include/ctypes_wrapper.h                             \
+
+# To debug builder stage:
+# docker build --target builder -t guacd-builder .
+# docker run -it --name guacd-builder-1 guacd-builder /bin/sh
+
+# Expose the default listener port
+# EXPOSE 4822
+
 # Record the packages of all runtime library dependencies
 RUN ${BUILD_DIR}/src/guacd-docker/bin/list-dependencies.sh \
         ${PREFIX_DIR}/sbin/guacd               \
@@ -161,16 +181,20 @@ ARG PREFIX_DIR=/opt/guacamole
 # Runtime environment
 ENV LC_ALL=C.UTF-8
 ENV LD_LIBRARY_PATH=${PREFIX_DIR}/lib
-ENV GUACD_LOG_LEVEL=info
+ENV GUACD_LOG_LEVEL=debug
 
 # Copy build artifacts into this stage
 COPY --from=builder ${PREFIX_DIR} ${PREFIX_DIR}
 
 # Bring runtime environment up to date and install runtime dependencies
 RUN apk add --no-cache                \
+        busybox-extras                \
         ca-certificates               \
         ghostscript                   \
+        git                           \
         netcat-openbsd                \
+        python3                       \
+        py3-pip                       \
         shadow                        \
         terminus-font                 \
         ttf-dejavu                    \
@@ -193,10 +217,15 @@ USER guacd
 # Expose the default listener port
 EXPOSE 4822
 
+# Install Python package
+RUN cd ~ && python -m venv pyguacd && source pyguacd/bin/activate && pip install git+https://github.com/kihneman/pyguacd.git
+
 # Start guacd, listening on port 0.0.0.0:4822
 #
 # Note the path here MUST correspond to the value specified in the 
 # PREFIX_DIR build argument.
 #
-CMD /opt/guacamole/sbin/guacd -b 0.0.0.0 -L $GUACD_LOG_LEVEL -f
+# CMD python -m guacd -b 0.0.0.0 -L $GUACD_LOG_LEVEL -f
 
+# For debugging
+CMD sleep infinity
