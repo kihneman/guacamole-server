@@ -318,7 +318,7 @@ guac_client* guac_client_alloc() {
 
     /* Allocate client internal */
     fprintf(stderr, "/* Allocate client internal */\n");
-    client->internal = guac_client_internal_alloc()
+    client->internal = guac_client_internal_alloc();
 
     /* Allocate buffer and layer pools */
     fprintf(stderr, "/* Allocate buffer and layer pools */\n");
