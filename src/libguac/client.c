@@ -292,6 +292,7 @@ guac_client* guac_client_alloc() {
     int i;
 
     /* Allocate new client */
+    fprintf(stderr, "/* Allocate new client */\n");
     guac_client* client = malloc(sizeof(guac_client));
     if (client == NULL) {
         guac_error = GUAC_STATUS_NO_MEMORY;
@@ -300,6 +301,7 @@ guac_client* guac_client_alloc() {
     }
 
     /* Init new client */
+    fprintf(stderr, "/* Init new client */\n");
     memset(client, 0, sizeof(guac_client));
 
     client->args = __GUAC_CLIENT_NO_ARGS;
@@ -307,6 +309,7 @@ guac_client* guac_client_alloc() {
     client->last_sent_timestamp = guac_timestamp_current();
 
     /* Generate ID */
+    fprintf(stderr, "/* Generate ID */\n");
     client->connection_id = guac_generate_id(GUAC_CLIENT_ID_PREFIX);
     if (client->connection_id == NULL) {
         free(client);
@@ -314,16 +317,20 @@ guac_client* guac_client_alloc() {
     }
 
     /* Allocate client internal */
+    fprintf(stderr, "/* Allocate client internal */\n");
     client->internal = guac_client_internal_alloc()
 
     /* Allocate buffer and layer pools */
+    fprintf(stderr, "/* Allocate buffer and layer pools */\n");
     client->internal->__buffer_pool = guac_pool_alloc(GUAC_BUFFER_POOL_INITIAL_SIZE);
     client->internal->__layer_pool = guac_pool_alloc(GUAC_BUFFER_POOL_INITIAL_SIZE);
 
     /* Allocate stream pool */
+    fprintf(stderr, "/* Allocate stream pool */\n");
     client->internal->__stream_pool = guac_pool_alloc(0);
 
     /* Initialize streams */
+    fprintf(stderr, "/* Initialize streams */\n");
     client->internal->__output_streams = malloc(sizeof(guac_stream) * GUAC_CLIENT_MAX_STREAMS);
 
     for (i=0; i<GUAC_CLIENT_MAX_STREAMS; i++) {
@@ -331,6 +338,7 @@ guac_client* guac_client_alloc() {
     }
 
     /* Init locks */
+    fprintf(stderr, "/* Init locks */\n");
     guac_rwlock_init(&(client->internal->__users_lock));
     guac_rwlock_init(&(client->internal->__pending_users_lock));
 
