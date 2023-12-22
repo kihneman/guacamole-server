@@ -270,6 +270,23 @@ promotion_complete:
 
 }
 
+guac_client_internal* guac_client_internal_alloc() {
+
+    /* Allocate new client */
+    guac_client_internal* client_internal = malloc(sizeof(guac_client_internal));
+    if (client_internal == NULL) {
+        guac_error = GUAC_STATUS_NO_MEMORY;
+        guac_error_message = "Could not allocate memory for client";
+        return NULL;
+    }
+
+    /* Init new client */
+    memset(client_internal, 0, sizeof(guac_client_internal));
+
+    return client_internal;
+
+}
+
 guac_client* guac_client_alloc() {
 
     int i;
@@ -295,6 +312,9 @@ guac_client* guac_client_alloc() {
         free(client);
         return NULL;
     }
+
+    /* Allocate client internal */
+    client->internal = guac_client_internal_alloc()
 
     /* Allocate buffer and layer pools */
     client->internal->__buffer_pool = guac_pool_alloc(GUAC_BUFFER_POOL_INITIAL_SIZE);
@@ -768,7 +788,7 @@ int guac_client_load_plugin(guac_client* client, const char* protocol) {
         GUAC_PROTOCOL_LIBRARY_PREFIX;
 
     /* Type-pun for the sake of dlsym() - cannot typecast a void* to a function
-     * pointer otherwise */ 
+     * pointer otherwise */
     union {
         guac_client_init_handler* client_init;
         void* obj;
@@ -830,7 +850,7 @@ int guac_client_load_plugin(guac_client* client, const char* protocol) {
 static void* guac_client_owner_send_required_callback(guac_user* user, void* data) {
     
     const char** required = (const char **) data;
-    
+
     /* Send required parameters to owner. */
     if (user != NULL)
         return (void*) ((intptr_t) guac_protocol_send_required(user->socket, required));
@@ -1110,7 +1130,7 @@ static void* guac_client_owner_notify_join_callback(guac_user* user, void* data)
 
     guac_user_log(user, GUAC_LOG_DEBUG, "Notifying owner \"%s\" of \"%s\" joining.",
             log_owner, log_joiner);
-    
+
     /* Send user joined notification to owner. */
     const char* args[] = { (const char*)joiner->user_id, (const char*)send_joiner, NULL };
     return (void*) ((intptr_t) guac_protocol_send_msg(user->socket, GUAC_MESSAGE_USER_JOINED, args));
@@ -1169,7 +1189,7 @@ static void* guac_client_owner_notify_leave_callback(guac_user* user, void* data
 
     guac_user_log(user, GUAC_LOG_DEBUG, "Notifying owner \"%s\" of \"%s\" leaving.",
             log_owner, log_quitter);
-    
+
     /* Send user left notification to owner. */
     const char* args[] = { (const char*)quitter->user_id, (const char*)send_quitter, NULL };
     return (void*) ((intptr_t) guac_protocol_send_msg(user->socket, GUAC_MESSAGE_USER_LEFT, args));
