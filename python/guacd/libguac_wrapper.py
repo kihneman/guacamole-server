@@ -1,7 +1,7 @@
 r"""Wrapper for user-handlers.h
 
 Generated with:
-/tmp/guacamole-server/venv-guacd/bin/ctypesgen -llibguac -L /opt/guacamole/lib -I /opt/guacamole/include -I . -o libguac_wrapper.py src/libguac/user-handlers.h src/libguac/guacamole/client.h src/libguac/guacamole/error.h src/libguac/guacamole/error-types.h src/libguac/guacamole/parser.h src/libguac/guacamole/protocol.h src/libguac/guacamole/socket.h src/libguac/guacamole/user.h
+/tmp/guacamole-server/venv-guacd/bin/ctypesgen -llibguac -L /opt/guacamole/lib -I /opt/guacamole/include -I . -o libguac_wrapper.py src/libguac/user-handlers.h src/libguac/guacamole/client.h src/libguac/client-internal.h src/libguac/guacamole/error.h src/libguac/guacamole/error-types.h src/libguac/guacamole/parser.h src/libguac/guacamole/protocol.h src/libguac/guacamole/socket.h src/libguac/guacamole/user.h
 
 Do not modify this file.
 """
@@ -964,6 +964,66 @@ class struct___pthread(Structure):
 
 pthread_t = POINTER(struct___pthread)# /usr/include/bits/alltypes.h: 273
 
+pthread_key_t = c_uint# /usr/include/bits/alltypes.h: 284
+
+# /usr/include/bits/alltypes.h: 383
+class union_anon_7(Union):
+    pass
+
+union_anon_7.__slots__ = [
+    '__i',
+    '__vi',
+    '__p',
+]
+union_anon_7._fields_ = [
+    ('__i', c_int * int((sizeof(c_long) == 8) and 10 or 6)),
+    ('__vi', c_int * int((sizeof(c_long) == 8) and 10 or 6)),
+    ('__p', POINTER(None) * int((sizeof(c_long) == 8) and 5 or 6)),
+]
+
+# /usr/include/bits/alltypes.h: 383
+class struct_anon_8(Structure):
+    pass
+
+struct_anon_8.__slots__ = [
+    '__u',
+]
+struct_anon_8._fields_ = [
+    ('__u', union_anon_7),
+]
+
+pthread_mutex_t = struct_anon_8# /usr/include/bits/alltypes.h: 383
+
+# /usr/include/bits/alltypes.h: 403
+class union_anon_11(Union):
+    pass
+
+union_anon_11.__slots__ = [
+    '__i',
+    '__vi',
+    '__p',
+]
+union_anon_11._fields_ = [
+    ('__i', c_int * int((sizeof(c_long) == 8) and 14 or 8)),
+    ('__vi', c_int * int((sizeof(c_long) == 8) and 14 or 8)),
+    ('__p', POINTER(None) * int((sizeof(c_long) == 8) and 7 or 8)),
+]
+
+# /usr/include/bits/alltypes.h: 403
+class struct_anon_12(Structure):
+    pass
+
+struct_anon_12.__slots__ = [
+    '__u',
+]
+struct_anon_12._fields_ = [
+    ('__u', union_anon_11),
+]
+
+pthread_rwlock_t = struct_anon_12# /usr/include/bits/alltypes.h: 403
+
+timer_t = POINTER(None)# /usr/include/bits/alltypes.h: 209
+
 struct_guac_socket.__slots__ = [
     'data',
     'read_handler',
@@ -1179,13 +1239,28 @@ class struct_guac_pool(Structure):
 
 guac_pool = struct_guac_pool# /tmp/guacamole-server/src/libguac/guacamole/pool-types.h: 40
 
+# /tmp/guacamole-server/src/libguac/guacamole/rwlock.h: 62
+class struct_guac_rwlock(Structure):
+    pass
+
+struct_guac_rwlock.__slots__ = [
+    'lock',
+    'key',
+]
+struct_guac_rwlock._fields_ = [
+    ('lock', pthread_rwlock_t),
+    ('key', pthread_key_t),
+]
+
+guac_rwlock = struct_guac_rwlock# /tmp/guacamole-server/src/libguac/guacamole/rwlock.h: 62
+
 # /usr/include/cairo/cairo.h: 164
 class struct__cairo_surface(Structure):
     pass
 
 cairo_surface_t = struct__cairo_surface# /usr/include/cairo/cairo.h: 164
 
-# /tmp/guacamole-server/src/libguac/guacamole/client.h: 57
+# /tmp/guacamole-server/src/libguac/client-internal.h: 44
 class struct_guac_client_internal(Structure):
     pass
 
@@ -1618,6 +1693,37 @@ if _libs["libguac"].has("__guac_user_call_opcode_handler", "cdecl"):
     __guac_user_call_opcode_handler = _libs["libguac"].get("__guac_user_call_opcode_handler", "cdecl")
     __guac_user_call_opcode_handler.argtypes = [POINTER(__guac_instruction_handler_mapping), POINTER(guac_user), String, c_int, POINTER(POINTER(c_char))]
     __guac_user_call_opcode_handler.restype = c_int
+
+struct_guac_client_internal.__slots__ = [
+    '__buffer_pool',
+    '__layer_pool',
+    '__stream_pool',
+    '__output_streams',
+    '__users_lock',
+    '__users',
+    '__pending_users_lock',
+    '__pending_users_timer',
+    '__pending_users_timer_state',
+    '__pending_users_timer_mutex',
+    '__pending_users',
+    '__owner',
+    '__plugin_handle',
+]
+struct_guac_client_internal._fields_ = [
+    ('__buffer_pool', POINTER(guac_pool)),
+    ('__layer_pool', POINTER(guac_pool)),
+    ('__stream_pool', POINTER(guac_pool)),
+    ('__output_streams', POINTER(guac_stream)),
+    ('__users_lock', guac_rwlock),
+    ('__users', POINTER(guac_user)),
+    ('__pending_users_lock', guac_rwlock),
+    ('__pending_users_timer', timer_t),
+    ('__pending_users_timer_state', c_int),
+    ('__pending_users_timer_mutex', pthread_mutex_t),
+    ('__pending_users', POINTER(guac_user)),
+    ('__owner', POINTER(guac_user)),
+    ('__plugin_handle', POINTER(None)),
+]
 
 enum_guac_status = c_int# /tmp/guacamole-server/src/libguac/guacamole/error-types.h: 178
 
@@ -2392,7 +2498,7 @@ guac_user = struct_guac_user# /tmp/guacamole-server/src/libguac/guacamole/user.h
 
 guac_user_info = struct_guac_user_info# /tmp/guacamole-server/src/libguac/guacamole/user.h: 46
 
-guac_client_internal = struct_guac_client_internal# /tmp/guacamole-server/src/libguac/guacamole/client.h: 57
+guac_client_internal = struct_guac_client_internal# /tmp/guacamole-server/src/libguac/client-internal.h: 44
 
 __guac_instruction_handler_mapping = struct___guac_instruction_handler_mapping# /tmp/guacamole-server/src/libguac/user-handlers.h: 72
 
