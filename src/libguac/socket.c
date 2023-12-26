@@ -177,7 +177,7 @@ void guac_socket_require_keep_alive(guac_socket* socket) {
     fprintf(stderr, "/* Start keep-alive thread */\n");
 
     /*
-     * fprintf(stderr, "/* Setting __keep_alive_enabled */\n");
+     * fprintf(stderr, "/* Setting __keep_alive_enabled \n");
      * socket->__keep_alive_enabled = 1;
      */
 
