@@ -174,9 +174,13 @@ guac_socket* guac_socket_alloc() {
 void guac_socket_require_keep_alive(guac_socket* socket) {
 
     /* Start keep-alive thread */
+    fprintf(stderr, "/* Start keep-alive thread */\n");
+    fprintf(stderr, "/* Setting __keep_alive_enabled */\n");
     socket->__keep_alive_enabled = 1;
+    fprintf(stderr, "/* Creating thread __keep_alive_thread */\n");
     pthread_create(&(socket->__keep_alive_thread), NULL,
                 __guac_socket_keep_alive_thread, (void*) socket);
+    fprintf(stderr, "/* Done starting keep-alive thread */\n");
 
 }
 
