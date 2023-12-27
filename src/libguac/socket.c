@@ -43,6 +43,7 @@ char __guac_socket_BASE64_CHARACTERS[64] = {
 };
 
 static void* __guac_socket_keep_alive_thread(void* data) {
+    fprintf(stderr, "Starting socket keep alive thread\n");
 
     int old_cancelstate;
 
@@ -54,6 +55,7 @@ static void* __guac_socket_keep_alive_thread(void* data) {
     /* Socket keep-alive loop */
     guac_socket* socket = (guac_socket*) data;
     while (socket->state == GUAC_SOCKET_OPEN) {
+        fprintf(stderr, "Another socket keep alive thread loop\n");
 
         /* Send NOP keep-alive if it's been a while since the last output */
         guac_timestamp timestamp = guac_timestamp_current();
@@ -61,6 +63,7 @@ static void* __guac_socket_keep_alive_thread(void* data) {
                 GUAC_SOCKET_KEEP_ALIVE_INTERVAL) {
 
             /* Send NOP */
+            fprintf(stderr, "Sending socket keep alive thread NOP\n");
             if (guac_protocol_send_nop(socket)
                 || guac_socket_flush(socket))
                 break;
