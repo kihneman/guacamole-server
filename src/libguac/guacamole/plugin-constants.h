@@ -38,7 +38,7 @@
 /**
  * String suffix which ends the library filename of all client plugins.
  */
-#define GUAC_PROTOCOL_LIBRARY_SUFFIX ".dll"
+#define GUAC_PROTOCOL_LIBRARY_SUFFIX ".dll.a"
 
 #else
 
