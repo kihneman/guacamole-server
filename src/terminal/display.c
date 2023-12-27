@@ -31,6 +31,7 @@
 #endif
 
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
@@ -1006,6 +1007,7 @@ int guac_terminal_display_set_font(guac_terminal_display* display,
                 font_size * PANGO_SCALE * dpi / 96);
     }
 
+    fprintf(stderr, "Getting PangoFontMap\n");
     PangoFontMap* font_map = pango_cairo_font_map_get_default();
     PangoContext* context = pango_font_map_create_context(font_map);
 
