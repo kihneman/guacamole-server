@@ -1,8 +1,10 @@
 #!/usr/bin/bash
 
 GUACD_BASE="guacamole-server"
-GUACD_REPO="jmuehlner/$GUACD_BASE"
-GUACD_BRANCH="GUACAMOLE-1841-mingw-build"
+# GUACD_REPO="jmuehlner/$GUACD_BASE"
+# GUACD_BRANCH="GUACAMOLE-1841-mingw-build"
+GUACD_REPO="kihneman/$GUACD_BASE"
+GUACD_BRANCH="GUACAMOLE-1841-mingw-build-with-python"
 KCM_BASE="kcm"
 KCM_REPO="Keeper-Security/$KCM_BASE"
 KCM_BRANCH="windows-build-test-no-cygwin"
