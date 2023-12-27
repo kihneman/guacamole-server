@@ -167,6 +167,7 @@ static void* guac_user_input_thread(void* data) {
         guac_error_message = NULL;
 
         /* Call handler, stop on error */
+        fprintf(stderr, "Handling instruction \"%s\"\n", parser->opcode);
         if (__guac_user_call_opcode_handler(__guac_instruction_handler_map, 
                 user, parser->opcode, parser->argc, parser->argv)) {
 
@@ -351,7 +352,7 @@ int guac_user_handle_connection(guac_user* user, int usec_timeout) {
                 "\"%s\" (%i users now present)", user->user_id,
                 client->connection_id, client->connected_users);
         fprintf(
-            stderr, "User \"%s\" joined connection \"%s\" (%i users now present)",
+            stderr, "User \"%s\" joined connection \"%s\" (%i users now present)\n",
             user->user_id, client->connection_id, client->connected_users
         );
         if (strcmp(parser->argv[0],"") != 0) {
