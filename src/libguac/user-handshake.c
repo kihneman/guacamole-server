@@ -28,6 +28,7 @@
 #include "user-handlers.h"
 
 #include <pthread.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -349,6 +350,10 @@ int guac_user_handle_connection(guac_user* user, int usec_timeout) {
         guac_client_log(client, GUAC_LOG_INFO, "User \"%s\" joined connection "
                 "\"%s\" (%i users now present)", user->user_id,
                 client->connection_id, client->connected_users);
+        fprintf(
+            stderr, "User \"%s\" joined connection \"%s\" (%i users now present)",
+            user->user_id, client->connection_id, client->connected_users
+        );
         if (strcmp(parser->argv[0],"") != 0) {
             guac_client_log(client, GUAC_LOG_DEBUG, "Client is using protocol "
                     "version \"%s\"", parser->argv[0]);
