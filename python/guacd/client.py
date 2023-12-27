@@ -68,7 +68,10 @@ def guacd_create_client(socket: POINTER(guac_socket), protocol: bytes):
     owner = 1
 
     # Enable keep alive on the broadcast socket
-    guac_socket_require_keep_alive(client.socket)
+    client_socket_ptr = client.socket
+    client_socket = client_socket_ptr.contents
+    client_socket.__keep_alive_enabled = 1
+    guac_socket_require_keep_alive(client_socket_ptr)
 
     # Extra debug
     guacd_log(GuacClientLogLevel.GUAC_LOG_INFO, f'Keep client socket alive for connection id "{client.connection_id}"')
