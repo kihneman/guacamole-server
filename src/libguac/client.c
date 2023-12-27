@@ -272,15 +272,15 @@ promotion_complete:
 
 guac_client_internal* guac_client_internal_alloc() {
 
-    /* Allocate new client */
+    /* Allocate new guac_client_internal */
     guac_client_internal* client_internal = malloc(sizeof(guac_client_internal));
     if (client_internal == NULL) {
         guac_error = GUAC_STATUS_NO_MEMORY;
-        guac_error_message = "Could not allocate memory for client";
+        guac_error_message = "Could not allocate memory for guac_client_internal";
         return NULL;
     }
 
-    /* Init new client */
+    /* Init new guac_client_internal */
     memset(client_internal, 0, sizeof(guac_client_internal));
 
     return client_internal;
