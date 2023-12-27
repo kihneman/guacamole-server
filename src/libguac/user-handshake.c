@@ -132,6 +132,7 @@ static void guac_user_log_handshake_failure(guac_user* user) {
  *     Always NULL.
  */
 static void* guac_user_input_thread(void* data) {
+    fprintf(stderr, "Starting user input thread\n");
 
     guac_user_input_thread_params* params =
         (guac_user_input_thread_params*) data;
