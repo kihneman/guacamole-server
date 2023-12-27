@@ -147,6 +147,7 @@ static void* guac_user_input_thread(void* data) {
     while (client->state == GUAC_CLIENT_RUNNING && user->active) {
 
         /* Read instruction, stop on error */
+        fprintf(stderr, "Reading instruction\n");
         if (guac_parser_read(parser, socket, usec_timeout)) {
 
             if (guac_error == GUAC_STATUS_TIMEOUT)
