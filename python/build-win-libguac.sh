@@ -55,6 +55,8 @@ export CFLAGS="-isystem/mingw64/include/ \
             -I/mingw64/include/freerdp2 \
             -I/mingw64/include/winpr2 \
             -Wno-error=expansion-to-defined -Wno-error=attributes"
+            # Use instead for use with gdb
+            # -Wno-error=expansion-to-defined -Wno-error=attributes -g -O0"
 ./configure --prefix=/mingw64 --with-windows --disable-guacenc --disable-guacd --disable-guaclog || cat config.log
 
 # Build and install
