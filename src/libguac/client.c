@@ -218,14 +218,14 @@ static void guac_client_promote_pending_users(
         if(client->join_pending_handler(client)) {
 
             /* Log a warning and abort the promotion of the pending users */
-            fprintf(stderr, "join_pending_handler did not complete successfully\n");
+            // fprintf(stderr, "join_pending_handler did not complete successfully\n");
             guac_client_log(client, GUAC_LOG_WARNING,
                     "join_pending_handler did not successfully complete;"
                     " any pending users have not been promoted.\n");
 
             goto promotion_complete;
         } else {
-            fprintf(stderr, "join_pending_handler completed successfully\n");
+            // fprintf(stderr, "join_pending_handler completed successfully\n");
         }
     }
 
@@ -990,27 +990,27 @@ void guac_client_stream_webp(guac_client* client, guac_socket* socket,
 
 #ifdef ENABLE_WEBP
 
-    fprintf(stderr, "guac_client_stream_webp about to guac_client_alloc_stream()\n");
+    // fprintf(stderr, "guac_client_stream_webp about to guac_client_alloc_stream()\n");
     /* Allocate new stream for image */
     guac_stream* stream = guac_client_alloc_stream(client);
-    fprintf(stderr, "guac_client_stream_webp about did guac_client_alloc_stream()\n");
+    // fprintf(stderr, "guac_client_stream_webp about did guac_client_alloc_stream()\n");
 
     /* Declare stream as containing image data */
     guac_protocol_send_img(socket, stream, mode, layer, "image/webp", x, y);
-    fprintf(stderr, "guac_client_stream_webp about did guac_protocol_send_img()\n");
+    // fprintf(stderr, "guac_client_stream_webp about did guac_protocol_send_img()\n");
 
     /* Write WebP data */
     guac_webp_write(socket, stream, surface, quality, lossless);
-    fprintf(stderr, "guac_client_stream_webp about did guac_webp_write()\n");
+    // fprintf(stderr, "guac_client_stream_webp about did guac_webp_write()\n");
 
     /* Terminate stream */
     guac_protocol_send_end(socket, stream);
-    fprintf(stderr, "guac_client_stream_webp about did guac_protocol_send_end()\n");
+    // fprintf(stderr, "guac_client_stream_webp about did guac_protocol_send_end()\n");
 
 
     /* Free allocated stream */
     guac_client_free_stream(client, stream);
-    fprintf(stderr, "guac_client_stream_webp about did guac_client_free_stream()\n");
+    // fprintf(stderr, "guac_client_stream_webp about did guac_client_free_stream()\n");
 #else
     /* Do nothing if WebP support is not built in */
 #endif
