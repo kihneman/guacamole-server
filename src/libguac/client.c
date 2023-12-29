@@ -57,6 +57,8 @@
  * synchronized and emptied (250 milliseconds aka 1/4 second).
  */
 #define GUAC_CLIENT_PENDING_USERS_REFRESH_INTERVAL 250000000
+// in milliseconds
+#define GUAC_CLIENT_PENDING_USERS_REFRESH_MILLISEC 250
 
 /**
  * A value that indicates that the pending users timer has yet to be
@@ -542,13 +544,23 @@ static int guac_client_start_pending_users_timer(guac_client* client) {
     }
 
 #ifdef WINDOWS_BUILD
+    /*
+     * // Create the timer queue.
+     * timer_queue = CreateTimerQueue();
+     * if (NULL == timer_queue)
+     * {
+     *     fprintf(stderr, "CreateTimerQueue failed (%d)\n", GetLastError());
+     *     return 2;
+     * }
+     */
+
     if (!CreateTimerQueueTimer(
             &(client->internal->__pending_users_timer),
             NULL,
             guac_client_promote_pending_users,
             client,
-            GUAC_CLIENT_PENDING_USERS_REFRESH_INTERVAL,
-            GUAC_CLIENT_PENDING_USERS_REFRESH_INTERVAL,
+            GUAC_CLIENT_PENDING_USERS_REFRESH_MILLISEC,
+            GUAC_CLIENT_PENDING_USERS_REFRESH_MILLISEC,
             0)) {
 
         // oh noes error
