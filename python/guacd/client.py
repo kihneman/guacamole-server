@@ -70,11 +70,14 @@ def guacd_create_client(socket: POINTER(guac_socket), protocol: bytes):
     # Enable keep alive on the broadcast socket
     client_socket_ptr = client.socket
     client_socket = client_socket_ptr.contents
-    client_socket.__keep_alive_enabled = 1
+    client_socket.__keep_alive_enabled = 0
     guac_socket_require_keep_alive(client_socket_ptr)
 
     # Extra debug
-    guacd_log(GuacClientLogLevel.GUAC_LOG_INFO, f'Keep client socket alive for connection id "{client.connection_id}"')
+    guacd_log(
+        GuacClientLogLevel.GUAC_LOG_INFO,
+        f'Keep client alive for connection id "{client.connection_id}" value "{client_socket.__keep_alive_enabled}"'
+    )
 
     # Add each received file descriptor as a new user
     # while received_fd := guacd_recv_fd(fd_socket) != -1:
