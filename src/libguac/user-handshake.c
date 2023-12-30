@@ -28,7 +28,6 @@
 #include "user-handlers.h"
 
 #include <pthread.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -132,7 +131,6 @@ static void guac_user_log_handshake_failure(guac_user* user) {
  *     Always NULL.
  */
 static void* guac_user_input_thread(void* data) {
-    // fprintf(stderr, "Starting user input thread\n");
 
     guac_user_input_thread_params* params =
         (guac_user_input_thread_params*) data;
@@ -147,7 +145,6 @@ static void* guac_user_input_thread(void* data) {
     while (client->state == GUAC_CLIENT_RUNNING && user->active) {
 
         /* Read instruction, stop on error */
-        // fprintf(stderr, "Reading instruction\n");
         if (guac_parser_read(parser, socket, usec_timeout)) {
 
             if (guac_error == GUAC_STATUS_TIMEOUT)
@@ -169,7 +166,6 @@ static void* guac_user_input_thread(void* data) {
         guac_error_message = NULL;
 
         /* Call handler, stop on error */
-        // fprintf(stderr, "Handling instruction \"%s\"\n", parser->opcode);
         if (__guac_user_call_opcode_handler(__guac_instruction_handler_map, 
                 user, parser->opcode, parser->argc, parser->argv)) {
 
@@ -343,7 +339,6 @@ int guac_user_handle_connection(guac_user* user, int usec_timeout) {
     }
     
     /* Attempt to join user to connection. */
-    /* Plugin handlers happen here */
     if (guac_client_add_user(client, user, (parser->argc - 1), parser->argv + 1))
         guac_client_log(client, GUAC_LOG_ERROR, "User \"%s\" could NOT "
                 "join connection \"%s\"", user->user_id, client->connection_id);
@@ -354,10 +349,6 @@ int guac_user_handle_connection(guac_user* user, int usec_timeout) {
         guac_client_log(client, GUAC_LOG_INFO, "User \"%s\" joined connection "
                 "\"%s\" (%i users now present)", user->user_id,
                 client->connection_id, client->connected_users);
-        fprintf(
-            stderr, "User \"%s\" joined connection \"%s\" (%i users now present)\n",
-            user->user_id, client->connection_id, client->connected_users
-        );
         if (strcmp(parser->argv[0],"") != 0) {
             guac_client_log(client, GUAC_LOG_DEBUG, "Client is using protocol "
                     "version \"%s\"", parser->argv[0]);

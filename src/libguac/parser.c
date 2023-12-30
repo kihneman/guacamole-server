@@ -219,13 +219,11 @@ int guac_parser_read(guac_parser* parser, guac_socket* socket, int usec_timeout)
             }
 
             /* No instruction yet? Get more data ... */
-            // fprintf(stderr, "Waiting for socket read\n");
             retval = guac_socket_select(socket, usec_timeout);
             if (retval <= 0)
                 return -1;
-
+           
             /* Attempt to fill buffer */
-            // fprintf(stderr, "Reading from socket\n");
             retval = guac_socket_read(socket, unparsed_end,
                     buffer_end - unparsed_end);
 

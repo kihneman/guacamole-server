@@ -218,14 +218,11 @@ static void guac_client_promote_pending_users(
         if(client->join_pending_handler(client)) {
 
             /* Log a warning and abort the promotion of the pending users */
-            // fprintf(stderr, "join_pending_handler did not complete successfully\n");
             guac_client_log(client, GUAC_LOG_WARNING,
                     "join_pending_handler did not successfully complete;"
                     " any pending users have not been promoted.\n");
 
             goto promotion_complete;
-        } else {
-            // fprintf(stderr, "join_pending_handler completed successfully\n");
         }
     }
 
@@ -544,16 +541,6 @@ static int guac_client_start_pending_users_timer(guac_client* client) {
     }
 
 #ifdef WINDOWS_BUILD
-    /*
-     * // Create the timer queue.
-     * timer_queue = CreateTimerQueue();
-     * if (NULL == timer_queue)
-     * {
-     *     fprintf(stderr, "CreateTimerQueue failed (%d)\n", GetLastError());
-     *     return 2;
-     * }
-     */
-
     if (!CreateTimerQueueTimer(
             &(client->internal->__pending_users_timer),
             NULL,
