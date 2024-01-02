@@ -1,11 +1,32 @@
 from ctypes import cast, c_char_p, c_int, POINTER
 
 from . import libguac_wrapper
-from .libguac_wrapper import String, guac_parser_alloc, guac_parser_expect, guac_parser_free, guac_socket
-
+from .libguac_wrapper import (
+    String, guac_parser_alloc, guac_parser_expect, guac_parser_free,
+    guac_socket, guac_socket_free, guac_socket_write_string
+)
 from .client import guacd_create_client
+from .proc import GuacdProc, guacd_create_proc
 from .constants import GuacClientLogLevel, GuacStatus, GUAC_CLIENT_ID_PREFIX, GUACD_USEC_TIMEOUT
 from .log import guacd_log, guacd_log_guac_error, guacd_log_handshake_failure
+
+
+def guacd_add_user(proc: GuacdProc, parser, socket) -> int:
+    # Wait for process to be ready
+    proc.wait_for_process()
+
+    # Send user zmq socket to process
+    proc.send_new_user_socket()
+
+    # Handle I/O from process to user
+    user_socket = proc.zmq_user_socket
+    data = user_socket.recv()
+    while len(data) > 0:
+        guac_socket_write_string(socket, String(data))
+        data = user_socket.recv()
+
+    # Clean up
+    guac_socket_free(socket)
 
 
 def guacd_route_connection(socket: POINTER(guac_socket)) -> int:
