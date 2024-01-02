@@ -82,5 +82,7 @@ def main():
         address_host_port = [a[-1] for a in addresses]
         guacd_log(GuacClientLogLevel.GUAC_LOG_ERROR, f"Couldn't bind to addresses: {address_host_port}")
 
+    input('Press key to exit')
+
 
 main()
