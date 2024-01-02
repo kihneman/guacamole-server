@@ -270,6 +270,23 @@ promotion_complete:
 
 }
 
+guac_client_internal* guac_client_internal_alloc() {
+
+    /* Allocate new guac_client_internal */
+    guac_client_internal* client_internal = malloc(sizeof(guac_client_internal));
+    if (client_internal == NULL) {
+        guac_error = GUAC_STATUS_NO_MEMORY;
+        guac_error_message = "Could not allocate memory for guac_client_internal";
+        return NULL;
+    }
+
+    /* Init new guac_client_internal */
+    memset(client_internal, 0, sizeof(guac_client_internal));
+
+    return client_internal;
+
+}
+
 guac_client* guac_client_alloc() {
 
     int i;
@@ -295,6 +312,9 @@ guac_client* guac_client_alloc() {
         free(client);
         return NULL;
     }
+
+    /* Allocate client internal */
+    client->internal = guac_client_internal_alloc();
 
     /* Allocate buffer and layer pools */
     client->internal->__buffer_pool = guac_pool_alloc(GUAC_BUFFER_POOL_INITIAL_SIZE);
