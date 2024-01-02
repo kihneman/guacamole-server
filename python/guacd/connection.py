@@ -77,8 +77,12 @@ def guacd_route_connection(socket: POINTER(guac_socket)) -> int:
     else:
         guacd_log(GuacClientLogLevel.GUAC_LOG_INFO, f'Creating new client for protocol "{identifier.decode()}"')
 
-        # Create new client
-        guacd_create_client(socket, identifier)
+        # Create new client in the same process
+        # guacd_create_client(socket, identifier)
 
-        guac_parser_free(parser_ptr)
-        return 0
+        # Create new process
+        proc = guacd_create_proc(identifier)
+        new_process = 1
+
+    guac_parser_free(parser_ptr)
+    return 0
