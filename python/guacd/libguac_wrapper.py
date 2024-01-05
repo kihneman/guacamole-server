@@ -1,7 +1,7 @@
 r"""Wrapper for user-handlers.h
 
 Generated with:
-/tmp/guacamole-server/venv-guacd/bin/ctypesgen -llibguac -L /opt/guacamole/lib -I /opt/guacamole/include -I . -o libguac_wrapper.py src/libguac/user-handlers.h src/libguac/guacamole/client.h src/libguac/client-internal.h src/libguac/guacamole/error.h src/libguac/guacamole/error-types.h src/libguac/guacamole/parser.h src/libguac/guacamole/protocol.h src/libguac/guacamole/socket.h src/libguac/guacamole/user.h
+/tmp/guacamole-server/venv-ctypesgen/bin/ctypesgen -llibguac -L /opt/guacamole/lib -I /opt/guacamole/include -I . -o libguac_wrapper.py src/libguac/user-handlers.h src/libguac/guacamole/client.h src/libguac/client-internal.h src/libguac/guacamole/error.h src/libguac/guacamole/error-types.h src/libguac/guacamole/parser.h src/libguac/guacamole/protocol.h src/libguac/guacamole/socket.h src/libguac/guacamole/socket-zmq.h src/libguac/guacamole/user.h
 
 Do not modify this file.
 """
@@ -866,7 +866,6 @@ del loaderclass
 
 if sys.platform.startswith('linux'):
     add_library_search_dirs(['/opt/guacamole/lib'])
-
     # Begin libraries
     _libs["libguac"] = load_library("libguac")
 elif sys.platform.startswith('win'):
@@ -875,9 +874,8 @@ elif sys.platform.startswith('win'):
     #     '\\Users\\KevinKihneman\\Downloads\\windows-guac-build\\mingw64\\lib\\freerdp2',
     # ])
     add_library_search_dirs(['\\msys64\\usr\\bin', '\\msys64\\mingw64\\bin', '\\msys64\\mingw64\\lib'])
-
     # Begin libraries
-    _libs["libguac"] = load_library("msys-guac-21")
+    _libs["libguac"] = load_library("libguac")
 
 # 1 libraries
 # End libraries
@@ -2238,6 +2236,234 @@ if _libs["libguac"].has("guac_protocol_version_to_string", "cdecl"):
     guac_protocol_version_to_string.argtypes = [guac_protocol_version]
     guac_protocol_version_to_string.restype = c_char_p
 
+# /usr/include/bits/alltypes.h: 355
+class struct_iovec(Structure):
+    pass
+
+struct_iovec.__slots__ = [
+    'iov_base',
+    'iov_len',
+]
+struct_iovec._fields_ = [
+    ('iov_base', POINTER(None)),
+    ('iov_len', c_size_t),
+]
+
+socklen_t = c_uint# /usr/include/bits/alltypes.h: 367
+
+sa_family_t = c_ushort# /usr/include/bits/alltypes.h: 372
+
+# /usr/include/sys/socket.h: 22
+class struct_msghdr(Structure):
+    pass
+
+struct_msghdr.__slots__ = [
+    'msg_name',
+    'msg_namelen',
+    'msg_iov',
+    'msg_iovlen',
+    '__pad1',
+    'msg_control',
+    'msg_controllen',
+    '__pad2',
+    'msg_flags',
+]
+struct_msghdr._fields_ = [
+    ('msg_name', POINTER(None)),
+    ('msg_namelen', socklen_t),
+    ('msg_iov', POINTER(struct_iovec)),
+    ('msg_iovlen', c_int),
+    ('__pad1', c_int),
+    ('msg_control', POINTER(None)),
+    ('msg_controllen', socklen_t),
+    ('__pad2', c_int),
+    ('msg_flags', c_int),
+]
+
+# /usr/include/sys/socket.h: 44
+class struct_cmsghdr(Structure):
+    pass
+
+struct_cmsghdr.__slots__ = [
+    'cmsg_len',
+    '__pad1',
+    'cmsg_level',
+    'cmsg_type',
+]
+struct_cmsghdr._fields_ = [
+    ('cmsg_len', socklen_t),
+    ('__pad1', c_int),
+    ('cmsg_level', c_int),
+    ('cmsg_type', c_int),
+]
+
+# /usr/include/sys/socket.h: 74
+class struct_linger(Structure):
+    pass
+
+struct_linger.__slots__ = [
+    'l_onoff',
+    'l_linger',
+]
+struct_linger._fields_ = [
+    ('l_onoff', c_int),
+    ('l_linger', c_int),
+]
+
+# /usr/include/sys/socket.h: 369
+class struct_sockaddr(Structure):
+    pass
+
+struct_sockaddr.__slots__ = [
+    'sa_family',
+    'sa_data',
+]
+struct_sockaddr._fields_ = [
+    ('sa_family', sa_family_t),
+    ('sa_data', c_char * int(14)),
+]
+
+# /usr/include/sys/socket.h: 374
+class struct_sockaddr_storage(Structure):
+    pass
+
+struct_sockaddr_storage.__slots__ = [
+    'ss_family',
+    '__ss_padding',
+    '__ss_align',
+]
+struct_sockaddr_storage._fields_ = [
+    ('ss_family', sa_family_t),
+    ('__ss_padding', c_char * int(((128 - sizeof(c_long)) - sizeof(sa_family_t)))),
+    ('__ss_align', c_ulong),
+]
+
+# /usr/include/sys/socket.h: 380
+if _libs["libguac"].has("socket", "cdecl"):
+    socket = _libs["libguac"].get("socket", "cdecl")
+    socket.argtypes = [c_int, c_int, c_int]
+    socket.restype = c_int
+
+# /usr/include/sys/socket.h: 381
+if _libs["libguac"].has("socketpair", "cdecl"):
+    socketpair = _libs["libguac"].get("socketpair", "cdecl")
+    socketpair.argtypes = [c_int, c_int, c_int, c_int * int(2)]
+    socketpair.restype = c_int
+
+# /usr/include/sys/socket.h: 383
+if _libs["libguac"].has("shutdown", "cdecl"):
+    shutdown = _libs["libguac"].get("shutdown", "cdecl")
+    shutdown.argtypes = [c_int, c_int]
+    shutdown.restype = c_int
+
+# /usr/include/sys/socket.h: 385
+if _libs["libguac"].has("bind", "cdecl"):
+    bind = _libs["libguac"].get("bind", "cdecl")
+    bind.argtypes = [c_int, POINTER(struct_sockaddr), socklen_t]
+    bind.restype = c_int
+
+# /usr/include/sys/socket.h: 386
+if _libs["libguac"].has("connect", "cdecl"):
+    connect = _libs["libguac"].get("connect", "cdecl")
+    connect.argtypes = [c_int, POINTER(struct_sockaddr), socklen_t]
+    connect.restype = c_int
+
+# /usr/include/sys/socket.h: 387
+if _libs["libguac"].has("listen", "cdecl"):
+    listen = _libs["libguac"].get("listen", "cdecl")
+    listen.argtypes = [c_int, c_int]
+    listen.restype = c_int
+
+# /usr/include/sys/socket.h: 388
+if _libs["libguac"].has("accept", "cdecl"):
+    accept = _libs["libguac"].get("accept", "cdecl")
+    accept.argtypes = [c_int, POINTER(struct_sockaddr), POINTER(socklen_t)]
+    accept.restype = c_int
+
+# /usr/include/sys/socket.h: 389
+if _libs["libguac"].has("accept4", "cdecl"):
+    accept4 = _libs["libguac"].get("accept4", "cdecl")
+    accept4.argtypes = [c_int, POINTER(struct_sockaddr), POINTER(socklen_t), c_int]
+    accept4.restype = c_int
+
+# /usr/include/sys/socket.h: 391
+if _libs["libguac"].has("getsockname", "cdecl"):
+    getsockname = _libs["libguac"].get("getsockname", "cdecl")
+    getsockname.argtypes = [c_int, POINTER(struct_sockaddr), POINTER(socklen_t)]
+    getsockname.restype = c_int
+
+# /usr/include/sys/socket.h: 392
+if _libs["libguac"].has("getpeername", "cdecl"):
+    getpeername = _libs["libguac"].get("getpeername", "cdecl")
+    getpeername.argtypes = [c_int, POINTER(struct_sockaddr), POINTER(socklen_t)]
+    getpeername.restype = c_int
+
+# /usr/include/sys/socket.h: 394
+if _libs["libguac"].has("send", "cdecl"):
+    send = _libs["libguac"].get("send", "cdecl")
+    send.argtypes = [c_int, POINTER(None), c_size_t, c_int]
+    send.restype = c_ptrdiff_t
+
+# /usr/include/sys/socket.h: 395
+if _libs["libguac"].has("recv", "cdecl"):
+    recv = _libs["libguac"].get("recv", "cdecl")
+    recv.argtypes = [c_int, POINTER(None), c_size_t, c_int]
+    recv.restype = c_ptrdiff_t
+
+# /usr/include/sys/socket.h: 396
+if _libs["libguac"].has("sendto", "cdecl"):
+    sendto = _libs["libguac"].get("sendto", "cdecl")
+    sendto.argtypes = [c_int, POINTER(None), c_size_t, c_int, POINTER(struct_sockaddr), socklen_t]
+    sendto.restype = c_ptrdiff_t
+
+# /usr/include/sys/socket.h: 397
+if _libs["libguac"].has("recvfrom", "cdecl"):
+    recvfrom = _libs["libguac"].get("recvfrom", "cdecl")
+    recvfrom.argtypes = [c_int, POINTER(None), c_size_t, c_int, POINTER(struct_sockaddr), POINTER(socklen_t)]
+    recvfrom.restype = c_ptrdiff_t
+
+# /usr/include/sys/socket.h: 398
+if _libs["libguac"].has("sendmsg", "cdecl"):
+    sendmsg = _libs["libguac"].get("sendmsg", "cdecl")
+    sendmsg.argtypes = [c_int, POINTER(struct_msghdr), c_int]
+    sendmsg.restype = c_ptrdiff_t
+
+# /usr/include/sys/socket.h: 399
+if _libs["libguac"].has("recvmsg", "cdecl"):
+    recvmsg = _libs["libguac"].get("recvmsg", "cdecl")
+    recvmsg.argtypes = [c_int, POINTER(struct_msghdr), c_int]
+    recvmsg.restype = c_ptrdiff_t
+
+# /usr/include/sys/socket.h: 401
+if _libs["libguac"].has("getsockopt", "cdecl"):
+    getsockopt = _libs["libguac"].get("getsockopt", "cdecl")
+    getsockopt.argtypes = [c_int, c_int, c_int, POINTER(None), POINTER(socklen_t)]
+    getsockopt.restype = c_int
+
+# /usr/include/sys/socket.h: 402
+if _libs["libguac"].has("setsockopt", "cdecl"):
+    setsockopt = _libs["libguac"].get("setsockopt", "cdecl")
+    setsockopt.argtypes = [c_int, c_int, c_int, POINTER(None), socklen_t]
+    setsockopt.restype = c_int
+
+# /usr/include/sys/socket.h: 404
+if _libs["libguac"].has("sockatmark", "cdecl"):
+    sockatmark = _libs["libguac"].get("sockatmark", "cdecl")
+    sockatmark.argtypes = [c_int]
+    sockatmark.restype = c_int
+
+# /usr/include/czmq_library.h: 108
+class struct__zsock_t(Structure):
+    pass
+
+zsock_t = struct__zsock_t# /usr/include/czmq_library.h: 108
+
+# /tmp/guacamole-server/src/libguac/guacamole/socket-zmq.h: 32
+if _libs["libguac"].has("guac_socket_open_zmq", "cdecl"):
+    guac_socket_open_zmq = _libs["libguac"].get("guac_socket_open_zmq", "cdecl")
+    guac_socket_open_zmq.argtypes = [zsock_t]
+    guac_socket_open_zmq.restype = POINTER(guac_socket)
+
 struct_guac_user_info.__slots__ = [
     'optimal_width',
     'optimal_height',
@@ -2490,6 +2716,1446 @@ try:
 except:
     pass
 
+# /usr/include/sys/socket.h: 79
+try:
+    SHUT_RD = 0
+except:
+    pass
+
+# /usr/include/sys/socket.h: 80
+try:
+    SHUT_WR = 1
+except:
+    pass
+
+# /usr/include/sys/socket.h: 81
+try:
+    SHUT_RDWR = 2
+except:
+    pass
+
+# /usr/include/sys/socket.h: 84
+try:
+    SOCK_STREAM = 1
+except:
+    pass
+
+# /usr/include/sys/socket.h: 85
+try:
+    SOCK_DGRAM = 2
+except:
+    pass
+
+# /usr/include/sys/socket.h: 88
+try:
+    SOCK_RAW = 3
+except:
+    pass
+
+# /usr/include/sys/socket.h: 89
+try:
+    SOCK_RDM = 4
+except:
+    pass
+
+# /usr/include/sys/socket.h: 90
+try:
+    SOCK_SEQPACKET = 5
+except:
+    pass
+
+# /usr/include/sys/socket.h: 91
+try:
+    SOCK_DCCP = 6
+except:
+    pass
+
+# /usr/include/sys/socket.h: 92
+try:
+    SOCK_PACKET = 10
+except:
+    pass
+
+# /usr/include/sys/socket.h: 95
+try:
+    SOCK_CLOEXEC = 0o2000000
+except:
+    pass
+
+# /usr/include/sys/socket.h: 96
+try:
+    SOCK_NONBLOCK = 0o4000
+except:
+    pass
+
+# /usr/include/sys/socket.h: 99
+try:
+    PF_UNSPEC = 0
+except:
+    pass
+
+# /usr/include/sys/socket.h: 100
+try:
+    PF_LOCAL = 1
+except:
+    pass
+
+# /usr/include/sys/socket.h: 101
+try:
+    PF_UNIX = PF_LOCAL
+except:
+    pass
+
+# /usr/include/sys/socket.h: 102
+try:
+    PF_FILE = PF_LOCAL
+except:
+    pass
+
+# /usr/include/sys/socket.h: 103
+try:
+    PF_INET = 2
+except:
+    pass
+
+# /usr/include/sys/socket.h: 104
+try:
+    PF_AX25 = 3
+except:
+    pass
+
+# /usr/include/sys/socket.h: 105
+try:
+    PF_IPX = 4
+except:
+    pass
+
+# /usr/include/sys/socket.h: 106
+try:
+    PF_APPLETALK = 5
+except:
+    pass
+
+# /usr/include/sys/socket.h: 107
+try:
+    PF_NETROM = 6
+except:
+    pass
+
+# /usr/include/sys/socket.h: 108
+try:
+    PF_BRIDGE = 7
+except:
+    pass
+
+# /usr/include/sys/socket.h: 109
+try:
+    PF_ATMPVC = 8
+except:
+    pass
+
+# /usr/include/sys/socket.h: 110
+try:
+    PF_X25 = 9
+except:
+    pass
+
+# /usr/include/sys/socket.h: 111
+try:
+    PF_INET6 = 10
+except:
+    pass
+
+# /usr/include/sys/socket.h: 112
+try:
+    PF_ROSE = 11
+except:
+    pass
+
+# /usr/include/sys/socket.h: 113
+try:
+    PF_DECnet = 12
+except:
+    pass
+
+# /usr/include/sys/socket.h: 114
+try:
+    PF_NETBEUI = 13
+except:
+    pass
+
+# /usr/include/sys/socket.h: 115
+try:
+    PF_SECURITY = 14
+except:
+    pass
+
+# /usr/include/sys/socket.h: 116
+try:
+    PF_KEY = 15
+except:
+    pass
+
+# /usr/include/sys/socket.h: 117
+try:
+    PF_NETLINK = 16
+except:
+    pass
+
+# /usr/include/sys/socket.h: 118
+try:
+    PF_ROUTE = PF_NETLINK
+except:
+    pass
+
+# /usr/include/sys/socket.h: 119
+try:
+    PF_PACKET = 17
+except:
+    pass
+
+# /usr/include/sys/socket.h: 120
+try:
+    PF_ASH = 18
+except:
+    pass
+
+# /usr/include/sys/socket.h: 121
+try:
+    PF_ECONET = 19
+except:
+    pass
+
+# /usr/include/sys/socket.h: 122
+try:
+    PF_ATMSVC = 20
+except:
+    pass
+
+# /usr/include/sys/socket.h: 123
+try:
+    PF_RDS = 21
+except:
+    pass
+
+# /usr/include/sys/socket.h: 124
+try:
+    PF_SNA = 22
+except:
+    pass
+
+# /usr/include/sys/socket.h: 125
+try:
+    PF_IRDA = 23
+except:
+    pass
+
+# /usr/include/sys/socket.h: 126
+try:
+    PF_PPPOX = 24
+except:
+    pass
+
+# /usr/include/sys/socket.h: 127
+try:
+    PF_WANPIPE = 25
+except:
+    pass
+
+# /usr/include/sys/socket.h: 128
+try:
+    PF_LLC = 26
+except:
+    pass
+
+# /usr/include/sys/socket.h: 129
+try:
+    PF_IB = 27
+except:
+    pass
+
+# /usr/include/sys/socket.h: 130
+try:
+    PF_MPLS = 28
+except:
+    pass
+
+# /usr/include/sys/socket.h: 131
+try:
+    PF_CAN = 29
+except:
+    pass
+
+# /usr/include/sys/socket.h: 132
+try:
+    PF_TIPC = 30
+except:
+    pass
+
+# /usr/include/sys/socket.h: 133
+try:
+    PF_BLUETOOTH = 31
+except:
+    pass
+
+# /usr/include/sys/socket.h: 134
+try:
+    PF_IUCV = 32
+except:
+    pass
+
+# /usr/include/sys/socket.h: 135
+try:
+    PF_RXRPC = 33
+except:
+    pass
+
+# /usr/include/sys/socket.h: 136
+try:
+    PF_ISDN = 34
+except:
+    pass
+
+# /usr/include/sys/socket.h: 137
+try:
+    PF_PHONET = 35
+except:
+    pass
+
+# /usr/include/sys/socket.h: 138
+try:
+    PF_IEEE802154 = 36
+except:
+    pass
+
+# /usr/include/sys/socket.h: 139
+try:
+    PF_CAIF = 37
+except:
+    pass
+
+# /usr/include/sys/socket.h: 140
+try:
+    PF_ALG = 38
+except:
+    pass
+
+# /usr/include/sys/socket.h: 141
+try:
+    PF_NFC = 39
+except:
+    pass
+
+# /usr/include/sys/socket.h: 142
+try:
+    PF_VSOCK = 40
+except:
+    pass
+
+# /usr/include/sys/socket.h: 143
+try:
+    PF_KCM = 41
+except:
+    pass
+
+# /usr/include/sys/socket.h: 144
+try:
+    PF_QIPCRTR = 42
+except:
+    pass
+
+# /usr/include/sys/socket.h: 145
+try:
+    PF_SMC = 43
+except:
+    pass
+
+# /usr/include/sys/socket.h: 146
+try:
+    PF_XDP = 44
+except:
+    pass
+
+# /usr/include/sys/socket.h: 147
+try:
+    PF_MAX = 45
+except:
+    pass
+
+# /usr/include/sys/socket.h: 149
+try:
+    AF_UNSPEC = PF_UNSPEC
+except:
+    pass
+
+# /usr/include/sys/socket.h: 150
+try:
+    AF_LOCAL = PF_LOCAL
+except:
+    pass
+
+# /usr/include/sys/socket.h: 151
+try:
+    AF_UNIX = AF_LOCAL
+except:
+    pass
+
+# /usr/include/sys/socket.h: 152
+try:
+    AF_FILE = AF_LOCAL
+except:
+    pass
+
+# /usr/include/sys/socket.h: 153
+try:
+    AF_INET = PF_INET
+except:
+    pass
+
+# /usr/include/sys/socket.h: 154
+try:
+    AF_AX25 = PF_AX25
+except:
+    pass
+
+# /usr/include/sys/socket.h: 155
+try:
+    AF_IPX = PF_IPX
+except:
+    pass
+
+# /usr/include/sys/socket.h: 156
+try:
+    AF_APPLETALK = PF_APPLETALK
+except:
+    pass
+
+# /usr/include/sys/socket.h: 157
+try:
+    AF_NETROM = PF_NETROM
+except:
+    pass
+
+# /usr/include/sys/socket.h: 158
+try:
+    AF_BRIDGE = PF_BRIDGE
+except:
+    pass
+
+# /usr/include/sys/socket.h: 159
+try:
+    AF_ATMPVC = PF_ATMPVC
+except:
+    pass
+
+# /usr/include/sys/socket.h: 160
+try:
+    AF_X25 = PF_X25
+except:
+    pass
+
+# /usr/include/sys/socket.h: 161
+try:
+    AF_INET6 = PF_INET6
+except:
+    pass
+
+# /usr/include/sys/socket.h: 162
+try:
+    AF_ROSE = PF_ROSE
+except:
+    pass
+
+# /usr/include/sys/socket.h: 163
+try:
+    AF_DECnet = PF_DECnet
+except:
+    pass
+
+# /usr/include/sys/socket.h: 164
+try:
+    AF_NETBEUI = PF_NETBEUI
+except:
+    pass
+
+# /usr/include/sys/socket.h: 165
+try:
+    AF_SECURITY = PF_SECURITY
+except:
+    pass
+
+# /usr/include/sys/socket.h: 166
+try:
+    AF_KEY = PF_KEY
+except:
+    pass
+
+# /usr/include/sys/socket.h: 167
+try:
+    AF_NETLINK = PF_NETLINK
+except:
+    pass
+
+# /usr/include/sys/socket.h: 168
+try:
+    AF_ROUTE = PF_ROUTE
+except:
+    pass
+
+# /usr/include/sys/socket.h: 169
+try:
+    AF_PACKET = PF_PACKET
+except:
+    pass
+
+# /usr/include/sys/socket.h: 170
+try:
+    AF_ASH = PF_ASH
+except:
+    pass
+
+# /usr/include/sys/socket.h: 171
+try:
+    AF_ECONET = PF_ECONET
+except:
+    pass
+
+# /usr/include/sys/socket.h: 172
+try:
+    AF_ATMSVC = PF_ATMSVC
+except:
+    pass
+
+# /usr/include/sys/socket.h: 173
+try:
+    AF_RDS = PF_RDS
+except:
+    pass
+
+# /usr/include/sys/socket.h: 174
+try:
+    AF_SNA = PF_SNA
+except:
+    pass
+
+# /usr/include/sys/socket.h: 175
+try:
+    AF_IRDA = PF_IRDA
+except:
+    pass
+
+# /usr/include/sys/socket.h: 176
+try:
+    AF_PPPOX = PF_PPPOX
+except:
+    pass
+
+# /usr/include/sys/socket.h: 177
+try:
+    AF_WANPIPE = PF_WANPIPE
+except:
+    pass
+
+# /usr/include/sys/socket.h: 178
+try:
+    AF_LLC = PF_LLC
+except:
+    pass
+
+# /usr/include/sys/socket.h: 179
+try:
+    AF_IB = PF_IB
+except:
+    pass
+
+# /usr/include/sys/socket.h: 180
+try:
+    AF_MPLS = PF_MPLS
+except:
+    pass
+
+# /usr/include/sys/socket.h: 181
+try:
+    AF_CAN = PF_CAN
+except:
+    pass
+
+# /usr/include/sys/socket.h: 182
+try:
+    AF_TIPC = PF_TIPC
+except:
+    pass
+
+# /usr/include/sys/socket.h: 183
+try:
+    AF_BLUETOOTH = PF_BLUETOOTH
+except:
+    pass
+
+# /usr/include/sys/socket.h: 184
+try:
+    AF_IUCV = PF_IUCV
+except:
+    pass
+
+# /usr/include/sys/socket.h: 185
+try:
+    AF_RXRPC = PF_RXRPC
+except:
+    pass
+
+# /usr/include/sys/socket.h: 186
+try:
+    AF_ISDN = PF_ISDN
+except:
+    pass
+
+# /usr/include/sys/socket.h: 187
+try:
+    AF_PHONET = PF_PHONET
+except:
+    pass
+
+# /usr/include/sys/socket.h: 188
+try:
+    AF_IEEE802154 = PF_IEEE802154
+except:
+    pass
+
+# /usr/include/sys/socket.h: 189
+try:
+    AF_CAIF = PF_CAIF
+except:
+    pass
+
+# /usr/include/sys/socket.h: 190
+try:
+    AF_ALG = PF_ALG
+except:
+    pass
+
+# /usr/include/sys/socket.h: 191
+try:
+    AF_NFC = PF_NFC
+except:
+    pass
+
+# /usr/include/sys/socket.h: 192
+try:
+    AF_VSOCK = PF_VSOCK
+except:
+    pass
+
+# /usr/include/sys/socket.h: 193
+try:
+    AF_KCM = PF_KCM
+except:
+    pass
+
+# /usr/include/sys/socket.h: 194
+try:
+    AF_QIPCRTR = PF_QIPCRTR
+except:
+    pass
+
+# /usr/include/sys/socket.h: 195
+try:
+    AF_SMC = PF_SMC
+except:
+    pass
+
+# /usr/include/sys/socket.h: 196
+try:
+    AF_XDP = PF_XDP
+except:
+    pass
+
+# /usr/include/sys/socket.h: 197
+try:
+    AF_MAX = PF_MAX
+except:
+    pass
+
+# /usr/include/sys/socket.h: 200
+try:
+    SO_DEBUG = 1
+except:
+    pass
+
+# /usr/include/sys/socket.h: 201
+try:
+    SO_REUSEADDR = 2
+except:
+    pass
+
+# /usr/include/sys/socket.h: 202
+try:
+    SO_TYPE = 3
+except:
+    pass
+
+# /usr/include/sys/socket.h: 203
+try:
+    SO_ERROR = 4
+except:
+    pass
+
+# /usr/include/sys/socket.h: 204
+try:
+    SO_DONTROUTE = 5
+except:
+    pass
+
+# /usr/include/sys/socket.h: 205
+try:
+    SO_BROADCAST = 6
+except:
+    pass
+
+# /usr/include/sys/socket.h: 206
+try:
+    SO_SNDBUF = 7
+except:
+    pass
+
+# /usr/include/sys/socket.h: 207
+try:
+    SO_RCVBUF = 8
+except:
+    pass
+
+# /usr/include/sys/socket.h: 208
+try:
+    SO_KEEPALIVE = 9
+except:
+    pass
+
+# /usr/include/sys/socket.h: 209
+try:
+    SO_OOBINLINE = 10
+except:
+    pass
+
+# /usr/include/sys/socket.h: 210
+try:
+    SO_NO_CHECK = 11
+except:
+    pass
+
+# /usr/include/sys/socket.h: 211
+try:
+    SO_PRIORITY = 12
+except:
+    pass
+
+# /usr/include/sys/socket.h: 212
+try:
+    SO_LINGER = 13
+except:
+    pass
+
+# /usr/include/sys/socket.h: 213
+try:
+    SO_BSDCOMPAT = 14
+except:
+    pass
+
+# /usr/include/sys/socket.h: 214
+try:
+    SO_REUSEPORT = 15
+except:
+    pass
+
+# /usr/include/sys/socket.h: 215
+try:
+    SO_PASSCRED = 16
+except:
+    pass
+
+# /usr/include/sys/socket.h: 216
+try:
+    SO_PEERCRED = 17
+except:
+    pass
+
+# /usr/include/sys/socket.h: 217
+try:
+    SO_RCVLOWAT = 18
+except:
+    pass
+
+# /usr/include/sys/socket.h: 218
+try:
+    SO_SNDLOWAT = 19
+except:
+    pass
+
+# /usr/include/sys/socket.h: 219
+try:
+    SO_ACCEPTCONN = 30
+except:
+    pass
+
+# /usr/include/sys/socket.h: 220
+try:
+    SO_PEERSEC = 31
+except:
+    pass
+
+# /usr/include/sys/socket.h: 221
+try:
+    SO_SNDBUFFORCE = 32
+except:
+    pass
+
+# /usr/include/sys/socket.h: 222
+try:
+    SO_RCVBUFFORCE = 33
+except:
+    pass
+
+# /usr/include/sys/socket.h: 223
+try:
+    SO_PROTOCOL = 38
+except:
+    pass
+
+# /usr/include/sys/socket.h: 224
+try:
+    SO_DOMAIN = 39
+except:
+    pass
+
+# /usr/include/sys/socket.h: 232
+try:
+    SO_RCVTIMEO = 20
+except:
+    pass
+
+# /usr/include/sys/socket.h: 233
+try:
+    SO_SNDTIMEO = 21
+except:
+    pass
+
+# /usr/include/sys/socket.h: 243
+try:
+    SO_TIMESTAMP = 29
+except:
+    pass
+
+# /usr/include/sys/socket.h: 244
+try:
+    SO_TIMESTAMPNS = 35
+except:
+    pass
+
+# /usr/include/sys/socket.h: 245
+try:
+    SO_TIMESTAMPING = 37
+except:
+    pass
+
+# /usr/include/sys/socket.h: 249
+try:
+    SO_SECURITY_AUTHENTICATION = 22
+except:
+    pass
+
+# /usr/include/sys/socket.h: 250
+try:
+    SO_SECURITY_ENCRYPTION_TRANSPORT = 23
+except:
+    pass
+
+# /usr/include/sys/socket.h: 251
+try:
+    SO_SECURITY_ENCRYPTION_NETWORK = 24
+except:
+    pass
+
+# /usr/include/sys/socket.h: 253
+try:
+    SO_BINDTODEVICE = 25
+except:
+    pass
+
+# /usr/include/sys/socket.h: 255
+try:
+    SO_ATTACH_FILTER = 26
+except:
+    pass
+
+# /usr/include/sys/socket.h: 256
+try:
+    SO_DETACH_FILTER = 27
+except:
+    pass
+
+# /usr/include/sys/socket.h: 257
+try:
+    SO_GET_FILTER = SO_ATTACH_FILTER
+except:
+    pass
+
+# /usr/include/sys/socket.h: 259
+try:
+    SO_PEERNAME = 28
+except:
+    pass
+
+# /usr/include/sys/socket.h: 260
+try:
+    SCM_TIMESTAMP = SO_TIMESTAMP
+except:
+    pass
+
+# /usr/include/sys/socket.h: 261
+try:
+    SO_PASSSEC = 34
+except:
+    pass
+
+# /usr/include/sys/socket.h: 262
+try:
+    SCM_TIMESTAMPNS = SO_TIMESTAMPNS
+except:
+    pass
+
+# /usr/include/sys/socket.h: 263
+try:
+    SO_MARK = 36
+except:
+    pass
+
+# /usr/include/sys/socket.h: 264
+try:
+    SCM_TIMESTAMPING = SO_TIMESTAMPING
+except:
+    pass
+
+# /usr/include/sys/socket.h: 265
+try:
+    SO_RXQ_OVFL = 40
+except:
+    pass
+
+# /usr/include/sys/socket.h: 266
+try:
+    SO_WIFI_STATUS = 41
+except:
+    pass
+
+# /usr/include/sys/socket.h: 267
+try:
+    SCM_WIFI_STATUS = SO_WIFI_STATUS
+except:
+    pass
+
+# /usr/include/sys/socket.h: 268
+try:
+    SO_PEEK_OFF = 42
+except:
+    pass
+
+# /usr/include/sys/socket.h: 269
+try:
+    SO_NOFCS = 43
+except:
+    pass
+
+# /usr/include/sys/socket.h: 270
+try:
+    SO_LOCK_FILTER = 44
+except:
+    pass
+
+# /usr/include/sys/socket.h: 271
+try:
+    SO_SELECT_ERR_QUEUE = 45
+except:
+    pass
+
+# /usr/include/sys/socket.h: 272
+try:
+    SO_BUSY_POLL = 46
+except:
+    pass
+
+# /usr/include/sys/socket.h: 273
+try:
+    SO_MAX_PACING_RATE = 47
+except:
+    pass
+
+# /usr/include/sys/socket.h: 274
+try:
+    SO_BPF_EXTENSIONS = 48
+except:
+    pass
+
+# /usr/include/sys/socket.h: 275
+try:
+    SO_INCOMING_CPU = 49
+except:
+    pass
+
+# /usr/include/sys/socket.h: 276
+try:
+    SO_ATTACH_BPF = 50
+except:
+    pass
+
+# /usr/include/sys/socket.h: 277
+try:
+    SO_DETACH_BPF = SO_DETACH_FILTER
+except:
+    pass
+
+# /usr/include/sys/socket.h: 278
+try:
+    SO_ATTACH_REUSEPORT_CBPF = 51
+except:
+    pass
+
+# /usr/include/sys/socket.h: 279
+try:
+    SO_ATTACH_REUSEPORT_EBPF = 52
+except:
+    pass
+
+# /usr/include/sys/socket.h: 280
+try:
+    SO_CNX_ADVICE = 53
+except:
+    pass
+
+# /usr/include/sys/socket.h: 281
+try:
+    SCM_TIMESTAMPING_OPT_STATS = 54
+except:
+    pass
+
+# /usr/include/sys/socket.h: 282
+try:
+    SO_MEMINFO = 55
+except:
+    pass
+
+# /usr/include/sys/socket.h: 283
+try:
+    SO_INCOMING_NAPI_ID = 56
+except:
+    pass
+
+# /usr/include/sys/socket.h: 284
+try:
+    SO_COOKIE = 57
+except:
+    pass
+
+# /usr/include/sys/socket.h: 285
+try:
+    SCM_TIMESTAMPING_PKTINFO = 58
+except:
+    pass
+
+# /usr/include/sys/socket.h: 286
+try:
+    SO_PEERGROUPS = 59
+except:
+    pass
+
+# /usr/include/sys/socket.h: 287
+try:
+    SO_ZEROCOPY = 60
+except:
+    pass
+
+# /usr/include/sys/socket.h: 288
+try:
+    SO_TXTIME = 61
+except:
+    pass
+
+# /usr/include/sys/socket.h: 289
+try:
+    SCM_TXTIME = SO_TXTIME
+except:
+    pass
+
+# /usr/include/sys/socket.h: 290
+try:
+    SO_BINDTOIFINDEX = 62
+except:
+    pass
+
+# /usr/include/sys/socket.h: 291
+try:
+    SO_DETACH_REUSEPORT_BPF = 68
+except:
+    pass
+
+# /usr/include/sys/socket.h: 292
+try:
+    SO_PREFER_BUSY_POLL = 69
+except:
+    pass
+
+# /usr/include/sys/socket.h: 293
+try:
+    SO_BUSY_POLL_BUDGET = 70
+except:
+    pass
+
+# /usr/include/sys/socket.h: 296
+try:
+    SOL_SOCKET = 1
+except:
+    pass
+
+# /usr/include/sys/socket.h: 299
+try:
+    SOL_IP = 0
+except:
+    pass
+
+# /usr/include/sys/socket.h: 300
+try:
+    SOL_IPV6 = 41
+except:
+    pass
+
+# /usr/include/sys/socket.h: 301
+try:
+    SOL_ICMPV6 = 58
+except:
+    pass
+
+# /usr/include/sys/socket.h: 303
+try:
+    SOL_RAW = 255
+except:
+    pass
+
+# /usr/include/sys/socket.h: 304
+try:
+    SOL_DECNET = 261
+except:
+    pass
+
+# /usr/include/sys/socket.h: 305
+try:
+    SOL_X25 = 262
+except:
+    pass
+
+# /usr/include/sys/socket.h: 306
+try:
+    SOL_PACKET = 263
+except:
+    pass
+
+# /usr/include/sys/socket.h: 307
+try:
+    SOL_ATM = 264
+except:
+    pass
+
+# /usr/include/sys/socket.h: 308
+try:
+    SOL_AAL = 265
+except:
+    pass
+
+# /usr/include/sys/socket.h: 309
+try:
+    SOL_IRDA = 266
+except:
+    pass
+
+# /usr/include/sys/socket.h: 310
+try:
+    SOL_NETBEUI = 267
+except:
+    pass
+
+# /usr/include/sys/socket.h: 311
+try:
+    SOL_LLC = 268
+except:
+    pass
+
+# /usr/include/sys/socket.h: 312
+try:
+    SOL_DCCP = 269
+except:
+    pass
+
+# /usr/include/sys/socket.h: 313
+try:
+    SOL_NETLINK = 270
+except:
+    pass
+
+# /usr/include/sys/socket.h: 314
+try:
+    SOL_TIPC = 271
+except:
+    pass
+
+# /usr/include/sys/socket.h: 315
+try:
+    SOL_RXRPC = 272
+except:
+    pass
+
+# /usr/include/sys/socket.h: 316
+try:
+    SOL_PPPOL2TP = 273
+except:
+    pass
+
+# /usr/include/sys/socket.h: 317
+try:
+    SOL_BLUETOOTH = 274
+except:
+    pass
+
+# /usr/include/sys/socket.h: 318
+try:
+    SOL_PNPIPE = 275
+except:
+    pass
+
+# /usr/include/sys/socket.h: 319
+try:
+    SOL_RDS = 276
+except:
+    pass
+
+# /usr/include/sys/socket.h: 320
+try:
+    SOL_IUCV = 277
+except:
+    pass
+
+# /usr/include/sys/socket.h: 321
+try:
+    SOL_CAIF = 278
+except:
+    pass
+
+# /usr/include/sys/socket.h: 322
+try:
+    SOL_ALG = 279
+except:
+    pass
+
+# /usr/include/sys/socket.h: 323
+try:
+    SOL_NFC = 280
+except:
+    pass
+
+# /usr/include/sys/socket.h: 324
+try:
+    SOL_KCM = 281
+except:
+    pass
+
+# /usr/include/sys/socket.h: 325
+try:
+    SOL_TLS = 282
+except:
+    pass
+
+# /usr/include/sys/socket.h: 326
+try:
+    SOL_XDP = 283
+except:
+    pass
+
+# /usr/include/sys/socket.h: 328
+try:
+    SOMAXCONN = 128
+except:
+    pass
+
+# /usr/include/sys/socket.h: 330
+try:
+    MSG_OOB = 0x0001
+except:
+    pass
+
+# /usr/include/sys/socket.h: 331
+try:
+    MSG_PEEK = 0x0002
+except:
+    pass
+
+# /usr/include/sys/socket.h: 332
+try:
+    MSG_DONTROUTE = 0x0004
+except:
+    pass
+
+# /usr/include/sys/socket.h: 333
+try:
+    MSG_CTRUNC = 0x0008
+except:
+    pass
+
+# /usr/include/sys/socket.h: 334
+try:
+    MSG_PROXY = 0x0010
+except:
+    pass
+
+# /usr/include/sys/socket.h: 335
+try:
+    MSG_TRUNC = 0x0020
+except:
+    pass
+
+# /usr/include/sys/socket.h: 336
+try:
+    MSG_DONTWAIT = 0x0040
+except:
+    pass
+
+# /usr/include/sys/socket.h: 337
+try:
+    MSG_EOR = 0x0080
+except:
+    pass
+
+# /usr/include/sys/socket.h: 338
+try:
+    MSG_WAITALL = 0x0100
+except:
+    pass
+
+# /usr/include/sys/socket.h: 339
+try:
+    MSG_FIN = 0x0200
+except:
+    pass
+
+# /usr/include/sys/socket.h: 340
+try:
+    MSG_SYN = 0x0400
+except:
+    pass
+
+# /usr/include/sys/socket.h: 341
+try:
+    MSG_CONFIRM = 0x0800
+except:
+    pass
+
+# /usr/include/sys/socket.h: 342
+try:
+    MSG_RST = 0x1000
+except:
+    pass
+
+# /usr/include/sys/socket.h: 343
+try:
+    MSG_ERRQUEUE = 0x2000
+except:
+    pass
+
+# /usr/include/sys/socket.h: 344
+try:
+    MSG_NOSIGNAL = 0x4000
+except:
+    pass
+
+# /usr/include/sys/socket.h: 345
+try:
+    MSG_MORE = 0x8000
+except:
+    pass
+
+# /usr/include/sys/socket.h: 346
+try:
+    MSG_WAITFORONE = 0x10000
+except:
+    pass
+
+# /usr/include/sys/socket.h: 347
+try:
+    MSG_BATCH = 0x40000
+except:
+    pass
+
+# /usr/include/sys/socket.h: 348
+try:
+    MSG_ZEROCOPY = 0x4000000
+except:
+    pass
+
+# /usr/include/sys/socket.h: 349
+try:
+    MSG_FASTOPEN = 0x20000000
+except:
+    pass
+
+# /usr/include/sys/socket.h: 350
+try:
+    MSG_CMSG_CLOEXEC = 0x40000000
+except:
+    pass
+
+# /usr/include/sys/socket.h: 352
+def __CMSG_LEN(cmsg):
+    return (((((cmsg.contents.cmsg_len).value) + sizeof(c_long)) - 1) & (~(c_long (ord_if_char((sizeof(c_long) - 1)))).value))
+
+# /usr/include/sys/socket.h: 353
+def __CMSG_NEXT(cmsg):
+    return (cast(cmsg, POINTER(c_ubyte)) + (__CMSG_LEN (cmsg)))
+
+# /usr/include/sys/socket.h: 354
+def __MHDR_END(mhdr):
+    return (cast((mhdr.contents.msg_control), POINTER(c_ubyte)) + ((mhdr.contents.msg_controllen).value))
+
+# /usr/include/sys/socket.h: 356
+def CMSG_DATA(cmsg):
+    return cast((cast(cmsg, POINTER(struct_cmsghdr)) + 1), POINTER(c_ubyte))
+
+# /usr/include/sys/socket.h: 357
+def CMSG_NXTHDR(mhdr, cmsg):
+    return ((((cmsg.contents.cmsg_len).value) < sizeof(struct_cmsghdr)) or (((__CMSG_LEN (cmsg)) + sizeof(struct_cmsghdr)) >= ((__MHDR_END (mhdr)) - cast(cmsg, POINTER(c_ubyte))))) and 0 or cast((__CMSG_NEXT (cmsg)), POINTER(struct_cmsghdr))
+
+# /usr/include/sys/socket.h: 360
+def CMSG_FIRSTHDR(mhdr):
+    return ((c_size_t (ord_if_char(((mhdr.contents.msg_controllen).value)))).value >= sizeof(struct_cmsghdr)) and cast((mhdr.contents.msg_control), POINTER(struct_cmsghdr)) or cast(0, POINTER(struct_cmsghdr))
+
+# /usr/include/sys/socket.h: 362
+def CMSG_ALIGN(len):
+    return (((len + sizeof(c_size_t)) - 1) & (c_size_t (ord_if_char((~(sizeof(c_size_t) - 1))))).value)
+
+# /usr/include/sys/socket.h: 363
+def CMSG_SPACE(len):
+    return ((CMSG_ALIGN (len)) + (CMSG_ALIGN (sizeof(struct_cmsghdr))))
+
+# /usr/include/sys/socket.h: 364
+def CMSG_LEN(len):
+    return ((CMSG_ALIGN (sizeof(struct_cmsghdr))) + len)
+
+# /usr/include/sys/socket.h: 366
+try:
+    SCM_RIGHTS = 0x01
+except:
+    pass
+
+# /usr/include/sys/socket.h: 367
+try:
+    SCM_CREDENTIALS = 0x02
+except:
+    pass
+
 guac_client = struct_guac_client# /tmp/guacamole-server/src/libguac/guacamole/client.h: 59
 
 guac_socket = struct_guac_socket# /tmp/guacamole-server/src/libguac/guacamole/socket.h: 39
@@ -2503,6 +4169,16 @@ guac_client_internal = struct_guac_client_internal# /tmp/guacamole-server/src/li
 __guac_instruction_handler_mapping = struct___guac_instruction_handler_mapping# /tmp/guacamole-server/src/libguac/user-handlers.h: 72
 
 guac_parser = struct_guac_parser# /tmp/guacamole-server/src/libguac/guacamole/parser.h: 34
+
+msghdr = struct_msghdr# /usr/include/sys/socket.h: 22
+
+cmsghdr = struct_cmsghdr# /usr/include/sys/socket.h: 44
+
+linger = struct_linger# /usr/include/sys/socket.h: 74
+
+sockaddr = struct_sockaddr# /usr/include/sys/socket.h: 369
+
+sockaddr_storage = struct_sockaddr_storage# /usr/include/sys/socket.h: 374
 
 # No inserted files
 
