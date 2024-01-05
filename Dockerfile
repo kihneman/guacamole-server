@@ -34,6 +34,7 @@ RUN apk add --no-cache                \
         cairo-dev                     \
         cmake                         \
         cunit-dev                     \
+        czmq-dev                      \
         git                           \
         grep                          \
         libjpeg-turbo-dev             \
@@ -47,7 +48,8 @@ RUN apk add --no-cache                \
         python3                       \
         py3-pip                       \
         py3-wheel                     \
-        util-linux-dev
+        util-linux-dev                \
+        zeromq-dev
 
 # Copy source to container for sake of build
 ARG BUILD_DIR=/tmp/guacamole-server
@@ -118,7 +120,8 @@ ARG FREERDP_OPTS="\
     -DWITH_ZLIB=ON"
 
 ARG GUACAMOLE_SERVER_OPTS="\
-    --disable-guaclog"
+    --disable-guaclog \
+    --with-czmq"
 
 ARG LIBSSH2_OPTS="\
     -DBUILD_EXAMPLES=OFF \
