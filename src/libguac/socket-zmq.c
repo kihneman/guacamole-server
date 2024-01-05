@@ -12,7 +12,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <zmq.h>
 #include <czmq.h>
 
 /**
@@ -26,14 +25,14 @@ typedef struct guac_socket_zmq_data {
     // void *ctx;
 
     /**
-     * The associated ZeroMQ socket.
-     */
-    // void *zsock;
-
-    /**
      * The associated ZeroMQ CZMQ socket.
      */
-    _zsock_t *zsock;
+    zsock_t *zsock;
+
+    /**
+     * The associated ZeroMQ socket handle.
+     */
+    void *zmq_handle;
 
     /**
      * The number of bytes currently in the main write buffer.
@@ -88,7 +87,7 @@ ssize_t guac_socket_zmq_write(guac_socket* socket,
     /* Write until completely written */
     while (count > 0) {
 
-        int retval = zmq_send(data->zsock->handle, buffer, count, 0);
+        int retval = zmq_send(data->zmq_handle, buffer, count, 0);
 
         /* Record errors in guac_error */
         if (retval < 0) {
@@ -129,7 +128,7 @@ static ssize_t guac_socket_zmq_read_handler(guac_socket* socket,
     guac_socket_zmq_data* data = (guac_socket_zmq_data*) socket->data;
 
     /* Read from socket */
-    int retval = zmq_recv(data->zsock->handle, buf, count, 0);
+    int retval = zmq_recv(data->zmq_handle, buf, count, 0);
 
     /* Record errors in guac_error */
     if (retval < 0) {
@@ -320,7 +319,7 @@ static int guac_socket_zmq_select_handler(guac_socket* socket,
 
     /* Initialize poll items with single underlying ZeroMQ socket handle */
     zmq_pollitem_t items [1];
-    items[0].socket = data->zsock->handle;
+    items[0].socket = data->zmq_handle;
     items[0].events = ZMQ_POLLIN;
 
     /* Wait for data on socket */
@@ -399,7 +398,7 @@ static void guac_socket_zmq_unlock_handler(guac_socket* socket) {
 
 }
 
-guac_socket* guac_socket_open_zmq(_zsock_t *zsock) {
+guac_socket* guac_socket_open_zmq(zsock_t *zsock) {
 
     pthread_mutexattr_t lock_attributes;
 
@@ -410,6 +409,7 @@ guac_socket* guac_socket_open_zmq(_zsock_t *zsock) {
     /* Store zsock as socket data */
     // data->ctx = ctx;
     data->zsock = zsock;
+    data->zmq_handle = zsock_resolve(zsock);
     data->written = 0;
     socket->data = data;
 
@@ -443,7 +443,7 @@ guac_socket* guac_socket_open_zmq(int type, const char *endpoints, bool serveris
     *     }
     */
 
-    _zsock_t *zsock = zsock_new(type);
+    zsock_t *zsock = zsock_new(type);
     if (zsock_attach(zsock, endpoints, serverish))
         zsock_destroy(&zsock);
     return guac_socket_open_zmq(zsock);
