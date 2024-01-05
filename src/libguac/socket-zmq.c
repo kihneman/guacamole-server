@@ -433,7 +433,7 @@ guac_socket* guac_socket_open_zmq(zsock_t *zsock) {
 
 }
 
-guac_socket* guac_socket_open_zmq(int type, const char *endpoints, bool serverish) {
+guac_socket* guac_socket_create_zmq(int type, const char *endpoints, bool serverish) {
    /** zmq
     * void *ctx = zmq_ctx_new();
     * void *zsock = zmq_socket(ctx, type);
