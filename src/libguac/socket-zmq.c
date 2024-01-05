@@ -33,7 +33,7 @@ typedef struct guac_socket_zmq_data {
     /**
      * The associated ZeroMQ CZMQ socket.
      */
-    zsock_t *zsock;
+    _zsock_t *zsock;
 
     /**
      * The number of bytes currently in the main write buffer.
@@ -399,7 +399,7 @@ static void guac_socket_zmq_unlock_handler(guac_socket* socket) {
 
 }
 
-guac_socket* guac_socket_open_zmq(zsock_t *zsock) {
+guac_socket* guac_socket_open_zmq(_zsock_t *zsock) {
 
     pthread_mutexattr_t lock_attributes;
 
@@ -443,7 +443,7 @@ guac_socket* guac_socket_open_zmq(int type, const char *endpoints, bool serveris
     *     }
     */
 
-    zsock_t *zsock = zsock_new(type);
+    _zsock_t *zsock = zsock_new(type);
     if (zsock_attach(zsock, endpoints, serverish))
         zsock_destroy(&zsock);
     return guac_socket_open_zmq(zsock);
