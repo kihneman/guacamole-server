@@ -1339,6 +1339,7 @@ $PACKAGE_NAME version $PACKAGE_VERSION
      libwebsockets ....... ${have_libwebsockets}
      libwebp ............. ${have_webp}
      wsock32 ............. ${have_winsock}
+     czmq ................ ${have_czmq}
 
    Protocol support:
 
