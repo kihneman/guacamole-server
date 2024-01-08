@@ -2464,6 +2464,12 @@ if _libs["libguac"].has("guac_socket_open_zmq", "cdecl"):
     guac_socket_open_zmq.argtypes = [zsock_t]
     guac_socket_open_zmq.restype = POINTER(guac_socket)
 
+# /tmp/guacamole-server/src/libguac/guacamole/socket-zmq.h: 67
+if _libs["libguac"].has("guac_socket_create_zmq", "cdecl"):
+    guac_socket_create_zmq = _libs["libguac"].get("guac_socket_create_zmq", "cdecl")
+    guac_socket_create_zmq.argtypes = [c_int, String, c_bool]
+    guac_socket_create_zmq.restype = POINTER(guac_socket)
+
 struct_guac_user_info.__slots__ = [
     'optimal_width',
     'optimal_height',
