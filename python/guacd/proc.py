@@ -46,12 +46,16 @@ class GuacdProc:
         """Send process ready over socket"""
         self.zmq_socket.send_json({'status': 'ready'})
 
-    def send_new_user_socket(self):
-        connection_id_digits = self.client_ptr.contents.connection_id[1:]
-        user_socket_path = f'ipc//{GUACD_USER_SOCKET_PATH}{connection_id_digits}'
-        self.zmq_user_socket = self.zmq_context.socket(zmq.PAIR)
-        self.zmq_user_socket.bind(user_socket_path)
+    def send_new_user_socket(self, create_socket=False):
+        user_socket_path = self.user_socket_path()
+        if create_socket:
+            self.zmq_user_socket = self.zmq_context.socket(zmq.PAIR)
+            self.zmq_user_socket.bind(user_socket_path)
         self.zmq_socket.send_string(user_socket_path)
+
+    def user_socket_path(self):
+        client_connection_digits = self.client_ptr.contents.connection_id[1:]
+        return f'ipc//{GUACD_USER_SOCKET_PATH}{client_connection_digits}'
 
     def wait_for_process(self):
         """Wait for process to be ready to receive user connection"""
