@@ -221,7 +221,9 @@ USER guacd
 EXPOSE 4822
 
 # Install Python package
-RUN cd ~ && python -m venv pyguacd && source pyguacd/bin/activate && pip install git+https://github.com/kihneman/pyguacd.git
+RUN cd ~ && python -m venv pyguacd      \
+         && source pyguacd/bin/activate \
+         && pip install git+https://github.com/kihneman/pyguacd.git@test-multiple-user-connections
 
 # Start guacd, listening on port 0.0.0.0:4822
 #
