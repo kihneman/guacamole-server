@@ -138,6 +138,12 @@ libguac_la_SOURCES += socket-wsa.c
 libguacinc_HEADERS += guacamole/socket-wsa.h
 endif
 
+# ZeroMQ CZMQ support
+if ENABLE_CZMQ
+libguac_la_SOURCES += socket-zmq.c
+libguacinc_HEADERS += guacamole/socket-zmq.h
+endif
+
 libguac_la_CFLAGS = \
     @WINDOWS_CFLAGS@
 
@@ -153,7 +159,8 @@ libguac_la_LDFLAGS =     \
     @UUID_LIBS@          \
     @VORBIS_LIBS@        \
     @WEBP_LIBS@          \
-    @WINSOCK_LIBS@
+    @WINSOCK_LIBS@       \
+    @CZMQ_LIBS@
 
 # Cygwin build
 if WINDOWS_BUILD
