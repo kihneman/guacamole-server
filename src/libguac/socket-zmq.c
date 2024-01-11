@@ -20,11 +20,6 @@
 typedef struct guac_socket_zmq_data {
 
     /**
-     * The associated ZeroMQ socket context.
-     */
-    // void *ctx;
-
-    /**
      * The associated ZeroMQ CZMQ socket.
      */
     zsock_t *zsock;
@@ -433,15 +428,23 @@ guac_socket* guac_socket_open_zmq(zsock_t *zsock) {
 
 }
 
+/**
+ * Creates a new CZMQ zsock and returns a corresponding opened guac_socket.
+ * The zsock gets destroyed with the guac_socket in guac_socket_zmq_free_handler.
+ *
+ * @param type
+ *     ZeroMQ socket type defined in zmq.h (https://github.com/zeromq/libzmq/blob/master/include/zmq.h#L258).
+ *
+ * @param endpoints
+ *     If endpoints is not null, parses as list of ZeroMQ endpoints, separated by commas,
+ *     and prefixed by '@' (to bind the socket) or '>' (to attach the socket). If the endpoint
+ *     does not start with '@' or '>', the serverish argument defines whether it is used to
+ *     bind (serverish = true) or connect (serverish = false).
+ *
+ * @param serverish
+ *     The serverish argument defines whether it is used to bind (serverish = true) or connect (serverish = false).
+ */
 guac_socket* guac_socket_create_zmq(int type, const char *endpoints, bool serverish) {
-   /** zmq
-    * void *ctx = zmq_ctx_new();
-    * void *zsock = zmq_socket(ctx, type);
-
-	* if (serverish)
-    *     if (zmq_bind(zsock, endpoint) != 0) {
-    *     }
-    */
 
     zsock_t *zsock = zsock_new(type);
     if (zsock_attach(zsock, endpoints, serverish))
