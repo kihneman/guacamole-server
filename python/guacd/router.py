@@ -19,10 +19,10 @@ from .parser import parse_identifier
 async def guac_socket_poll_forever(guac_socket):
     slept = 0
     while ret_val := guac_socket_select(guac_socket, 0) == 0:
-        # Sleep 10ms
-        await asyncio.sleep(.01)
-        slept += 10
-    print(f'Slept {slept}ms')
+        # Sleep 1ms
+        await asyncio.sleep(.001)
+        slept += 1
+    # print(f'Slept {slept}ms')
     return ret_val
 
 
