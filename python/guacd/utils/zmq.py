@@ -7,7 +7,6 @@ from zmq.utils.monitor import parse_monitor_message
 
 
 async def check_zmq_monitor_events(zmq_monitor: zmq.asyncio.Socket, zmq_events: Iterable[zmq.Event]):
-    print('Waiting for connection...')
     for expect_event in zmq_events:
         await zmq_monitor.poll()
         mon_msg = parse_monitor_message(await zmq_monitor.recv_multipart())
