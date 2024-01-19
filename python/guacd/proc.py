@@ -152,9 +152,8 @@ async def guacd_proc_serve_users(proc: GuacdProc, proc_ready_event: multiprocess
 
         # Future file descriptors are not owners
         owner = 0
-        break
 
-    await guacd_proc_stop_task
+        await asyncio.sleep(.1)
 
 
 def guacd_exec_proc(proc: GuacdProc, protocol: str, proc_ready_event: multiprocessing.Event):
