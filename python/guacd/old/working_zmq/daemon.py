@@ -70,7 +70,7 @@ def socket_no_async():
 def zmq_no_async(host='0.0.0.0', port=8892):
     # zmq_sock = guac_socket_create_zmq(zmq.PAIR, f'tcp://{host}:{port}', False)
     # guacd_route_connection(zmq_sock)
-    guacd_route_connection(zmq_addr=f'tcp://{host}:{port}')
+    guacd_route_connection(zmq_user_addr=f'tcp://{host}:{port}')
 
 
 if __name__ == '__main__':
@@ -99,7 +99,7 @@ if __name__ == '__main__':
         t.start()
 
         if zmq_connection_ready(zmq_ready, create_monitor=True):
-            guacd_route_connection(proc_map, zmq_addr=user_ipc_addr)
+            guacd_route_connection(proc_map, zmq_user_addr=user_ipc_addr)
             print('Finished routing connection')
     else:
         asyncio.run(main(timeout=args.timeout))
