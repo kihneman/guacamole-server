@@ -11,7 +11,7 @@ setup(
     install_requires=[],
     entry_points={
         'console_scripts': [
-            'guacd=guacd.__main__:main'
+            'guacd=guacd.daemon:main'
         ]
     }
 )
