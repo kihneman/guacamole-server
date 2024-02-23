@@ -377,6 +377,39 @@ AM_CONDITIONAL([ENABLE_WINSOCK], [test "x${have_winsock}" = "xyes"])
 AC_SUBST(WINSOCK_LIBS)
 
 #
+# ZeroMQ CZMQ
+#
+
+have_czmq=disabled
+CZMQ_LIBS=
+
+AC_ARG_WITH([czmq],
+            [AS_HELP_STRING([--with-czmq],
+                            [support ZeroMQ C Binding (CZMQ) @<:@default=check@:>@])],
+            [],
+            [with_czmq=check])
+
+if test "x$with_czmq" != "xno"
+then
+    have_czmq=yes
+    AC_CHECK_LIB([zmq], [zmq_ctx_new], [CZMQ_LIBS="$CZMQ_LIBS -lzmq -lczmq"], [have_czmq=no])
+
+    if test "x${have_czmq}" = "xno"
+    then
+        AC_MSG_WARN([
+  --------------------------------------------
+   Unable to find libzmq / libczmq.
+  --------------------------------------------])
+    else
+        AC_DEFINE([ENABLE_CZMQ],,
+                  [Whether support for ZeroMQ CZMQ binding is enabled])
+    fi
+fi
+
+AM_CONDITIONAL([ENABLE_CZMQ], [test "x${have_czmq}" = "xyes"])
+AC_SUBST(CZMQ_LIBS)
+
+#
 # Ogg Vorbis
 #
 
@@ -1255,6 +1288,7 @@ $PACKAGE_NAME version $PACKAGE_VERSION
      libwebsockets ....... ${have_libwebsockets}
      libwebp ............. ${have_webp}
      wsock32 ............. ${have_winsock}
+     czmq ................ ${have_czmq}
 
    Protocol support:
 

@@ -156,6 +156,12 @@ libguac_la_SOURCES += socket-wsa.c
 libguacinc_HEADERS += guacamole/socket-wsa.h
 endif
 
+# ZeroMQ CZMQ support
+if ENABLE_CZMQ
+libguac_la_SOURCES += socket-zmq.c
+libguacinc_HEADERS += guacamole/socket-zmq.h
+endif
+
 libguac_la_CFLAGS = \
     -Werror -Wall -pedantic
 
@@ -163,6 +169,7 @@ libguac_la_LDFLAGS =     \
     -version-info 22:0:1 \
     -no-undefined        \
     @CAIRO_LIBS@         \
+    @CZMQ_LIBS@          \
     @DL_LIBS@            \
     @JPEG_LIBS@          \
     @PNG_LIBS@           \
