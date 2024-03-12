@@ -19,12 +19,14 @@
 #include "guacamole/error.h"
 #include "guacamole/socket.h"
 
+#include <arpa/inet.h>
 #include <errno.h>
 #include <pthread.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 
 #include <czmq.h>
@@ -114,7 +116,19 @@ ssize_t guac_socket_zmq_write(guac_socket* socket,
     /* Write until completely written */
     while (count > 0) {
 
-        int retval = zmq_send(data->zmq_handle, buffer, count, 0);
+        /* Send timestamp */
+        struct timespec current;
+        clock_gettime(CLOCK_MONOTONIC, &current);
+        uint32_t tv_sec = htonl((uint32_t) current.tv_sec);
+        uint32_t tv_nsec = htonl((uint32_t) current.tv_nsec);
+
+        int retval = zmq_send(data->zmq_handle, (char*) &tv_sec, sizeof(uint32_t), ZMQ_SNDMORE);
+        if (retval >= 0)
+            retval = zmq_send(data->zmq_handle, (char*) &tv_nsec, sizeof(uint32_t), ZMQ_SNDMORE);
+
+        /* Send data buffer */
+        if (retval >= 0)
+            retval = zmq_send(data->zmq_handle, buffer, count, 0);
 
         /* Record errors in guac_error */
         if (retval < 0) {
@@ -172,6 +186,7 @@ static ssize_t guac_socket_zmq_read_handler(guac_socket* socket,
             data->zmq_data_size -= count;
         }
 
+        fprintf(stderr, "Returning size %i data", (int) count);
         return count;
     }
 
@@ -197,6 +212,12 @@ static ssize_t guac_socket_zmq_read_handler(guac_socket* socket,
         zmq_recvmsg_flags = ZMQ_DONTWAIT;
     }
 
+    /* Get timestamp before read */
+    struct timespec current;
+    clock_gettime(CLOCK_MONOTONIC, &current);
+    uint32_t tv_before_sec = htonl((uint32_t) current.tv_sec);
+    uint32_t tv_before_nsec = htonl((uint32_t) current.tv_nsec);
+
     /* Read from socket and return error if unsuccessful */
     zmq_msg_init(&(data->zmq_msg));
     if (zmq_recvmsg(data->zmq_handle, &(data->zmq_msg), zmq_recvmsg_flags) < 0) {
@@ -209,6 +230,31 @@ static ssize_t guac_socket_zmq_read_handler(guac_socket* socket,
         return -1;
     }
     size_t new_msg_size = zmq_msg_size(&(data->zmq_msg));
+
+    /* Send timestamp for debugging read latency */
+    clock_gettime(CLOCK_MONOTONIC, &current);
+    uint32_t tv_after_sec = htonl((uint32_t) current.tv_sec);
+    uint32_t tv_after_nsec = htonl((uint32_t) current.tv_nsec);
+    uint32_t new_msg_send_size = htonl((uint32_t) new_msg_size);
+
+    int retval = zmq_send(data->zmq_handle, (char*) &tv_before_sec, sizeof(uint32_t), ZMQ_SNDMORE);
+    if (retval >= 0)
+        retval = zmq_send(data->zmq_handle, (char*) &tv_before_nsec, sizeof(uint32_t), ZMQ_SNDMORE);
+    if (retval >= 0)
+        retval = zmq_send(data->zmq_handle, (char*) &tv_after_sec, sizeof(uint32_t), ZMQ_SNDMORE);
+    if (retval >= 0)
+        retval = zmq_send(data->zmq_handle, (char*) &tv_after_nsec, sizeof(uint32_t), ZMQ_SNDMORE);
+    if (retval >= 0)
+        retval = zmq_send(data->zmq_handle, "ZMQ_DEBUG_LIBGUAC_READ_LATENCY", 30, ZMQ_SNDMORE);
+    if (retval >= 0)
+        retval = zmq_send(data->zmq_handle, (char*) &new_msg_send_size, sizeof(uint32_t), 0);
+
+    /* Record errors in guac_error */
+    if (retval < 0) {
+        guac_error = GUAC_STATUS_SEE_ERRNO;
+        guac_error_message = "Error writing data to socket";
+        return retval;
+    }
 
     /* Just copy socket message data if it doesn't exceed size "count" */
     if (new_msg_size <= count) {
@@ -406,6 +452,7 @@ static ssize_t guac_socket_zmq_write_handler(guac_socket* socket,
 static int guac_socket_zmq_select_handler(guac_socket* socket,
         int usec_timeout) {
 
+    fprintf(stderr, "Polling...");
     guac_socket_zmq_data* data = (guac_socket_zmq_data*) socket->data;
 
     if (data->zmq_data_ptr) {
