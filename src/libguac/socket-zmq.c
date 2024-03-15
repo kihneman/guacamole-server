@@ -452,7 +452,6 @@ static ssize_t guac_socket_zmq_write_handler(guac_socket* socket,
 static int guac_socket_zmq_select_handler(guac_socket* socket,
         int usec_timeout) {
 
-    fprintf(stderr, "Polling...");
     guac_socket_zmq_data* data = (guac_socket_zmq_data*) socket->data;
 
     if (data->zmq_data_ptr) {
@@ -460,27 +459,48 @@ static int guac_socket_zmq_select_handler(guac_socket* socket,
         return 1;
     }
 
-    /* Initialize poll items with single underlying ZeroMQ socket handle */
-    zmq_pollitem_t items [1];
-    items[0].socket = data->zmq_handle;
-    items[0].events = ZMQ_POLLIN;
+    while (usec_timeout != 0) {
+        zmq_msg_init(&(data->zmq_msg));
+        if (zmq_recvmsg(data->zmq_handle, &(data->zmq_msg), ZMQ_DONTWAIT) < 0) {
+            if (errno != EAGAIN) {
+                guac_error = GUAC_STATUS_SEE_ERRNO;
+                guac_error_message = "Error reading data from socket";
+                return -1;
+            }
+        }
 
-    /* Wait for data on socket */
-    /* Round timeout up to poll()'s granularity */
-    int retval = zmq_poll(items, 1, (usec_timeout < 0) ? -1 : (usec_timeout + 999) / 1000);
+        else {
+            data->zmq_data_size = zmq_msg_size(&(data->zmq_msg));
+            data->zmq_data_ptr = (char*) zmq_msg_data(&(data->zmq_msg));
+            return 1;
+        }
 
-    /* Properly set guac_error */
-    if (retval <  0) {
-        guac_error = GUAC_STATUS_SEE_ERRNO;
-        guac_error_message = "Error while waiting for data on socket";
+        /* Initialize poll items with single underlying ZeroMQ socket handle */
+        zmq_pollitem_t items [1];
+        items[0].socket = data->zmq_handle;
+        items[0].events = ZMQ_POLLIN;
+
+        /* Wait for data on socket for 1 ms */
+        int retval = zmq_poll(items, 1, 1);
+
+        if (retval > 0)
+            return retval;
+
+        if (retval == 0 && usec_timeout > 0) {
+            usec_timeout = (usec_timeout > 1000) ? usec_timeout - 1000 : 0;
+            continue;
+        }
+
+        /* Properly set guac_error */
+        if (retval <  0) {
+            guac_error = GUAC_STATUS_SEE_ERRNO;
+            guac_error_message = "Error while waiting for data on socket";
+        }
+
     }
-
-    else if (retval == 0) {
-        guac_error = GUAC_STATUS_TIMEOUT;
-        guac_error_message = "Timeout while waiting for data on socket";
-    }
-
-    return retval;
+    guac_error = GUAC_STATUS_TIMEOUT;
+    guac_error_message = "Timeout while waiting for data on socket";
+    return 0;
 
 }
 
