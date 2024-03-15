@@ -72,7 +72,7 @@ typedef struct guac_socket_zmq_data {
      * The main write buffer. Bytes written go here before being flushed
      * to the open socket.
      */
-    char out_buf[GUAC_SOCKET_OUTPUT_BUFFER_SIZE];
+    char out_buf[32768];
 
     /**
      * Lock which is acquired when an instruction is being written, and
@@ -186,7 +186,6 @@ static ssize_t guac_socket_zmq_read_handler(guac_socket* socket,
             data->zmq_data_size -= count;
         }
 
-        fprintf(stderr, "Returning size %i data", (int) count);
         return count;
     }
 
@@ -452,6 +451,11 @@ static ssize_t guac_socket_zmq_write_handler(guac_socket* socket,
 static int guac_socket_zmq_select_handler(guac_socket* socket,
         int usec_timeout) {
 
+    /* Get timestamp for debugging poll delay */
+    fprintf(stderr, "Polling...");
+    struct timespec before_poll;
+    clock_gettime(CLOCK_MONOTONIC, &before_poll);
+
     guac_socket_zmq_data* data = (guac_socket_zmq_data*) socket->data;
 
     if (data->zmq_data_ptr) {
@@ -463,6 +467,7 @@ static int guac_socket_zmq_select_handler(guac_socket* socket,
         zmq_msg_init(&(data->zmq_msg));
         if (zmq_recvmsg(data->zmq_handle, &(data->zmq_msg), ZMQ_DONTWAIT) < 0) {
             if (errno != EAGAIN) {
+                fprintf(stderr, "**** Error reading data from socket\n");
                 guac_error = GUAC_STATUS_SEE_ERRNO;
                 guac_error_message = "Error reading data from socket";
                 return -1;
@@ -472,6 +477,15 @@ static int guac_socket_zmq_select_handler(guac_socket* socket,
         else {
             data->zmq_data_size = zmq_msg_size(&(data->zmq_msg));
             data->zmq_data_ptr = (char*) zmq_msg_data(&(data->zmq_msg));
+
+            struct timespec after_poll;
+            clock_gettime(CLOCK_MONOTONIC, &after_poll);
+            fprintf(
+                stderr, "...polling finished by receiving message in %i s %i us\n",
+                (int) (after_poll.tv_sec - before_poll.tv_sec),
+                (int) (after_poll.tv_nsec - before_poll.tv_nsec)
+            );
+
             return 1;
         }
 
@@ -483,8 +497,17 @@ static int guac_socket_zmq_select_handler(guac_socket* socket,
         /* Wait for data on socket for 1 ms */
         int retval = zmq_poll(items, 1, 1);
 
-        if (retval > 0)
+        if (retval > 0) {
+            struct timespec after_poll;
+            clock_gettime(CLOCK_MONOTONIC, &after_poll);
+            fprintf(
+                stderr, "...polling finished by zmq_poll in %i s %i us\n",
+                (int) (after_poll.tv_sec - before_poll.tv_sec),
+                (int) (after_poll.tv_nsec - before_poll.tv_nsec)
+            );
+
             return retval;
+        }
 
         if (retval == 0 && usec_timeout > 0) {
             usec_timeout = (usec_timeout > 1000) ? usec_timeout - 1000 : 0;
@@ -493,11 +516,13 @@ static int guac_socket_zmq_select_handler(guac_socket* socket,
 
         /* Properly set guac_error */
         if (retval <  0) {
+            fprintf(stderr, "**** Error while waiting for data on socket\n");
             guac_error = GUAC_STATUS_SEE_ERRNO;
             guac_error_message = "Error while waiting for data on socket";
         }
 
     }
+    fprintf(stderr, "**** Timeout while waiting for data on socket\n");
     guac_error = GUAC_STATUS_TIMEOUT;
     guac_error_message = "Timeout while waiting for data on socket";
     return 0;
