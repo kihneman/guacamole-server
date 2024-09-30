@@ -25,8 +25,17 @@
 
 #include <stdarg.h>
 #include <stdio.h>
-#include <syslog.h>
+#include <stdlib.h>
 #include <unistd.h>
+
+/*
+ * Syslog does not exist on Windows, so we'll just log directly to std error.
+ * TODO: ReportEvent() might be sort of equivalent? Look into
+ * https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-reporteventa
+ */
+#ifndef WINDOWS_BUILD
+#include <syslog.h>
+#endif
 
 int guacd_log_level = GUAC_LOG_INFO;
 
@@ -85,12 +94,17 @@ void vguacd_log(guac_client_log_level level, const char* format,
             break;
     }
 
+#ifndef WINDOWS_BUILD
     /* Log to syslog */
     syslog(priority, "%s", message);
+#else
+    fprintf(stderr, "%s: %s\n", priority_name, message);
+#endif
 
     /* Log to STDERR */
+    pid_t pid = getpid();
     fprintf(stderr, GUACD_LOG_NAME "[%i]: %s:\t%s\n",
-            getpid(), priority_name, message);
+            pid, priority_name, message);
 
 }
 
@@ -117,10 +131,11 @@ void guacd_log_guac_error(guac_client_log_level level, const char* message) {
                     guac_error_message);
 
         /* Otherwise just log with standard status string */
-        else
-            guacd_log(level, "%s: %s",
-                    message,
-                    guac_status_string(guac_error));
+        else {
+            char* status_string = guac_status_string(guac_error);
+            guacd_log(level, "%s: %s", message, status_string);
+            free(status_string);
+        }
 
     }
 
@@ -140,10 +155,13 @@ void guacd_log_handshake_failure() {
                 "Guacamole protocol violation. Perhaps the version of "
                 "guacamole-client is incompatible with this version of "
                 "guacd?");
-    else
+    else {
+    
+        char* status_string = guac_status_string(guac_error);
         guacd_log(GUAC_LOG_WARNING,
-                "Guacamole handshake failed: %s",
-                guac_status_string(guac_error));
+                "Guacamole handshake failed: %s", status_string);
+        free(status_string);
+    }
 
 }
 
