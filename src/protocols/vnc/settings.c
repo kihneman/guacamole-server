@@ -38,6 +38,7 @@ const char* GUAC_VNC_CLIENT_ARGS[] = {
     "hostname",
     "port",
     "read-only",
+    "disable-display-resize",
     "encodings",
     GUAC_VNC_ARGV_USERNAME,
     GUAC_VNC_ARGV_PASSWORD,
@@ -67,10 +68,12 @@ const char* GUAC_VNC_CLIENT_ARGS[] = {
     "sftp-hostname",
     "sftp-host-key",
     "sftp-port",
+    "sftp-timeout",
     "sftp-username",
     "sftp-password",
     "sftp-private-key",
     "sftp-passphrase",
+    "sftp-public-key",
     "sftp-directory",
     "sftp-root-directory",
     "sftp-server-alive-interval",
@@ -86,6 +89,7 @@ const char* GUAC_VNC_CLIENT_ARGS[] = {
     "create-recording-path",
     "disable-copy",
     "disable-paste",
+    "disable-server-input",
     
     "wol-send-packet",
     "wol-mac-addr",
@@ -94,6 +98,8 @@ const char* GUAC_VNC_CLIENT_ARGS[] = {
     "wol-wait-time",
 
     "force-lossless",
+    "compress-level",
+    "quality-level",
     NULL
 };
 
@@ -114,6 +120,13 @@ enum VNC_ARGS_IDX {
      * dropped), "false" or blank otherwise.
      */
     IDX_READ_ONLY,
+
+    /**
+     * "true" if the VNC client should disable attempts to resize the remote
+     * display to the client's size, "false" or blank if those resize messages
+     * should be sent.
+     */
+    IDX_DISABLE_DISPLAY_RESIZE,
 
     /**
      * Space-separated list of encodings to use within the VNC session. If not
@@ -230,6 +243,12 @@ enum VNC_ARGS_IDX {
     IDX_SFTP_PORT,
 
     /**
+     * The number of seconds to attempt to connect to the SFTP server before
+     * timing out.
+     */
+    IDX_SFTP_TIMEOUT,
+
+    /**
      * The username to provide when authenticating with the SSH server for
      * SFTP.
      */
@@ -252,6 +271,12 @@ enum VNC_ARGS_IDX {
      * key.
      */
     IDX_SFTP_PASSPHRASE,
+
+    /**
+     * The base64-encode public key to use when authentication with the SSH
+     * server for SFTP using key-based authentication.
+     */
+    IDX_SFTP_PUBLIC_KEY,
 
     /**
      * The default location for file uploads within the SSH server. This will
@@ -344,6 +369,12 @@ enum VNC_ARGS_IDX {
      * using the clipboard. By default, clipboard access is not blocked.
      */
     IDX_DISABLE_PASTE,
+
+    /**
+     * Whether or not to disable the input on the server side when the VNC client
+     * is connected. The default is not to disable the input.
+     */
+    IDX_DISABLE_SERVER_INPUT,
     
     /**
      * Whether to send the magic Wake-on-LAN (WoL) packet to wake the remote
@@ -381,6 +412,18 @@ enum VNC_ARGS_IDX {
      * compression only, "false" or blank otherwise.
      */
     IDX_FORCE_LOSSLESS,
+
+    /**
+     * The level of compression, on a scale of 0 (no compression) to 9 (maximum
+     * compression), that the connection will be configured for.
+     */
+    IDX_COMPRESS_LEVEL,
+
+    /**
+     * The level of display quality, on a scale of 0 (worst quality) to 9 (best
+     * quality), that the connection will be configured for.
+     */
+    IDX_QUALITY_LEVEL,
 
     VNC_ARGS_COUNT
 };
@@ -436,6 +479,16 @@ guac_vnc_settings* guac_vnc_parse_args(guac_user* user,
         guac_user_parse_args_boolean(user, GUAC_VNC_CLIENT_ARGS, argv,
                 IDX_READ_ONLY, false);
 
+    /* Disable server input */
+    settings->disable_server_input =
+            guac_user_parse_args_boolean(user, GUAC_VNC_CLIENT_ARGS, argv,
+                                         IDX_DISABLE_SERVER_INPUT, false);
+
+    /* Disable display resize */
+    settings->disable_display_resize =
+            guac_user_parse_args_boolean(user, GUAC_VNC_CLIENT_ARGS, argv,
+                                         IDX_DISABLE_DISPLAY_RESIZE, false);
+
     /* Parse color depth */
     settings->color_depth =
         guac_user_parse_args_int(user, GUAC_VNC_CLIENT_ARGS, argv,
@@ -445,6 +498,16 @@ guac_vnc_settings* guac_vnc_parse_args(guac_user* user,
     settings->lossless =
         guac_user_parse_args_boolean(user, GUAC_VNC_CLIENT_ARGS, argv,
                 IDX_FORCE_LOSSLESS, false);
+
+    /* Compression level */
+    settings->compress_level =
+        guac_user_parse_args_int(user, GUAC_VNC_CLIENT_ARGS, argv,
+                IDX_COMPRESS_LEVEL, -1);
+
+    /* Display quality */
+    settings->quality_level =
+        guac_user_parse_args_int(user, GUAC_VNC_CLIENT_ARGS, argv,
+                IDX_QUALITY_LEVEL, -1);
 
 #ifdef ENABLE_VNC_REPEATER
     /* Set repeater parameters if specified */
@@ -520,6 +583,11 @@ guac_vnc_settings* guac_vnc_parse_args(guac_user* user,
         guac_user_parse_args_string(user, GUAC_VNC_CLIENT_ARGS, argv,
                 IDX_SFTP_PORT, "22");
 
+    /* SFTP connection timeout */
+    settings->sftp_timeout =
+        guac_user_parse_args_int(user, GUAC_VNC_CLIENT_ARGS, argv,
+                IDX_SFTP_TIMEOUT, GUAC_VNC_DEFAULT_SFTP_TIMEOUT);
+
     /* Username for SSH/SFTP authentication */
     settings->sftp_username =
         guac_user_parse_args_string(user, GUAC_VNC_CLIENT_ARGS, argv,
@@ -539,6 +607,11 @@ guac_vnc_settings* guac_vnc_parse_args(guac_user* user,
     settings->sftp_passphrase =
         guac_user_parse_args_string(user, GUAC_VNC_CLIENT_ARGS, argv,
                 IDX_SFTP_PASSPHRASE, "");
+
+    /* Public key for SFTP using key-based authentication. */
+    settings->sftp_public_key =
+        guac_user_parse_args_string(user, GUAC_VNC_CLIENT_ARGS, argv,
+                IDX_SFTP_PUBLIC_KEY, NULL);
 
     /* Default upload directory */
     settings->sftp_directory =
@@ -670,6 +743,7 @@ void guac_vnc_settings_free(guac_vnc_settings* settings) {
     guac_mem_free(settings->sftp_password);
     guac_mem_free(settings->sftp_port);
     guac_mem_free(settings->sftp_private_key);
+    guac_mem_free(settings->sftp_public_key);
     guac_mem_free(settings->sftp_username);
 #endif
 
