@@ -23,17 +23,31 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <unistd.h>
+
+#ifdef WINDOWS_BUILD
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#else
 #include <netdb.h>
 #include <netinet/in.h>
-#include <sys/select.h>
+#include <pwd.h>
 #include <sys/socket.h>
-#include <unistd.h>
+#include <sys/select.h>
+#endif
 
 int guac_tcp_connect(const char* hostname, const char* port, const int timeout) {
 
-    int retval;
 
-    int fd = EBADFD;
+#ifdef WINDOWS_BUILD
+    guac_error = GUAC_STATUS_NOT_IMPLEMENTED;
+    guac_error_message = "TCP connect not implemented yet in windows.";
+    return -1;
+#else
+
+    int retval;
+    int fd = EBADF;
+
     struct addrinfo* addresses;
     struct addrinfo* current_address;
 
@@ -157,4 +171,5 @@ int guac_tcp_connect(const char* hostname, const char* port, const int timeout) 
     /* Return the fd, or the error message if the socket connection failed. */
     return fd;
 
+#endif
 }
