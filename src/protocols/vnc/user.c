@@ -93,6 +93,7 @@ int guac_vnc_user_join_handler(guac_user* user, int argc, char** argv) {
 
     }
 
+
     /**
      * Update connection parameters if we own the connection. 
      *
