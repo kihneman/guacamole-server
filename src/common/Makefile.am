@@ -35,7 +35,6 @@ noinst_HEADERS =            \
     common/clipboard.h      \
     common/cursor.h         \
     common/defaults.h       \
-    common/display.h        \
     common/dot_cursor.h     \
     common/ibar_cursor.h    \
     common/iconv.h          \
@@ -63,7 +62,7 @@ libguac_common_la_SOURCES = \
     surface.c
 
 libguac_common_la_CFLAGS =  \
-    -Werror -Wall -pedantic \
+    @GENERAL_CFLAGS@         \
     @LIBGUAC_INCLUDE@
 
 libguac_common_la_LIBADD = \
