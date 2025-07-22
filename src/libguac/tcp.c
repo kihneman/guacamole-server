@@ -22,18 +22,30 @@
 #include "guacamole/tcp.h"
 
 #include <errno.h>
+
+#ifdef WINDOWS_BUILD
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <io.h>
+#define EBADFD WSAEBADF
+#else
 #include <fcntl.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <sys/select.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#endif
 
 int guac_tcp_connect(const char* hostname, const char* port, const int timeout) {
 
     int retval;
 
+#ifdef WINDOWS_BUILD
+    SOCKET fd = INVALID_SOCKET;
+#else
     int fd = EBADFD;
+#endif
     struct addrinfo* addresses;
     struct addrinfo* current_address;
 
@@ -70,11 +82,27 @@ int guac_tcp_connect(const char* hostname, const char* port, const int timeout) 
 
         /* Get socket or return the error. */
         fd = socket(current_address->ai_family, SOCK_STREAM, 0);
+#ifdef WINDOWS_BUILD
+        if (fd == INVALID_SOCKET) {
+#else
         if (fd < 0) {
+#endif
             freeaddrinfo(addresses);
             return fd;
         }
 
+#ifdef WINDOWS_BUILD
+        /* Variable to store non-blocking mode flag for Windows */
+        u_long mode = 1;  /* 1 to enable non-blocking socket */
+
+        /* Set socket to non-blocking on Windows */
+        if (ioctlsocket(fd, FIONBIO, &mode) != 0) {
+            guac_error = GUAC_STATUS_INVALID_ARGUMENT;
+            guac_error_message = "Failed to set non-blocking socket.";
+            closesocket(fd);
+            continue;
+        }
+#else
         /* Variable to store current socket options. */
         int opt;
 
@@ -93,6 +121,7 @@ int guac_tcp_connect(const char* hostname, const char* port, const int timeout) 
             close(fd);
             continue;
         }
+#endif
 
         /* Structure that stores our timeout setting. */
         struct timeval tv;
@@ -101,7 +130,11 @@ int guac_tcp_connect(const char* hostname, const char* port, const int timeout) 
 
         /* Connect and wait for timeout */
         if ((retval = connect(fd, current_address->ai_addr, current_address->ai_addrlen)) < 0) {
+#ifdef WINDOWS_BUILD
+            if (WSAGetLastError() == WSAEWOULDBLOCK) {
+#else
             if (errno == EINPROGRESS) {
+#endif
                 /* Set up timeout. */
                 fd_set fdset;
                 FD_ZERO(&fdset);
@@ -113,13 +146,27 @@ int guac_tcp_connect(const char* hostname, const char* port, const int timeout) 
             else {
                 guac_error = GUAC_STATUS_REFUSED;
                 guac_error_message = "Unable to connect via socket.";
+#ifdef WINDOWS_BUILD
+                closesocket(fd);
+#else
                 close(fd);
+#endif
                 continue;
             }
         }
 
         /* Successful connection */
         if (retval > 0) {
+#ifdef WINDOWS_BUILD
+            /* Restore blocking mode on Windows */
+            mode = 0;  /* 0 to disable non-blocking socket */
+            if (ioctlsocket(fd, FIONBIO, &mode) != 0) {
+                guac_error = GUAC_STATUS_INVALID_ARGUMENT;
+                guac_error_message = "Failed to reset socket options.";
+                closesocket(fd);
+                continue;
+            }
+#else
             /* Restore previous socket options. */
             if (fcntl(fd, F_SETFL, opt) < 0) {
                 guac_error = GUAC_STATUS_INVALID_ARGUMENT;
@@ -127,6 +174,7 @@ int guac_tcp_connect(const char* hostname, const char* port, const int timeout) 
                 close(fd);
                 continue;
             }
+#endif
 
             break;
         }
@@ -141,7 +189,11 @@ int guac_tcp_connect(const char* hostname, const char* port, const int timeout) 
         }
 
         /* Some error has occurred - free resources before next iteration. */
+#ifdef WINDOWS_BUILD
+        closesocket(fd);
+#else
         close(fd);
+#endif
 
     }
 
