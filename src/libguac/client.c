@@ -19,6 +19,7 @@
 
 #include "config.h"
 
+#include "client-internal.h"
 #include "encode-jpeg.h"
 #include "encode-png.h"
 #include "encode-webp.h"
@@ -35,7 +36,7 @@
 #include "guacamole/string.h"
 #include "guacamole/timestamp.h"
 #include "guacamole/user.h"
-#include "id.h"
+#include <guacamole/id.h>
 
 #include <dlfcn.h>
 #include <errno.h>
@@ -46,6 +47,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#ifdef WINDOWS_BUILD
+#include <synchapi.h>
+#include <threadpoollegacyapiset.h>
+#endif
 
 /**
  * The number of milliseconds between times that the pending users list will be
