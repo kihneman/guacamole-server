@@ -47,7 +47,7 @@ libguac_common_la_SOURCES = \
     string.c
 
 libguac_common_la_CFLAGS =  \
-    -Werror -Wall -pedantic \
+    @GENERAL_CFLAGS@         \
     @LIBGUAC_INCLUDE@
 
 libguac_common_la_LIBADD = \
