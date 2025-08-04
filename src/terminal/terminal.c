@@ -53,6 +53,11 @@
 #include <guacamole/timestamp.h>
 #include <guacamole/user.h>
 
+#ifdef WINDOWS_BUILD
+#include "terminal/wcwidth.h"
+#include <guacamole/pipe.h>
+#endif
+
 /**
  * Returns the number of rows available within the terminal buffer, taking
  * changes to the desired scrollback size into account. Regardless of the
