@@ -330,8 +330,8 @@ void guac_client_free(guac_client* client) {
 
     /* Clean up the thread monitoring for new pending users, if it's been
      * started */
-    if (client->internal->__pending_users_thread_started)
-        pthread_join(client->internal->__pending_users_thread, NULL);
+    if (client->__pending_users_thread_started)
+        pthread_join(client->__pending_users_thread, NULL);
 
     /* Release the locks */
     guac_rwlock_release_lock(&(client->internal->__users_lock));
@@ -448,10 +448,10 @@ static void guac_client_add_pending_user(guac_client* client,
     guac_rwlock_acquire_write_lock(&(client->internal->__pending_users_lock));
 
     /* Set up the pending user promotion mutex */
-    if (!client->internal->__pending_users_thread_started) {
-        pthread_create(&client->internal->__pending_users_thread, NULL,
+    if (!client->__pending_users_thread_started) {
+        pthread_create(&client->__pending_users_thread, NULL,
                 guac_client_pending_users_thread, (void*) client);
-        client->internal->__pending_users_thread_started = 1;
+        client->__pending_users_thread_started = 1;
     }
 
     user->__prev = NULL;
